@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.hover-opacity {
+  @apply cursor-pointer hover:opacity-80;
+}
