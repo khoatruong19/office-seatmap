@@ -10,20 +10,14 @@ class UserRepository extends Model implements IRepository{
     /**
      * @throws ResponseException
      */
-    public function save($entity)
+    public function save($data)
     {
-        $existedUsername = $this->findOne("username", $entity["username"]);
-
-        if($existedUsername) {
-            throw new ResponseException(HttpStatus::$BAD_REQUEST, "Username existed!");
-        }
-
-        $sql = "insert into users (username, password, email) values (:username, :password, :email)";
+        $sql = "insert into users (full_name, password, email) values (:full_name, :password, :email)";
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute([
-            "email" => $entity["email"],
-            "username" => $entity["username"],
-            "password" => $entity["password"],
+            "email" => $data["email"],
+            "full_name" => $data["full_name"],
+            "password" => $data["password"],
         ]);
 
         $insertedId = $this->database->getConnection()->lastInsertId();
@@ -41,6 +35,17 @@ class UserRepository extends Model implements IRepository{
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute([
             "value" => $value,
+        ]);
+        $result = $stmt->fetch();
+
+        return $result ?? null;
+    }
+
+    public function getByEmail(string $email) {
+        $sql = "select * from users where email = :value limit 1";
+        $stmt = $this->database->getConnection()->prepare($sql);
+        $stmt->execute([
+            "value" => $email,
         ]);
         $result = $stmt->fetch();
 

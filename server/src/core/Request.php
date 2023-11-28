@@ -48,40 +48,37 @@ class Request
 
     public function getBody()
     {
-        $body = [];
-
-        switch (strtoupper($this->getMethod())) {
-            case RequestMethod::POST->name:
-                foreach ($_POST as $key => $value) {
-                    $body[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-                }
-                break;
-            default:
-                break;
-        }
-
+        $body = json_decode(file_get_contents('php://input'), true);
         return $body;
     }
 
     public function validateBody(array $fieldRules)
     {
-        var_dump($this->validation);
-
-        // $mapRuleToValidationMethod = array(
-        //     'required' => $this->validation->required
-        // );
-        $email = "sdsdsds";
-
+        $body = $this->getBody();
         foreach ($fieldRules as $key => $value) {
             $rules = explode('|', $value);
-            
+
             foreach($rules as $rule) { 
-                $this->validation->name($key)->value($email);
-                call_user_func(array($this->validation, "pattern"), 'email');
+                $ruleArray = explode(':', $rule);
+                $ruleMethod = $ruleArray[0];
+                $ruleMethodParameter;
+
+                if(count($ruleArray) > 1){
+                    $ruleMethodParameter = $ruleArray[1];
+                }
+
+                $this->validation->name($key)->value(isset($body[$key]) ? $body[$key] : "");
+                if(isset($ruleMethodParameter)){
+                    call_user_func(array($this->validation, $ruleMethod), $ruleMethodParameter);
+                }
+                else{
+                    call_user_func(array($this->validation, $ruleMethod));
+                }
+
+                if(!$this->validation->isSuccess()) break;
             }
-            var_dump($this->validation->getErrors());            // echo $value;
         }
-        return "sd";
+        return $this->validation->getErrors();
     }
 
     public function setParam($key, $value)

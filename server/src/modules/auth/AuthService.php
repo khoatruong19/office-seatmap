@@ -1,58 +1,38 @@
 <?php
-declare(strict_types=1);
 
-namespace modules\user;
+namespace modules\auth;
 
 
 use core\HttpStatus;
-use modules\user\UserRepository;
+use modules\user\UserService;
 use shared\enums\EnumTypeJwt;
 use shared\exceptions\ResponseException;
 use modules\auth\JwtService;
 
-class UserService
+class AuthService
 {
-    public function __construct(private readonly UserRepository $userRepository, private readonly JwtService $jwtService)
+    public function __construct(private readonly UserService $userService, private readonly JwtService $jwtService)
     {
     }
 
-    /**
-     * @throws ResponseException
-     */
-    public function create(array $data)
+    public function register($registerData)
     {
-        return $this->userRepository->save($data);
-    }
 
-    /**
-     * @throws ResponseException
-     */
-    public function getByEmail(string $email)
-    {
-        $this->userRepository->getByEmail($email);
-    }
+        $existedEmail = $this->userService->getByEmail("email", $registerData['email']);
 
-    /**
-     * @throws ResponseException
-     */
-    public function handleGetMe(int $userId)
-    {
-        $matchedUser = $this->userRepository->findOne("id", $userId);
+        if($existedEmail) {
+            throw new ResponseException(HttpStatus::$BAD_REQUEST, "Email existed!");
+        }
 
+        $registerData["password"] = password_hash($registerData["password"], PASSWORD_BCRYPT);
+        $id = $this->userService->create($registerData);
+        
         return array(
-            "username" => $matchedUser["username"],
-            "email" => $matchedUser["email"],
+            "id" => $id,
         );
     }
 
-    /**
-     * 
-     */
-    /**
-     * @param 
-     * @throws ResponseException
-     */
-    public function login(array $loginDto)
+    public function login($loginDto)
     {
         $matchedUser = $this->userRepository->findOne("username", $loginDto["username"]);
 

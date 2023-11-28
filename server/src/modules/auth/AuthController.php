@@ -5,17 +5,19 @@ namespace modules\auth;
 use core\HttpStatus;
 use core\Request;
 use core\Response;
+use core\Controller;
 use shared\middlewares\ValidationIncomingData;
 use modules\user\UserService;
+use modules\auth\AuthService;
 use http\Client\Curl\User;
 use shared\exceptions\ResponseException;
 
-class AuthController
+class AuthController extends Controller
 {
     public function __construct(
-        protected Request            $request,
-        protected Response           $response,
-        private readonly UserService $userService)
+        public Request $request,
+        public Response $response,
+        private readonly AuthService $authService)
     {
     }
 
@@ -24,29 +26,19 @@ class AuthController
      */
     public function register()
     {
+        $errors = $this->request->validateBody([
+            'email' => 'required|min:8|pattern:email',
+            'full_name' => 'required|min:8',
+            'password' => 'required'
+        ]);
+
+        $this->checkBodyValidationError($errors);
+
         $requestBody = $this->request->getBody();
 
-        $validation = new ValidationIncomingData($requestBody,
-            [
-                "email" => FILTER_VALIDATE_EMAIL,
-                "username" => [
-                    'filter' => FILTER_VALIDATE_REGEXP,
-                    'options' => ['regexp' => '/.+/'],
-                ],
-                "password" => [
-                    'filter' => FILTER_VALIDATE_REGEXP,
-                    'options' => ['regexp' => '/.+/'],
-                ],
-            ], [
-                "email" => "Email is invalid!",
-                "username" => "Username cannot be null",
-                "password" => "Password cannot be null",
-            ]);
-        $validation->execute();
+        $id = $this->authService->register($requestBody);
 
-        $this->userService->register($requestBody);
-
-        return $this->response->response(HttpStatus::$OK, "Register successfully!");
+        return $this->response->response(HttpStatus::$OK, "Register successfully!", $id);
     }
 
     /**
@@ -54,36 +46,24 @@ class AuthController
      */
     public function login()
     {
-        $requestBody =  $this->request->getBody();
+        $errors = $this->request->validateBody([
+            'email' => 'required|min:8|pattern:email',
+            'password' => 'required'
+        ]);
 
-        $validation = new ValidationIncomingData($requestBody,
-            [
-                "username" => [
-                    'filter' => FILTER_VALIDATE_REGEXP,
-                    'options' => ['regexp' => '/.+/'],
-                ],
-                "password" => [
-                    'filter' => FILTER_VALIDATE_REGEXP,
-                    'options' => ['regexp' => '/.+/'],
-                ],
-            ], [
-                "username" => "Username cannot be null",
-                "password" => "Password cannot be null",
-            ]);
-        $validation->execute();
+        $this->checkBodyValidationError($errors);
 
-        $token = $this->userService->login($requestBody);
-
-        return $this->response->response(HttpStatus::$OK, $token);
+        $body = $this->request->getBody();
+        // $this->userService->create($body);
+        return "OJ";
     }
 
-        /**
-     * @throws ResponseException
-     */
     public function hello()
     {
-        return $this->request->validateBody([
-            'email' => 'required',
+        $errors = $this->request->validateBody([
+            'email' => 'required|pattern:email|min:8',
         ]);
+
+        $this->checkBodyValidationError($errors);
     }
 }

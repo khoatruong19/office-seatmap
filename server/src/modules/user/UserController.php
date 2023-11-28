@@ -11,8 +11,8 @@ use shared\exceptions\ResponseException;
 class UserController
 {
     public function __construct(
-        protected Request            $request,
-        protected Response           $response,
+        public Request            $request,
+        public Response           $response,
         private readonly UserService $userService)
     {
     }
