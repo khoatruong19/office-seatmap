@@ -67,17 +67,17 @@ class Request
     {
         var_dump($this->validation);
 
-        $mapRuleToValidationMethod = array(
-            'required' => $this->validation->required
-        );
-        $email = "";
+        // $mapRuleToValidationMethod = array(
+        //     'required' => $this->validation->required
+        // );
+        $email = "sdsdsds";
 
         foreach ($fieldRules as $key => $value) {
             $rules = explode('|', $value);
             
             foreach($rules as $rule) { 
                 $this->validation->name($key)->value($email);
-
+                call_user_func(array($this->validation, "pattern"), 'email');
             }
             var_dump($this->validation->getErrors());            // echo $value;
         }
