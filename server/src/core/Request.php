@@ -19,10 +19,10 @@ class Request
     private function extractQuery($path): void
     {
         $position = strpos($path, '?');
-        $queriesString = substr($path, $position + 1);
+        $queries_string = substr($path, $position + 1);
 
-        $queriesComponent = explode("&", $queriesString);
-        foreach ($queriesComponent as $value) {
+        $queries_component = explode("&", $queries_string);
+        foreach ($queries_component as $value) {
             $pair = explode("=", $value);
             $this->queries[$pair[0]] = $pair[1];
         }
@@ -52,27 +52,27 @@ class Request
         return $body;
     }
 
-    public function validateBody(array $fieldRules)
+    public function validateBody(array $field_rules)
     {
         $body = $this->getBody();
-        foreach ($fieldRules as $key => $value) {
+        foreach ($field_rules as $field => $value) {
             $rules = explode('|', $value);
 
             foreach($rules as $rule) { 
-                $ruleArray = explode(':', $rule);
-                $ruleMethod = $ruleArray[0];
-                $ruleMethodParameter;
+                $rule_array = explode(':', $rule);
+                $rule_method = $rule_array[0];
+                $rule_method_parameter;
 
-                if(count($ruleArray) > 1){
-                    $ruleMethodParameter = $ruleArray[1];
+                if(count($rule_array) > 1){
+                    $rule_method_parameter = $rule_array[1];
                 }
 
-                $this->validation->name($key)->value(isset($body[$key]) ? $body[$key] : "");
-                if(isset($ruleMethodParameter)){
-                    call_user_func(array($this->validation, $ruleMethod), $ruleMethodParameter);
+                $this->validation->name($field)->value(isset($body[$field]) ? $body[$field] : "");
+                if(isset($rule_method_parameter)){
+                    call_user_func(array($this->validation, $rule_method), $rule_method_parameter);
                 }
                 else{
-                    call_user_func(array($this->validation, $ruleMethod));
+                    call_user_func(array($this->validation, $rule_method));
                 }
 
                 if(!$this->validation->isSuccess()) break;

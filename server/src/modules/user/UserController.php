@@ -22,8 +22,8 @@ class UserController
      */
     public function getMe()
     {
-        $userId = $_SESSION["userId"];
-        $me = $this->userService->handleGetMe($userId);
+        $user_id = $_SESSION["user_id"];
+        $me = $this->userService->handleGetMe($user_id);
         return $this->response->response(HttpStatus::$OK, $me);
     }
 }

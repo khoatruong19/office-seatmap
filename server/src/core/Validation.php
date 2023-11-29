@@ -24,24 +24,18 @@
         public $errors = array();
         
         public function name($name){
-            
             $this->name = $name;
             return $this;
-        
         }
         
         public function value($value){
-            
             $this->value = $value;
             return $this;
-        
         }
         
         public function file($value){
-            
             $this->file = $value;
             return $this;
-        
         }
         
         public function pattern($name){
@@ -49,7 +43,6 @@
             if($this->value != '' && !preg_match($regex, $this->value)){
                 $this->errors[] = 'Field '.$this->name.' is not valid.';
             }
-                
             return $this;
         }
         
@@ -60,7 +53,6 @@
                 $this->errors[] = 'Field %'.$this->name.'% is not valid.';
             }
             return $this;
-            
         }
         
         public function required(){
@@ -78,22 +70,17 @@
         }
             
         public function max($length){
-                
             if(strlen($this->value) > (int)$length){
                 $this->errors[] = 'Field %'.$this->name.'% has to be less than '.$length.' characters';
             }
-           
             return $this;
-            
         }
         
         public function equal($value){
-        
             if($this->value != $value){
                 $this->errors[] = 'Valore campo '.$this->name.' non corrispondente.';
             }
             return $this;
-            
         }
 
         public static function mapMethod(string $rule){
@@ -101,21 +88,17 @@
         }
         
         public function maxSize($size){
-            
             if($this->file['error'] != 4 && $this->file['size'] > $size){
                 $this->errors[] = 'Il file *'.$this->name.'* supera la dimensione massima di '.number_format($size / 1048576, 2).' MB.';
             }
             return $this;
-            
         }
         
         public function ext($extension){
-
             if($this->file['error'] != 4 && pathinfo($this->file['name'], PATHINFO_EXTENSION) != $extension && strtoupper(pathinfo($this->file['name'], PATHINFO_EXTENSION)) != $extension){
                 $this->errors[] = 'Il file '.$this->name.' non è un '.$extension.'.';
             }
             return $this;
-            
         }
         
         public function purify($string){
@@ -132,7 +115,6 @@
         }
         
         public function displayErrors(){
-            
             $html = '<ul>';
                 foreach($this->getErrors() as $error){
                     $html .= '<li>'.$error.'</li>';
@@ -140,13 +122,10 @@
             $html .= '</ul>';
             
             return $html;
-            
         }
         
         public function result(){
-            
             if(!$this->isSuccess()){
-               
                 foreach($this->getErrors() as $error){
                     echo "$error\n";
                 }

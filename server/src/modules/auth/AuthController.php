@@ -17,7 +17,7 @@ class AuthController extends Controller
     public function __construct(
         public Request $request,
         public Response $response,
-        private readonly AuthService $authService)
+        private readonly AuthService $auth_service)
     {
     }
 
@@ -26,17 +26,15 @@ class AuthController extends Controller
      */
     public function register()
     {
-        $errors = $this->request->validateBody([
+        $this->requestBodyValidation([
             'email' => 'required|min:8|pattern:email',
             'full_name' => 'required|min:8',
             'password' => 'required'
         ]);
 
-        $this->checkBodyValidationError($errors);
+        $request_body = $this->request->getBody();
 
-        $requestBody = $this->request->getBody();
-
-        $id = $this->authService->register($requestBody);
+        $id = $this->auth_service->register($request_body);
 
         return $this->response->response(HttpStatus::$OK, "Register successfully!", $id);
     }
@@ -46,24 +44,23 @@ class AuthController extends Controller
      */
     public function login()
     {
-        $errors = $this->request->validateBody([
+        $this->requestBodyValidation([
             'email' => 'required|min:8|pattern:email',
             'password' => 'required'
         ]);
 
-        $this->checkBodyValidationError($errors);
-
         $body = $this->request->getBody();
-        // $this->userService->create($body);
-        return "OJ";
+        $user_credentials = $this->auth_service->login($body);
+
+        return $this->response->response(HttpStatus::$OK, "Login successfully!", $user_credentials);
+
     }
 
     public function hello()
     {
-        $errors = $this->request->validateBody([
+        $this->requestBodyValidation([
             'email' => 'required|pattern:email|min:8',
         ]);
-
-        $this->checkBodyValidationError($errors);
+        return $this->response->response(HttpStatus::$OK, "Hello");
     }
 }

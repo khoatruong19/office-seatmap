@@ -12,7 +12,7 @@ use modules\auth\JwtService;
 
 class UserService
 {
-    public function __construct(private readonly UserRepository $userRepository, private readonly JwtService $jwtService)
+    public function __construct(private readonly UserRepository $user_repository, private readonly JwtService $jwt_service)
     {
     }
 
@@ -21,57 +21,39 @@ class UserService
      */
     public function create(array $data)
     {
-        return $this->userRepository->save($data);
+        return $this->user_repository->save($data);
     }
 
     /**
      * @throws ResponseException
      */
-    public function getByEmail(string $email)
+    public function findOne(string $field, string $value)
     {
-        $this->userRepository->getByEmail($email);
+        return $this->user_repository->findOne($field, $value);
     }
 
     /**
      * @throws ResponseException
      */
-    public function handleGetMe(int $userId)
+    public function getUserRole(string $user_id)
     {
-        $matchedUser = $this->userRepository->findOne("id", $userId);
+        return $this->user_repository->getRole($user_id);
+    }
+
+    /**
+     * @throws ResponseException
+     */
+    public function me(int $userId)
+    {
+        $matched_user = $this->user_repository->findOne("id", $userId);
 
         return array(
-            "username" => $matchedUser["username"],
-            "email" => $matchedUser["email"],
+            "username" => $matched_user["username"],
+            "email" => $matched_user["email"],
         );
     }
 
     /**
      * 
      */
-    /**
-     * @param 
-     * @throws ResponseException
-     */
-    public function login(array $loginDto)
-    {
-        $matchedUser = $this->userRepository->findOne("username", $loginDto["username"]);
-
-        if (!$matchedUser) {
-            throw new ResponseException(HttpStatus::$BAD_REQUEST, "Username or password wrong!");
-        }
-
-        $isMatchedPassword = password_verify($loginDto["password"], $matchedUser["password"]);
-
-        if (!$isMatchedPassword) {
-            throw new ResponseException(HttpStatus::$BAD_REQUEST, "Username or password wrong!");
-        }
-
-        $accessToken = $this->jwtService->generateToken($matchedUser["id"], EnumTypeJwt::ACCESS_TOKEN);
-        $refreshToken = $this->jwtService->generateToken($matchedUser["id"], EnumTypeJwt::REFRESH_TOKEN);
-
-        return array(
-            "accessToken" => $accessToken,
-            "refreshToken" => $refreshToken,
-        );
-    }
 }

@@ -7,15 +7,15 @@ use Throwable;
 
 class ResponseException extends \Exception implements Throwable
 {
-    private int $httpStatus;
-    public function __construct(int $httpStatus, string $message)
+    private int $http_status;
+    public function __construct(int $http_status, string $message)
     {
-        $this->httpStatus = $httpStatus;
+        $this->http_status = $http_status;
         $this->message = $message;
     }
 
     public function getHttpStatus(): int
     {
-        return $this->httpStatus;
+        return $this->http_status;
     }
 }

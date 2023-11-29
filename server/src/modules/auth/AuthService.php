@@ -1,4 +1,5 @@
 <?php
+declare( strict_types=1 );
 
 namespace modules\auth;
 
@@ -11,47 +12,51 @@ use modules\auth\JwtService;
 
 class AuthService
 {
-    public function __construct(private readonly UserService $userService, private readonly JwtService $jwtService)
+    public function __construct(private readonly UserService $user_service, private readonly JwtService $jwt_service)
     {
     }
 
-    public function register($registerData)
+    public function register(array $register_data)
     {
+        $existing_email = $this->user_service->findOne("email", $register_data['email']);
 
-        $existedEmail = $this->userService->getByEmail("email", $registerData['email']);
-
-        if($existedEmail) {
+        if($existing_email) {
             throw new ResponseException(HttpStatus::$BAD_REQUEST, "Email existed!");
         }
 
-        $registerData["password"] = password_hash($registerData["password"], PASSWORD_BCRYPT);
-        $id = $this->userService->create($registerData);
-        
+        $register_data["password"] = password_hash($register_data["password"], PASSWORD_BCRYPT);
+        $id = $this->user_service->create($register_data);
+
         return array(
             "id" => $id,
         );
     }
 
-    public function login($loginDto)
+    /**
+     * @param 
+     * @throws ResponseException
+     */
+    public function login(array $login_data)
     {
-        $matchedUser = $this->userRepository->findOne("username", $loginDto["username"]);
+        $exisitng_user = $this->user_service->findOne("email", $login_data["email"]);
 
-        if (!$matchedUser) {
-            throw new ResponseException(HttpStatus::$BAD_REQUEST, "Username or password wrong!");
+        if (!$exisitng_user) {
+            throw new ResponseException(HttpStatus::$BAD_REQUEST, "Invalid credential!");
         }
 
-        $isMatchedPassword = password_verify($loginDto["password"], $matchedUser["password"]);
+        $is_password_matched = password_verify($login_data["password"], $exisitng_user["password"]);
 
-        if (!$isMatchedPassword) {
-            throw new ResponseException(HttpStatus::$BAD_REQUEST, "Username or password wrong!");
+        if (!$is_password_matched) {
+            throw new ResponseException(HttpStatus::$BAD_REQUEST, "Invalid credential!");
         }
 
-        $accessToken = $this->jwtService->generateToken($matchedUser["id"], EnumTypeJwt::ACCESS_TOKEN);
-        $refreshToken = $this->jwtService->generateToken($matchedUser["id"], EnumTypeJwt::REFRESH_TOKEN);
+        $access_token = $this->jwt_service->generateToken($exisitng_user["id"], EnumTypeJwt::ACCESS_TOKEN);
+
+        unset($exisitng_user['password']);
 
         return array(
-            "accessToken" => $accessToken,
-            "refreshToken" => $refreshToken,
+            "user" => $exisitng_user,
+            "accessToken" => $access_token,
         );
     }
 }

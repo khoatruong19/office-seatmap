@@ -5,6 +5,7 @@ use core\HttpStatus;
 use core\Model;
 use shared\exceptions\ResponseException;
 use shared\interfaces\IRepository;
+use PDO;
 
 class UserRepository extends Model implements IRepository{
     /**
@@ -20,35 +21,35 @@ class UserRepository extends Model implements IRepository{
             "password" => $data["password"],
         ]);
 
-        $insertedId = $this->database->getConnection()->lastInsertId();
-        return $insertedId;
+        $inserted_id = $this->database->getConnection()->lastInsertId();
+        return $inserted_id;
     }
 
     public function findOne(string $field, string $value) {
-        $allowedFields = ['username', 'email', 'id'];
+        $allowed_fields = ['username', 'email', 'id'];
 
-        if(!in_array($field, $allowedFields)) {
+        if(!in_array($field, $allowed_fields)) {
             throw new ResponseException(HttpStatus::$BAD_REQUEST,"Field is not allowed!");
         }
 
-        $sql = "select * from users where ".$field." = :value";
+        $sql = "select * from users where ".$field." = :value limit 1";
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute([
             "value" => $value,
         ]);
-        $result = $stmt->fetch();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $result ?? null;
     }
 
-    public function getByEmail(string $email) {
-        $sql = "select * from users where email = :value limit 1";
+    public function getRole(string $user_id) {
+        $sql = "select * from users where id = :value limit 1";
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute([
-            "value" => $email,
+            "value" => $user_id,
         ]);
-        $result = $stmt->fetch();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $result ?? null;
+        return $result ? $result['role'] : null;
     }
 }
