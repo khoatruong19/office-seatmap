@@ -8,12 +8,11 @@ use shared\enums\EnumTypeJwt;
 use shared\exceptions\ResponseException;
 use shared\interfaces\IMiddleware;
 
-class AuthorizeRequest implements IMiddleware
+class JwtVerify implements IMiddleware
 {
 
-    public function __construct(private readonly JwtService $jwtService)
+    public function __construct(private readonly JwtService $jwt_service)
     {
-
     }
 
     /**
@@ -27,9 +26,12 @@ class AuthorizeRequest implements IMiddleware
 
         $token = getallheaders()["Authorization"];
         $token = str_replace("Bearer ", "", $token);
-        $payload = $this->jwtService->verifyToken(EnumTypeJwt::ACCESS_TOKEN, $token);
-        $userId = $payload->userId;
-        $_SESSION["userId"] = $userId;
+        $payload = $this->jwt_service->verifyToken(EnumTypeJwt::ACCESS_TOKEN, $token);
+
+        if(!$payload) throw new ResponseException(HttpStatus::$UNAUTHORIZED, "Token is invalid");
+
+        $user_id = $payload->userId;
+        $_SESSION["userId"] = $user_id;
 
         return true;
     }
