@@ -1,9 +1,7 @@
 import { cn } from "../../../lib/clsx";
 
-type Props = {
+type Props = React.LabelHTMLAttributes<HTMLLabelElement> & {
   field: string;
-  htmlFor?: string;
-  className?: string;
 };
 
 const Label = ({ field, htmlFor = "", className = "" }: Props) => {

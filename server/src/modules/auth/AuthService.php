@@ -59,4 +59,17 @@ class AuthService
             "accessToken" => $access_token,
         );
     }
+
+    /**
+     * @param 
+     * @throws ResponseException
+     */
+    public function logout()
+    {
+        $user_id = $_SESSION['userId'];
+        if(!$user_id) return false;
+
+        $_SESSION['userId'] = null;
+        return true;
+    }
 }

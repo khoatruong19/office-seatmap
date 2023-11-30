@@ -20,11 +20,11 @@ class JwtVerify implements IMiddleware
      */
     public function execute(): bool
     {
-        if(!array_key_exists("Authorization", getallheaders())) {
+        if(!array_key_exists("authorization", getallheaders())) {
             throw new ResponseException(HttpStatus::$UNAUTHORIZED, "No token");
         }
 
-        $token = getallheaders()["Authorization"];
+        $token = getallheaders()["authorization"];
         $token = str_replace("Bearer ", "", $token);
         $payload = $this->jwt_service->verifyToken(EnumTypeJwt::ACCESS_TOKEN, $token);
 

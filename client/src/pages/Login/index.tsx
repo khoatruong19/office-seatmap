@@ -2,9 +2,9 @@ import LoginForm from "../../components/Login/LoginForm";
 
 const Login = () => {
   return (
-    <main className="w-screen h-screen bg-mainBlue flex items-center justify-center">
+    <div className="w-screen h-screen bg-login-background bg-center bg-cover flex items-center justify-center">
       <LoginForm />
-    </main>
+    </div>
   );
 };
 

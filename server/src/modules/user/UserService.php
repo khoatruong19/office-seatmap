@@ -43,13 +43,12 @@ class UserService
     /**
      * @throws ResponseException
      */
-    public function me(int $userId)
+    public function me(int $user_id)
     {
-        $matched_user = $this->user_repository->findOne("id", $userId);
+        $user = $this->user_repository->findOne("id", strval($user_id));
 
         return array(
-            "username" => $matched_user["username"],
-            "email" => $matched_user["email"],
+            "user" => $user,
         );
     }
 

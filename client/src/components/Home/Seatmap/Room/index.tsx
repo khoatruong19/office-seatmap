@@ -9,7 +9,7 @@ const Room = ({ title = "Room", className = "" }: Props) => {
   return (
     <div
       className={cn(
-        "absolute top-0 bg-room flex items-center justify-center rounded-md",
+        "absolute top-0 bg-tertiary flex items-center justify-center rounded-md z-1 text-white",
         className
       )}
     >

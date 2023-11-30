@@ -17,7 +17,8 @@ class AuthController extends Controller
     public function __construct(
         public Request $request,
         public Response $response,
-        private readonly AuthService $auth_service)
+        private readonly AuthService $auth_service,
+        private readonly UserService $user_service)
     {
     }
 
@@ -53,14 +54,26 @@ class AuthController extends Controller
         $user_credentials = $this->auth_service->login($body);
 
         return $this->response->response(HttpStatus::$OK, "Login successfully!", $user_credentials);
-
     }
 
-    public function hello()
+     /**
+     * @throws ResponseException
+     */
+    public function me()
     {
-        $this->requestBodyValidation([
-            'email' => 'required|pattern:email|min:8',
-        ]);
-        return $this->response->response(HttpStatus::$OK, "Hello");
+        $user_id = $_SESSION["userId"];
+
+        $user = $this->user_service->me($user_id);
+
+        return $this->response->response(HttpStatus::$OK, "Welcome back!", $user);
+    }
+
+    public function logout()
+    {
+        $is_logout = $this->auth_service->logout();
+
+        if(!$is_logout) throw new ResponseException(HttpStatus::$UNAUTHORIZED,"Not authourized 2!");
+
+        $this->response->response(HttpStatus::$OK, "Loggout successfully!", true);
     }
 }

@@ -7,18 +7,15 @@ const Seatmap = () => {
   const __renderRows = (row: string) => {
     const rows = getRow(row);
     return (
-      <div className="flex items-center gap-1 w-full">
+      <div className="w-full flex items-center gap-1">
         {rows.map((seat, index) => {
           return (
-            <>
+            <div key={index} className="flex items-center gap-1">
               {new Array(seat.order - index).fill(0).map((_, idx) => (
-                <div
-                  className="h-12 w-12"
-                  key={"empty" + seat.row + `${idx}`}
-                />
+                <div key={idx} className="h-12 w-12" />
               ))}
-              <Seat seat={seat} key={seat.id} />
-            </>
+              <Seat key={seat.id + seat.order + seat.row} seat={seat} />
+            </div>
           );
         })}
       </div>
@@ -26,7 +23,7 @@ const Seatmap = () => {
   };
 
   return (
-    <div>
+    <div className="z-1">
       <OfficeTitle title="Office 101" />
 
       <div className="relative max-w-5xl w-full mx-auto flex flex-col gap-4 items-start">

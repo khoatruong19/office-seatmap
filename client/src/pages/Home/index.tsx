@@ -5,13 +5,13 @@ type Props = {};
 
 const Home = (props: Props) => {
   return (
-    <main>
+    <div className="min-h-screen bg-primary font-mono">
       <Header />
 
       <div className="mt-10 max-w-4xl w-full mx-auto">
         <Seatmap />
       </div>
-    </main>
+    </div>
   );
 };
 

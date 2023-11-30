@@ -1,8 +1,8 @@
-import { useRoutes } from 'react-router-dom';
-import routesConfig from './config/routes';
+import { useRoutes } from "react-router-dom";
+import { ROUTES_CONFIG } from "./config/routes";
 
 function App() {
-  const routes = useRoutes(routesConfig);
+  const routes = useRoutes(ROUTES_CONFIG);
 
   return <main>{routes}</main>;
 }

@@ -1,8 +1,6 @@
 import { cn } from "../../../lib/clsx";
 
-type Props = {
-  className?: string;
-  type?: "button" | "submit" | "reset";
+type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   children?: React.ReactNode;
 };
 

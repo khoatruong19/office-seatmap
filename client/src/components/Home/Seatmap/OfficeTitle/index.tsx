@@ -7,13 +7,13 @@ type Props = {
 const OfficeTitle = ({ title }: Props) => {
   return (
     <div className="w-full flex flex-col items-center justify-center mb-10">
-      <Divider />
-      <Divider />
-      <h1 className="uppercase text-5xl font-semibold text-red-500 my-5">
-        {title}
+      <Divider className="bg-secondary" />
+      <Divider className="bg-secondary" />
+      <h1 className="text-5xl font-semibold text-center my-8 text-secondary">
+        Office 101
       </h1>
-      <Divider />
-      <Divider />
+      <Divider className="bg-secondary" />
+      <Divider className="bg-secondary" />
     </div>
   );
 };
