@@ -9,8 +9,3 @@ const Login = () => {
 };
 
 export default Login;
-
-// const isAuth = true;
-//   if (!isAuth) return <p>Not authenticated</p>;
-
-//   return <Outlet />;

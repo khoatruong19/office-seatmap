@@ -1,14 +1,5 @@
 import { BaseResponse } from "../../schema/response";
-
-export type User = {
-  id: number;
-  email: string;
-  full_name: string;
-  role: "user" | "admin";
-  avatar: string | null;
-  created_at: Date;
-  updated_at: Date;
-};
+import { User } from "../../schema/types";
 
 export type LoginResponse = BaseResponse & {
   data: {

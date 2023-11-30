@@ -33,4 +33,6 @@ $app->router->addRoute(RequestMethod::POST, "/auth/register", null, [AuthControl
 $app->router->addRoute(RequestMethod::GET, "/auth/me", [JwtVerify::class], [AuthController::class, 'me']);
 $app->router->addRoute(RequestMethod::GET, "/auth/logout", [JwtVerify::class], [AuthController::class, 'logout']);
 
+$app->router->addRoute(RequestMethod::POST, "/users/{userId}/upload", null, [UserController::class, 'uploadProfile']);
+
 $app->run();

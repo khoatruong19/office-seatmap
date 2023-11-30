@@ -2,8 +2,7 @@ import { useEffect } from "react";
 import { useMeMutation } from "../../stores/auth/service";
 import { Outlet, useNavigate } from "react-router";
 import { APP_ROUTES } from "../../config/routes";
-import Cookies from "js-cookie";
-import { ACCESS_TOKEN_KEY } from "../../config/api";
+import cookieManagement from "../../lib/js-cookie";
 
 const AuthGuard = () => {
   const [me, { isLoading }] = useMeMutation();
@@ -11,7 +10,7 @@ const AuthGuard = () => {
 
   useEffect(() => {
     const handleGetMe = async () => {
-      const accessToken = Cookies.get(ACCESS_TOKEN_KEY);
+      const accessToken = cookieManagement.getAccessToken();
       if (!accessToken) return navigate(APP_ROUTES.LOGIN);
 
       me(null)

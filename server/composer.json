@@ -28,6 +28,7 @@
   "require": {
     "vlucas/phpdotenv": "^5.5",
     "php-di/php-di": "^7.0",
-    "firebase/php-jwt": "^6.9"
+    "firebase/php-jwt": "^6.9",
+    "cloudinary/cloudinary_php": "^2"
   }
 }

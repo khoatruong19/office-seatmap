@@ -42,6 +42,27 @@ class UserRepository extends Model implements IRepository{
         return $result ?? null;
     }
 
+    public function updateOne(int $user_id, array $data) {
+        $sql = "UPDATE users SET ";
+        foreach ($data as $column => $value) {
+            $sql .= "$column = :$column, ";
+        }
+        $sql = rtrim($sql, ', ') . " WHERE id = :id";
+
+
+        $stmt = $this->database->getConnection()->prepare($sql);
+
+        foreach ($data as $column => $value) {
+            $stmt->bindParam(":$column", $value);
+        }
+
+        $stmt->bindParam(':id', $user_id);
+
+        $result = $stmt->execute();
+
+        return $result ? $this->findOne("id", $user_id) : null;
+    }
+
     public function getRole(string $user_id) {
         $sql = "select * from users where id = :value limit 1";
         $stmt = $this->database->getConnection()->prepare($sql);

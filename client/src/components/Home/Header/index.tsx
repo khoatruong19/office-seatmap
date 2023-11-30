@@ -3,7 +3,7 @@ import UserDropdown from "./UserDropdown";
 import { useRef, useState } from "react";
 import { useClickOutside } from "../../../hooks/useClickOutside";
 import Logo from "../../../assets/logo.jpg";
-import { UserCircle } from "lucide-react";
+import DefaultAvatar from "../../../assets/default-avatar.png";
 
 const Header = () => {
   const { user } = useAuth();
@@ -19,7 +19,7 @@ const Header = () => {
   useClickOutside(dropdownRef, handleCloseDropdown);
 
   return (
-    <header className="h-16">
+    <header className="h-16 bg-primary">
       <nav className="w-full h-full px-6 flex items-center justify-between text-secondary border-b border-secondary ">
         <div className="flex items-center gap-3">
           <img
@@ -36,15 +36,12 @@ const Header = () => {
             onClick={handleToggleDropdown}
             className="flex items-center gap-2 hover-opacity py-2"
           >
-            {user?.avatar ? (
-              <img
-                src={user?.avatar}
-                className="w-10 h-10 object-cover"
-                alt=""
-              />
-            ) : (
-              <UserCircle size={30} />
-            )}
+            <img
+              src={user?.avatar ?? DefaultAvatar}
+              className="w-10 h-10 object-cover rounded-full"
+              alt=""
+            />
+
             <h3 className="font-semibold text-lg capitalize">
               {user?.full_name}
             </h3>

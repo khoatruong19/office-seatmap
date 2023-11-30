@@ -104,7 +104,6 @@ class Router
         $pattern = "~^\{(\w+)\}$~";
         $replace_pattern = "([\w-]+)";
         $path_component = explode("/", $path);
-
         $paramsKey = [];
         foreach ($path_component as $key => $value) {
             if (preg_match($pattern, $value, $matches)) {
@@ -112,8 +111,6 @@ class Router
                 array_push($paramsKey, $matches[1]);
             }
         }
-
-        echo implode(",", $paramsKey);
 
         return
             [

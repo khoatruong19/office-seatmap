@@ -1,26 +1,19 @@
-import React, { LegacyRef } from "react";
+import React from "react";
 import { cn } from "../../../lib/clsx";
 
 type Props = React.InputHTMLAttributes<HTMLInputElement> & {
-  register?: any;
+  register?: Function;
   name?: string;
 };
 
 const Input = (props: Props) => {
-  const {
-    className,
-    placeholder = "",
-    type = "text",
-    name = "",
-    register = () => {},
-  } = props;
+  const { className, name = "", register = () => {} } = props;
 
   return (
     <input
+      {...props}
       {...register(name)}
-      type={type}
       className={cn("px-2 py-1 outline-none flex-1", className)}
-      placeholder={placeholder}
     />
   );
 };

@@ -5,13 +5,13 @@ type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 const Button = (props: Props) => {
-  const { className = "", type = "button", children } = props;
+  const { className = "", children } = props;
 
   return (
     <button
-      type={type}
+      {...props}
       className={cn(
-        "text-lg px-10 py-3 font-semibold bg-mainBlue hover-opacity",
+        "text-lg px-10 py-3 font-semibold hover-opacity",
         className
       )}
     >

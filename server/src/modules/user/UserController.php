@@ -13,17 +13,28 @@ class UserController
     public function __construct(
         public Request            $request,
         public Response           $response,
-        private readonly UserService $userService)
+        private readonly UserService $user_service)
     {
     }
 
     /**
      * @throws ResponseException
      */
-    public function getMe()
+    public function uploadProfile()
     {
-        $user_id = $_SESSION["user_id"];
-        $me = $this->userService->handleGetMe($user_id);
-        return $this->response->response(HttpStatus::$OK, $me);
+        if (!isset($_FILES["file"]))
+        {
+            throw new ResponseException(HttpStatus::$BAD_REQUEST,"No file found!");
+        }
+        
+        $user_id = $this->request->getParam("userId");
+
+        if (!$user_id)
+        {
+            throw new ResponseException(HttpStatus::$UNAUTHORIZED,"Not authorized!");
+        }
+
+        $data = $this->user_service->uploadProfile($user_id);
+        return $this->response->response(HttpStatus::$OK, "Upload successfully!", $data);
     }
 }

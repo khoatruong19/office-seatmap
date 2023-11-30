@@ -5,7 +5,7 @@ type Props = {};
 
 const Home = (props: Props) => {
   return (
-    <div className="min-h-screen bg-primary font-mono">
+    <div className="min-h-screen font-mono">
       <Header />
 
       <div className="mt-10 max-w-4xl w-full mx-auto">

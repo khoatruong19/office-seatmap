@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "..";
 import { deleteCredentials, setCredentials } from "./slice";
-import Cookies from "js-cookie";
-import { BASE_URL, ENDPOINTS, ACCESS_TOKEN_KEY } from "../../config/api";
+import cookieManagement from "../../lib/js-cookie";
+import { BASE_URL, ENDPOINTS } from "../../config/api";
 import {
   GetMeResponse,
   LoginRequest,
@@ -11,12 +11,13 @@ import {
 } from "./types";
 
 export const authApi = createApi({
+  reducerPath: "auth-api",
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL + ENDPOINTS.AUTH,
     prepareHeaders: (headers, { getState }) => {
       const token =
         (getState() as RootState).auth.accessToken ??
-        Cookies.get(ACCESS_TOKEN_KEY);
+        cookieManagement.getAccessToken();
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
@@ -37,9 +38,7 @@ export const authApi = createApi({
               data: { data: credentials },
             } = data;
             dispatch(setCredentials(credentials));
-            Cookies.set(ACCESS_TOKEN_KEY, credentials.accessToken, {
-              expires: 1,
-            });
+            cookieManagement.setAccessToken(credentials.accessToken);
           })
           .catch(() => {});
       },
@@ -59,7 +58,7 @@ export const authApi = createApi({
             } = data;
             const accessToken =
               (getState() as RootState).auth.accessToken ??
-              Cookies.get(ACCESS_TOKEN_KEY);
+              cookieManagement.getAccessToken();
             if (accessToken) {
               dispatch(setCredentials({ user, accessToken }));
             }
@@ -76,7 +75,7 @@ export const authApi = createApi({
         queryFulfilled
           .then(() => {
             dispatch(deleteCredentials());
-            Cookies.remove(ACCESS_TOKEN_KEY);
+            cookieManagement.deleteAccessToken();
           })
           .catch(() => {});
       },

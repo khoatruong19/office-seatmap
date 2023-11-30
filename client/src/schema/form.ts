@@ -10,11 +10,15 @@ export const LoginSchema = z.object({
     .string()
     .trim()
     .min(8, "Password must contain at least 8 characters!"),
-  // .regex(new RegExp('.*[A-Z].*'), 'One uppercase character')
-  // .regex(
-  //   new RegExp('.*[`~<>?,./!@#$%^&*()\\-_+="\'|{}\\[\\];:\\\\].*'),
-  //   'One symbol',
-  // ),
 });
 
 export type LoginSchemaType = z.infer<typeof LoginSchema>;
+
+export const ProfileSchema = z.object({
+  full_name: z
+    .string()
+    .trim()
+    .min(8, "Fullname must contain at least 8 characters!"),
+});
+
+export type ProfileSchemaType = z.infer<typeof ProfileSchema>;

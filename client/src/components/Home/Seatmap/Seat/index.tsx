@@ -1,4 +1,4 @@
-import { SeatType } from "../../../../schema/type";
+import { SeatType } from "../../../../schema/types";
 
 type Props = {
   seat: SeatType;
