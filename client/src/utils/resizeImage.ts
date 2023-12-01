@@ -6,7 +6,7 @@ const resizeImage = (
   },
   callback: (resultBlob: Blob) => void
 ) => {
-  const { file, height = 500, width = 500 } = input;
+  const { file, height = 200, width = 200 } = input;
 
   const img: HTMLImageElement = new window.Image();
   img.src = URL.createObjectURL(file);
@@ -19,9 +19,10 @@ const resizeImage = (
     canvas.height = height;
     context.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-    const response = await fetch(canvas.toDataURL());
-    const imageBlob = await response.blob();
-    callback(imageBlob);
+    canvas.toBlob((blob) => {
+      let result = new File([blob!], "fileName.jpg", { type: "image/jpeg" });
+      callback(result);
+    }, "image/jpeg");
   };
 };
 

@@ -20,7 +20,7 @@ const ProfileModal = () => {
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [update, {}] = useUpdateMutation();
+  const [update, { isLoading }] = useUpdateMutation();
 
   const {
     register,
@@ -34,17 +34,25 @@ const ProfileModal = () => {
   const onSubmit: SubmitHandler<ProfileSchemaType> = (
     value: ProfileSchemaType
   ) => {
-    if (!user || !file) return;
+    if (!user) return;
+
     let formData = new FormData();
 
-    formData.append("file", file);
-    formData.append("file_name", value.full_name); //append the values with key, value pair
-    // resizeImage({ file }, async (resultBlob) => {});
-    // const user = await login(value).unwrap();
-    // if (user.data) {
-    //   navigate("/");
-    // }
-    update({ userId: user?.id, formData }).catch((err) => console.log(err));
+    formData.append("full_name", value.full_name);
+
+    if (file) {
+      resizeImage({ file }, async (resultBlob) => {
+        formData.append("file", resultBlob);
+        update({ userId: user.id, formData })
+          .then(() => closeModal())
+          .catch(() => {});
+      });
+      return;
+    }
+
+    update({ userId: user.id, formData })
+      .then(() => closeModal())
+      .catch(() => {});
   };
 
   const handleOpenChooseFile = () => {
@@ -140,6 +148,7 @@ const ProfileModal = () => {
             Cancel
           </Button>
           <Button
+            disabled={isLoading}
             type="submit"
             className="mx-auto block rounded-lg disabled:bg-primary bg-secondary disabled:cursor-default disabled:hover:opacity-100"
           >

@@ -2,7 +2,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { authApi } from "./auth/service";
 import authReducer from "./auth/slice";
 import userReducer from "./user/slice";
-import { rtkQueryErrorLogger } from "./middlewares/rtkQueryErrorLogger";
+import { rtkQueryLogger } from "./middlewares/rtkQueryLogger";
 import { userApi } from "./user/service";
 
 export const store = configureStore({
@@ -16,7 +16,7 @@ export const store = configureStore({
     getDefaultMiddleware()
       .concat(authApi.middleware)
       .concat(userApi.middleware)
-      .concat(rtkQueryErrorLogger),
+      .concat(rtkQueryLogger),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
