@@ -21,9 +21,7 @@ class AdminGuard implements IMiddleware
      */
     public function execute(): bool
     {
-        $user_id = $_SESSION["userId"];
-
-        $role = $this->user_service->getUserRole($user_id);
+        $role = $_SESSION["role"];
         
         if($role != UserRole::ADMIN->value) throw new ResponseException(HttpStatus::$UNAUTHORIZED, "Not authorizied!");
 

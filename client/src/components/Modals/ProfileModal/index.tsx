@@ -2,7 +2,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { ProfileSchema, ProfileSchemaType } from "../../../schema/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Label from "../../Form/Label";
-import { KeyRound, Pencil, User } from "lucide-react";
+import { KeyRound, Pencil, UserIcon } from "lucide-react";
 import Input from "../../Form/Input";
 import Button from "../../Form/Button";
 import DefaultAvatar from "../../../assets/default-avatar.png";
@@ -10,7 +10,11 @@ import { useAuth } from "../../../hooks/useAuth";
 import { useEffect, useRef, useState } from "react";
 import { useModalContext } from "../../../providers/ModalProvider";
 import resizeImage from "../../../utils/resizeImage";
-import { useUpdateMutation } from "../../../stores/user/service";
+import {
+  useUpdateProfileMutation,
+  useUploadMutation,
+} from "../../../stores/user/service";
+import { User } from "../../../schema/types";
 
 const ProfileModal = () => {
   const { user } = useAuth();
@@ -20,7 +24,8 @@ const ProfileModal = () => {
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [update, { isLoading }] = useUpdateMutation();
+  const [upload, { isLoading: uploadLoading }] = useUploadMutation();
+  const [update, { isLoading: updateLoading }] = useUpdateProfileMutation();
 
   const {
     register,
@@ -32,27 +37,33 @@ const ProfileModal = () => {
   });
 
   const onSubmit: SubmitHandler<ProfileSchemaType> = (
-    value: ProfileSchemaType
+    values: ProfileSchemaType
   ) => {
     if (!user) return;
 
     let formData = new FormData();
 
-    formData.append("full_name", value.full_name);
+    formData.append("full_name", values.full_name);
 
     if (file) {
       resizeImage({ file }, async (resultBlob) => {
         formData.append("file", resultBlob);
-        update({ userId: user.id, formData })
-          .then(() => closeModal())
+        upload({ userId: user.id, formData })
+          .then(() => setFile(null))
           .catch(() => {});
       });
-      return;
     }
 
-    update({ userId: user.id, formData })
-      .then(() => closeModal())
-      .catch(() => {});
+    let informationChanged = false;
+
+    for (const [key, value] of Object.entries(values)) {
+      if (user[key as keyof User] != value) informationChanged = true;
+    }
+
+    if (informationChanged)
+      update({ userId: user.id, ...values })
+        .then(() => !file && closeModal())
+        .catch(() => {});
   };
 
   const handleOpenChooseFile = () => {
@@ -105,7 +116,7 @@ const ProfileModal = () => {
         <div className="flex flex-col gap-1 w-full">
           <Label field="Email" />
           <div className="flex items-center gap-2 bg-primary rounded-md overflow-hidden py-1">
-            <User />
+            <UserIcon />
             <Input
               disabled
               value={user?.email}
@@ -148,7 +159,7 @@ const ProfileModal = () => {
             Cancel
           </Button>
           <Button
-            disabled={isLoading}
+            disabled={uploadLoading || updateLoading}
             type="submit"
             className="mx-auto block rounded-lg disabled:bg-primary bg-secondary disabled:cursor-default disabled:hover:opacity-100"
           >

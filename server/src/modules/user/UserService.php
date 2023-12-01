@@ -7,6 +7,7 @@ use core\HttpStatus;
 use modules\user\UserRepository;
 use shared\enums\EnumTypeJwt;
 use shared\exceptions\ResponseException;
+use shared\enums\UserRole;
 use modules\auth\JwtService;
 use Cloudinary\Api\Upload\UploadApi;
 
@@ -21,7 +22,7 @@ class UserService
      */
     public function create(array $data)
     {
-        return $this->user_repository->save($data);
+        return $this->user_repository->create($data);
     }
 
     /**
@@ -55,7 +56,36 @@ class UserService
     /**
      * @throws ResponseException
      */
-    public function uploadProfile(int $user_id)
+    public function updateOne(string $user_id, array $data)
+    {
+        $role = $_SESSION['role'];
+        if(isset($data['password']) && $role == UserRole::ADMIN->value){
+            $data['password'] = password_hash($data["password"], PASSWORD_BCRYPT);
+        }
+        else unset($data['password']);
+
+       $is_user_updated = $this->user_repository->updateOne($user_id, $data);
+       if(!$is_user_updated) throw new ResponseException(HttpStatus::$INTERNAL_SERVER_ERROR,"Update user fail!");
+
+       $user = $this->user_repository->findOne("id", $user_id);
+
+       return $user;
+    }
+
+    /**
+     * @throws ResponseException
+     */
+    public function delete(string $user_id)
+    {
+       $is_deleted = $this->user_repository->delete($user_id);
+
+       if(!$is_deleted) throw new ResponseException(HttpStatus::$INTERNAL_SERVER_ERROR,"Delete user fail!");
+    }
+
+     /**
+     * @throws ResponseException
+     */
+    public function upload(string $user_id)
     {
         $max_file_size = 800000;
 
@@ -75,12 +105,11 @@ class UserService
             ];
             
             $data = (new UploadApi())->upload($_FILES["file"]['tmp_name'], $options);
-            return $this->user_repository->updateOne($user_id, ['avatar' => $data['url']]);
+            $this->user_repository->updateOne($user_id, ['avatar' => $data['url']]);
+            return $data['url'];
 
         } catch (Exception $e) {
             throw new ResponseException(HttpStatus::$INTERNAL_SERVER_ERROR,"Can't upload file!");
         }
-
-        
     }
 }

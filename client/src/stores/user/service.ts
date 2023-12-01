@@ -2,8 +2,13 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "..";
 import cookieManagement from "../../lib/js-cookie";
 import { BASE_URL, ENDPOINTS } from "../../config/api";
-import { UpdateUserRequest, UpdateUserResponse } from "./types";
 import { setUser } from "../auth/slice";
+import {
+  UpdateProfileResponse,
+  UpdateProfileRequest,
+  UploadRequest,
+  UploadResponse,
+} from "./types";
 
 export const userApi = createApi({
   reducerPath: "user-api",
@@ -20,11 +25,35 @@ export const userApi = createApi({
     },
   }),
   endpoints: (builder) => ({
-    update: builder.mutation<UpdateUserResponse, UpdateUserRequest>({
+    upload: builder.mutation<UploadResponse, UploadRequest>({
       query: ({ userId, formData }) => ({
         url: `/${userId}/upload`,
         method: "POST",
         body: formData,
+      }),
+      onQueryStarted(_, { dispatch, queryFulfilled, getState }) {
+        queryFulfilled
+          .then((data) => {
+            const {
+              data: { data: url },
+            } = data;
+            dispatch(
+              setUser({
+                user: { ...(getState() as RootState).auth.user!, avatar: url },
+              })
+            );
+          })
+          .catch(() => {});
+      },
+    }),
+    updateProfile: builder.mutation<
+      UpdateProfileResponse,
+      UpdateProfileRequest
+    >({
+      query: ({ userId, full_name }) => ({
+        url: `/profile/${userId}`,
+        method: "PATCH",
+        body: { full_name },
       }),
       onQueryStarted(_, { dispatch, queryFulfilled }) {
         queryFulfilled
@@ -40,4 +69,4 @@ export const userApi = createApi({
   }),
 });
 
-export const { useUpdateMutation } = userApi;
+export const { useUpdateProfileMutation, useUploadMutation } = userApi;

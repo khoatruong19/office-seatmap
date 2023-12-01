@@ -12,7 +12,6 @@ class Router
 {
     public Request $request;
     protected array $routes = [];
-    protected array $param = [];
 
     public function __construct(private readonly ContainerInterface $container)
     {
@@ -27,9 +26,10 @@ class Router
      */
     public function addRoute(RequestMethod $method, string $path, ?array $middlewares, $callback): void
     {
-        $route = $this->handleRoute($path);
+        $route = $this->formatRoute($path);
+
         $this->routes[strtolower($method->name)][$route["path"]]["call_back"] = $callback;
-       
+
         if ($middlewares != null && is_array($middlewares)) {
             foreach ($middlewares as $middleware){
                 if(class_exists($middleware)){
@@ -45,10 +45,7 @@ class Router
             return;
         }
 
-        $this->routes[strtolower($method->name)][$route["path"]]["params_key"] = $route["params"];
-        foreach ($route["params"] as $param) {
-            $this->routes[strtolower($method->name)][$route["path"]][$param] = null;
-        }
+        $this->routes[strtolower($method->name)][$route["path"]]["param_keys"] = $route["params"];
     }
 
     /**
@@ -60,7 +57,7 @@ class Router
         $path = $this->request->getPath();
         $method = $this->request->getMethod();
 
-        $result_matched_route = $this->matchedRoute($method, $path) ?? false;
+        $result_matched_route = $this->matchRoute($method, $path) ?? false;
 
         if ($result_matched_route === false) {
             throw new ResponseException(HttpStatus::$NOT_FOUND, "Not found");
@@ -70,7 +67,7 @@ class Router
         $middlewares = $result_matched_route["middlewares"];
 
         if($middlewares && count($middlewares) > 0) {
-            foreach ($middlewares as $middleware)  $middleware->execute();
+            foreach ($middlewares as $middleware) $middleware->execute();
         }
 
         if (is_array($callback)) {
@@ -78,15 +75,13 @@ class Router
         }
     }
 
-    private function matchedRoute($request_method, $path_incoming)
+    private function matchRoute($request_method, $path_incoming)
     {
         foreach ($this->routes[$request_method] as $path => $pathValue) {
-
             if (preg_match($path, $path_incoming, $params_value)) {
-                if (array_key_exists("params_key", $this->routes[$request_method][$path])) {
-                    $paramsKey = $this->routes[$request_method][$path]["params_key"];
-
-                    foreach ($paramsKey as $index => $param) {
+                if (array_key_exists("param_keys", $this->routes[$request_method][$path])) {
+                    $paramKeys = $this->routes[$request_method][$path]["param_keys"];
+                    foreach ($paramKeys as $index => $param) {
                         $this->request->setParam($param, $params_value[$index + 1]);
                     }
                 }
@@ -99,14 +94,15 @@ class Router
         }
     }
 
-    private function handleRoute($path)
+    private function formatRoute($path)
     {
-        $pattern = "~^\{(\w+)\}$~";
+        $param_pattern = "~^\:(\w+)$~";
         $replace_pattern = "([\w-]+)";
         $path_component = explode("/", $path);
         $paramsKey = [];
+
         foreach ($path_component as $key => $value) {
-            if (preg_match($pattern, $value, $matches)) {
+            if (preg_match($param_pattern, $value, $matches)) {
                 $path_component[$key] = $replace_pattern;
                 array_push($paramsKey, $matches[1]);
             }

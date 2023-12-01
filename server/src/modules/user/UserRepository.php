@@ -11,9 +11,9 @@ class UserRepository extends Model implements IRepository{
     /**
      * @throws ResponseException
      */
-    public function save($data)
+    public function create($data)
     {
-        $sql = "insert into users (full_name, password, email) values (:full_name, :password, :email)";
+        $sql = "INSERT INTO users (full_name, password, email) VALUES (:full_name, :password, :email)";
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute([
             "email" => $data["email"],
@@ -32,23 +32,31 @@ class UserRepository extends Model implements IRepository{
             throw new ResponseException(HttpStatus::$BAD_REQUEST,"Field is not allowed!");
         }
 
-        $sql = "select * from users where ".$field." = :value limit 1";
+        $sql = "SELECT * FROM users WHERE ".$field." = :value limit 1";
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute([
             "value" => $value,
         ]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
+        
         return $result ?? null;
     }
 
-    public function updateOne(int $user_id, array $data) {
+    public function findAll() {
+        $sql = "SELECT id, role, full_name, avatar, created_at, updated_at FROM users";
+        $stmt = $this->database->getConnection()->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result;
+    }
+
+    public function updateOne(string $user_id, array $data) {
         $sql = "UPDATE users SET ";
         foreach ($data as $column => $value) {
             $sql .= "$column = :$column, ";
         }
         $sql = rtrim($sql, ', ') . " WHERE id = :id";
-
 
         $stmt = $this->database->getConnection()->prepare($sql);
 
@@ -60,7 +68,16 @@ class UserRepository extends Model implements IRepository{
 
         $result = $stmt->execute();
 
-        return $result ? $this->findOne("id", $user_id) : null;
+        return $result;
+    }
+
+    public function delete(string $user_id) {
+        $sql = "DELETE FROM users WHERE id = :id";
+        $stmt = $this->database->getConnection()->prepare($sql);
+        $stmt->bindParam(':id', $user_id);
+        $result = $stmt->execute();
+
+        return $result;
     }
 
     public function getRole(string $user_id) {

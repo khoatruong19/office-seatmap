@@ -22,7 +22,7 @@ class JwtService
         );
     }
 
-    public function generateToken(int $user_id, EnumTypeJwt $type): string
+    public function generateToken(int $user_id, string $role, EnumTypeJwt $type): string
     {
         $iat = new DateTime();
 
@@ -31,6 +31,7 @@ class JwtService
 
         $payload = array(
             "userId" => $user_id,
+            "role" => $role,
             "iat" => $iat->getTimestamp(),
             "exp" => $exp->getTimestamp(),
         );
