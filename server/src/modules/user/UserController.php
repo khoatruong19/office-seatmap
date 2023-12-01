@@ -19,6 +19,16 @@ class UserController extends Controller
     {
     }
 
+    /**
+     * @throws ResponseException
+     */
+    public function findAll()
+    {
+        $data = $this->user_service->findAll();
+
+        return $this->response->response(HttpStatus::$OK, "Get all users successfuly!", $data);
+    }
+
        /**
      * @throws ResponseException
      */

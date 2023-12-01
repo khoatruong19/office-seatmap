@@ -32,6 +32,7 @@ $app->router->addRoute(RequestMethod::POST, "/auth/register", null, [AuthControl
 $app->router->addRoute(RequestMethod::GET, "/auth/me", [JwtVerify::class], [AuthController::class, 'me']);
 $app->router->addRoute(RequestMethod::GET, "/auth/logout", [JwtVerify::class], [AuthController::class, 'logout']);
 
+$app->router->addRoute(RequestMethod::GET, "/users", [JwtVerify::class, AdminGuard::class], [UserController::class, 'findAll']);
 $app->router->addRoute(RequestMethod::PATCH, "/users/profile/:userId", [JwtVerify::class], [UserController::class, 'updateProfile']);
 $app->router->addRoute(RequestMethod::PATCH, "/users/:userId", [JwtVerify::class, AdminGuard::class], [UserController::class, 'update']);
 $app->router->addRoute(RequestMethod::DELETE, "/users/:userId", [JwtVerify::class, AdminGuard::class], [UserController::class, 'delete']);

@@ -36,6 +36,14 @@ class UserService
     /**
      * @throws ResponseException
      */
+    public function findAll()
+    {
+        return $this->user_repository->findAll();
+    }
+
+    /**
+     * @throws ResponseException
+     */
     public function getUserRole(string $user_id)
     {
         return $this->user_repository->getRole($user_id);

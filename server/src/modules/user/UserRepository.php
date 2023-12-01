@@ -46,8 +46,8 @@ class UserRepository extends Model implements IRepository{
         $sql = "SELECT id, role, full_name, avatar, created_at, updated_at FROM users";
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
         return $result;
     }
 
