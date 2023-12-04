@@ -133,6 +133,12 @@
          */
         public function delete(string $user_id)
         {
+            $user = $this->user_repository->findOne("id", $user_id);
+
+            if(!$user) throw new ResponseException(HttpStatus::$BAD_REQUEST,"No user found!");
+
+            if($user['role'] == UserRole::ADMIN->value) throw new ResponseException(HttpStatus::$BAD_REQUEST,"No permission!");
+
             $is_deleted = $this->user_repository->delete($user_id);
 
             if(!$is_deleted) throw new ResponseException(HttpStatus::$INTERNAL_SERVER_ERROR,"Delete user fail!");
