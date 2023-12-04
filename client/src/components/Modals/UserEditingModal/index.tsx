@@ -107,6 +107,7 @@ const UserEditingModal = ({ type, user }: Props) => {
 
   useEffect(() => {
     if (!user) return;
+
     setValue("email", user.email);
     setValue("full_name", user.full_name);
     setValue("role", user.role);
