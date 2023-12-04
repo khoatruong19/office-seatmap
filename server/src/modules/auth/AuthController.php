@@ -30,7 +30,7 @@ class AuthController extends Controller
         $this->requestBodyValidation([
             'email' => 'required|min:8|pattern:email',
             'full_name' => 'required|min:8',
-            'password' => 'required'
+            'password' => 'required|min:8'
         ]);
 
         $request_body = $this->request->getBody();
@@ -74,6 +74,6 @@ class AuthController extends Controller
 
         if(!$is_logout) throw new ResponseException(HttpStatus::$UNAUTHORIZED,"Not authourized 2!");
 
-        $this->response->response(HttpStatus::$OK, "Loggout successfully!", true);
+        $this->response->response(HttpStatus::$OK, "Logout successfully!", true);
     }
 }

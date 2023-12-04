@@ -49,12 +49,31 @@ class Request
     public function getBody()
     {
         $body = json_decode(file_get_contents('php://input'), true);
+
+        if(!is_array($body)){
+            $body = [];
+            switch (strtoupper($this->getMethod())) {
+                case RequestMethod::POST->name:
+                    foreach ($_POST as $key => $value) {
+                        $body[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
         return $body;
     }
 
     public function validateBody(array $field_rules)
     {
         $body = $this->getBody();
+
+        // if(count($field_rules) < count($body)){
+        //     return $this->validation->redundantFieldErrors();
+        // }
+
         foreach ($field_rules as $field => $value) {
             $rules = explode('|', $value);
 

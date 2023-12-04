@@ -21,7 +21,7 @@ class JwtVerify implements IMiddleware
     public function execute(): bool
     {
         if(!array_key_exists("authorization", getallheaders())) {
-            throw new ResponseException(HttpStatus::$UNAUTHORIZED, "No token");
+            throw new ResponseException(HttpStatus::$UNAUTHORIZED, "Not authorized!");
         }
 
         $token = getallheaders()["authorization"];
@@ -31,7 +31,9 @@ class JwtVerify implements IMiddleware
         if(!$payload) throw new ResponseException(HttpStatus::$UNAUTHORIZED, "Token is invalid");
 
         $user_id = $payload->userId;
+        $role = $payload->role;
         $_SESSION["userId"] = $user_id;
+        $_SESSION["role"] = $role;
 
         return true;
     }

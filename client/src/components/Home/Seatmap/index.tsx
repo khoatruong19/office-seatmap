@@ -23,7 +23,7 @@ const Seatmap = () => {
   };
 
   return (
-    <div className="z-1">
+    <div className="z-1  max-w-7xl w-full mx-auto px-32 py-10 rounded-2xl">
       <OfficeTitle title="Office 101" />
 
       <div className="relative max-w-5xl w-full mx-auto flex flex-col gap-4 items-start">

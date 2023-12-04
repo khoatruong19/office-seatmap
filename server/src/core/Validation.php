@@ -33,11 +33,6 @@
             return $this;
         }
         
-        public function file($value){
-            $this->file = $value;
-            return $this;
-        }
-        
         public function pattern($name){
             $regex = '/^('.$this->patterns[$name].')$/u';
             if($this->value != '' && !preg_match($regex, $this->value)){
@@ -56,12 +51,12 @@
         }
         
         public function required(){
-            if((isset($this->file) && $this->file['error'] == 4) || ($this->value == '' || $this->value == null)){
+            if(($this->value == '' || $this->value == null)){
                 $this->errors[] = 'Field %'.$this->name.'% is required.';
             }            
             return $this;
         }
-        
+
         public function min($length){
             if(strlen($this->value) > 0 && strlen($this->value) < $length){
                 $this->errors[] = 'Field %'.$this->name.'% has to be at least '.$length.' characters';
@@ -114,16 +109,11 @@
             if(!$this->isSuccess()) return $this->errors;
         }
         
-        public function displayErrors(){
-            $html = '<ul>';
-                foreach($this->getErrors() as $error){
-                    $html .= '<li>'.$error.'</li>';
-                }
-            $html .= '</ul>';
-            
-            return $html;
+        public function redundantFieldErrors(){
+            $this->errors[] = 'There are some redundant fields in the body!';
+            return $this->errors;
         }
-        
+
         public function result(){
             if(!$this->isSuccess()){
                 foreach($this->getErrors() as $error){

@@ -11,14 +11,16 @@ class UserRepository extends Model implements IRepository{
     /**
      * @throws ResponseException
      */
-    public function save($data)
+    public function create($data)
     {
-        $sql = "insert into users (full_name, password, email) values (:full_name, :password, :email)";
+        $sql = "INSERT INTO users (full_name, password, email, role, avatar) VALUES (:full_name, :password, :email, :role, :avatar)";
         $stmt = $this->database->getConnection()->prepare($sql);
-        $stmt->execute([
+        $result = $stmt->execute([
             "email" => $data["email"],
             "full_name" => $data["full_name"],
+            "role" => isset($data["role"]) ? $data["role"] : 'user',
             "password" => $data["password"],
+            "avatar" => isset($data["avatar"]) ? $data["avatar"] : null,
         ]);
 
         $inserted_id = $this->database->getConnection()->lastInsertId();
@@ -32,35 +34,51 @@ class UserRepository extends Model implements IRepository{
             throw new ResponseException(HttpStatus::$BAD_REQUEST,"Field is not allowed!");
         }
 
-        $sql = "select * from users where ".$field." = :value limit 1";
+        $sql = "SELECT * FROM users WHERE ".$field." = :value limit 1";
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute([
             "value" => $value,
         ]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
+        
         return $result ?? null;
     }
 
-    public function updateOne(int $user_id, array $data) {
-        $sql = "UPDATE users SET ";
-        foreach ($data as $column => $value) {
-            $sql .= "$column = :$column, ";
-        }
-        $sql = rtrim($sql, ', ') . " WHERE id = :id";
-
-
+    public function findAll() {
+        $sql = "SELECT id, role, full_name, email, avatar, created_at, updated_at FROM users ORDER BY full_name ";
         $stmt = $this->database->getConnection()->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        return $result;
+    }
+
+    public function updateOne(string $user_id, array $data) {
+        $sql = "UPDATE users SET ";
+
+        $setValues = "";
         foreach ($data as $column => $value) {
-            $stmt->bindParam(":$column", $value);
+            $setValues .= "$column = :$column, ";
         }
 
-        $stmt->bindParam(':id', $user_id);
+        $setValues = rtrim($setValues, ', ') . " WHERE id = :id";
 
+        $stmt = $this->database->getConnection()->prepare($sql.$setValues);
+
+        $data['id'] = $user_id;
+
+        $result = $stmt->execute($data);
+
+        return $result;
+    }
+
+    public function delete(string $user_id) {
+        $sql = "DELETE FROM users WHERE id = :id";
+        $stmt = $this->database->getConnection()->prepare($sql);
+        $stmt->bindParam(':id', $user_id);
         $result = $stmt->execute();
 
-        return $result ? $this->findOne("id", $user_id) : null;
+        return $result;
     }
 
     public function getRole(string $user_id) {

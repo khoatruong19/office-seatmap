@@ -38,13 +38,15 @@ const Header = () => {
           >
             <img
               src={user?.avatar ?? DefaultAvatar}
-              className="w-10 h-10 object-cover rounded-full"
+              className="w-10 h-10 object-contain rounded-full"
               alt=""
             />
-
-            <h3 className="font-semibold text-lg capitalize">
-              {user?.full_name}
-            </h3>
+            <div>
+              <h3 className="font-semibold text-lg capitalize mb-[-5px] max-w-[120px] truncate">
+                {user?.full_name}
+              </h3>
+              <span className="text-sm">{user?.role}</span>
+            </div>
           </div>
           {openDropdown && <UserDropdown close={handleCloseDropdown} />}
         </div>

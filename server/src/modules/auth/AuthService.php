@@ -24,7 +24,6 @@ class AuthService
             throw new ResponseException(HttpStatus::$BAD_REQUEST, "Email existed!");
         }
 
-        $register_data["password"] = password_hash($register_data["password"], PASSWORD_BCRYPT);
         $id = $this->user_service->create($register_data);
 
         return array(
@@ -38,24 +37,24 @@ class AuthService
      */
     public function login(array $login_data)
     {
-        $exisitng_user = $this->user_service->findOne("email", $login_data["email"]);
+        $existing_user = $this->user_service->findOne("email", $login_data["email"]);
 
-        if (!$exisitng_user) {
+        if (!$existing_user) {
             throw new ResponseException(HttpStatus::$BAD_REQUEST, "Invalid credential!");
         }
 
-        $is_password_matched = password_verify($login_data["password"], $exisitng_user["password"]);
+        $is_password_matched = password_verify($login_data["password"], $existing_user["password"]);
 
         if (!$is_password_matched) {
             throw new ResponseException(HttpStatus::$BAD_REQUEST, "Invalid credential!");
         }
 
-        $access_token = $this->jwt_service->generateToken($exisitng_user["id"], EnumTypeJwt::ACCESS_TOKEN);
+        $access_token = $this->jwt_service->generateToken($existing_user["id"], $existing_user["role"], EnumTypeJwt::ACCESS_TOKEN);
 
-        unset($exisitng_user['password']);
+        unset($existing_user['password']);
 
         return array(
-            "user" => $exisitng_user,
+            "user" => $existing_user,
             "accessToken" => $access_token,
         );
     }

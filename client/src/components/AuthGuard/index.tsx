@@ -15,7 +15,9 @@ const AuthGuard = () => {
 
       me(null)
         .then(() => navigate(APP_ROUTES.HOME))
-        .catch(() => navigate(APP_ROUTES.LOGIN));
+        .catch(() => {
+          navigate(APP_ROUTES.LOGIN);
+        });
     };
     handleGetMe();
   }, []);

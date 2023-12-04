@@ -1,7 +1,7 @@
 import React from "react";
 import ModalProvider from "./ModalProvider";
 
-import { Provider } from "react-redux";
+import { Provider as ReduxProvider } from "react-redux";
 import { store } from "../stores";
 
 type Props = {
@@ -10,11 +10,9 @@ type Props = {
 
 const AppProviders = ({ children }: Props) => {
   return (
-    <>
-      <Provider store={store}>
-        <ModalProvider>{children}</ModalProvider>
-      </Provider>
-    </>
+    <ReduxProvider store={store}>
+      <ModalProvider>{children}</ModalProvider>
+    </ReduxProvider>
   );
 };
 
