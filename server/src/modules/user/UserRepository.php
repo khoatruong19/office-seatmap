@@ -13,12 +13,14 @@ class UserRepository extends Model implements IRepository{
      */
     public function create($data)
     {
-        $sql = "INSERT INTO users (full_name, password, email) VALUES (:full_name, :password, :email)";
+        $sql = "INSERT INTO users (full_name, password, email, role, avatar) VALUES (:full_name, :password, :email, :role, :avatar)";
         $stmt = $this->database->getConnection()->prepare($sql);
-        $stmt->execute([
+        $result = $stmt->execute([
             "email" => $data["email"],
             "full_name" => $data["full_name"],
+            "role" => isset($data["role"]) ? $data["role"] : 'user',
             "password" => $data["password"],
+            "avatar" => isset($data["avatar"]) ? $data["avatar"] : null,
         ]);
 
         $inserted_id = $this->database->getConnection()->lastInsertId();
@@ -43,30 +45,29 @@ class UserRepository extends Model implements IRepository{
     }
 
     public function findAll() {
-        $sql = "SELECT id, role, full_name, avatar, created_at, updated_at FROM users";
+        $sql = "SELECT id, role, full_name, email, avatar, created_at, updated_at FROM users ORDER BY full_name ";
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+
         return $result;
     }
 
     public function updateOne(string $user_id, array $data) {
         $sql = "UPDATE users SET ";
-        foreach ($data as $column => $value) {
-            $sql .= "$column = :$column, ";
-        }
-        $sql = rtrim($sql, ', ') . " WHERE id = :id";
 
-        $stmt = $this->database->getConnection()->prepare($sql);
-
+        $setValues = "";
         foreach ($data as $column => $value) {
-            $stmt->bindParam(":$column", $value);
+            $setValues .= "$column = :$column, ";
         }
 
-        $stmt->bindParam(':id', $user_id);
+        $setValues = rtrim($setValues, ', ') . " WHERE id = :id";
 
-        $result = $stmt->execute();
+        $stmt = $this->database->getConnection()->prepare($sql.$setValues);
+
+        $data['id'] = $user_id;
+
+        $result = $stmt->execute($data);
 
         return $result;
     }

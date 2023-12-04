@@ -8,7 +8,15 @@ import {
   UpdateProfileRequest,
   UploadRequest,
   UploadResponse,
+  GetAllResponse,
+  CreateUserResponse,
+  CreateUserRequest,
+  UpdateUserResponse,
+  UpdateUserRequest,
+  DeleteUserResponse,
+  DeleteUserRequest,
 } from "./types";
+import { setUsers } from "./slice";
 
 export const userApi = createApi({
   reducerPath: "user-api",
@@ -24,6 +32,7 @@ export const userApi = createApi({
       return headers;
     },
   }),
+  tagTypes: ["Users"],
   endpoints: (builder) => ({
     upload: builder.mutation<UploadResponse, UploadRequest>({
       query: ({ userId, formData }) => ({
@@ -31,6 +40,7 @@ export const userApi = createApi({
         method: "POST",
         body: formData,
       }),
+      invalidatesTags: ["Users"],
       onQueryStarted(_, { dispatch, queryFulfilled, getState }) {
         queryFulfilled
           .then((data) => {
@@ -46,6 +56,42 @@ export const userApi = createApi({
           .catch(() => {});
       },
     }),
+    getAllUsers: builder.query<GetAllResponse, void>({
+      query: () => ({ url: "" }),
+      providesTags: ["Users"],
+      onQueryStarted(_, { dispatch, queryFulfilled }) {
+        queryFulfilled
+          .then((data) => {
+            const {
+              data: { data: users },
+            } = data;
+            dispatch(setUsers({ users }));
+          })
+          .catch(() => {});
+      },
+    }),
+    createUser: builder.mutation<CreateUserResponse, CreateUserRequest>({
+      query: (data) => ({
+        url: ``,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Users"],
+      onQueryStarted(_, { queryFulfilled }) {
+        queryFulfilled.then(() => {}).catch(() => {});
+      },
+    }),
+    updateUser: builder.mutation<UpdateUserResponse, UpdateUserRequest>({
+      query: ({ id, data }) => ({
+        url: `/${id}`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Users"],
+      onQueryStarted(_, { queryFulfilled }) {
+        queryFulfilled.then(() => {}).catch(() => {});
+      },
+    }),
     updateProfile: builder.mutation<
       UpdateProfileResponse,
       UpdateProfileRequest
@@ -55,6 +101,7 @@ export const userApi = createApi({
         method: "PATCH",
         body: { full_name },
       }),
+      invalidatesTags: ["Users"],
       onQueryStarted(_, { dispatch, queryFulfilled }) {
         queryFulfilled
           .then((data) => {
@@ -66,7 +113,24 @@ export const userApi = createApi({
           .catch(() => {});
       },
     }),
+    deleteUser: builder.mutation<DeleteUserResponse, DeleteUserRequest>({
+      query: ({ userId }) => ({
+        url: `/${userId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Users"],
+      onQueryStarted(_, { queryFulfilled }) {
+        queryFulfilled.then(() => {}).catch(() => {});
+      },
+    }),
   }),
 });
 
-export const { useUpdateProfileMutation, useUploadMutation } = userApi;
+export const {
+  useGetAllUsersQuery,
+  useCreateUserMutation,
+  useUpdateUserMutation,
+  useUpdateProfileMutation,
+  useDeleteUserMutation,
+  useUploadMutation,
+} = userApi;

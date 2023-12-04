@@ -1,7 +1,3 @@
-/* eslint-disable import/no-cycle */
-
-"use client";
-
 import {
   createContext,
   useState,
@@ -13,9 +9,16 @@ import {
 } from "react";
 import ModalLayout from "../../components/Modals/ModalLayout";
 import ProfileModal from "../../components/Modals/ProfileModal";
+import UserEditingModal from "../../components/Modals/UserEditingModal";
+import UserInformationModal from "../../components/Modals/UserInformationModal";
+import ConfirmModal from "../../components/Modals/ConfirmModal";
 
 export enum MODALS {
   PROFILE = "profile",
+  CREATE_USER = "create-user",
+  UPDATE_USER = "update-user",
+  USER_INFORMATION = "user-information",
+  CONFIRM = "confirm",
 }
 
 type ModalContextValues = {
@@ -26,10 +29,10 @@ type ModalContextValues = {
 
 const MODAL_ELEMENTS: Record<MODALS, ReactElement> = {
   [MODALS.PROFILE]: <ProfileModal />,
-  //   [MODALS.BOOK_FORM]: <BookForm />,
-  //   [MODALS.DELETE_BOOK_CONFIRMATION]: (
-  //     <DeleteBookConfirmation bookName="" deleteBook={() => {}} />
-  //   ),
+  [MODALS.CREATE_USER]: <UserEditingModal type="create" />,
+  [MODALS.UPDATE_USER]: <UserEditingModal type="update" />,
+  [MODALS.USER_INFORMATION]: <UserInformationModal />,
+  [MODALS.CONFIRM]: <ConfirmModal confirmHandler={() => {}} />,
 };
 
 const defaultModalContextValues: ModalContextValues = {

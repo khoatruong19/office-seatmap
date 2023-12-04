@@ -109,16 +109,11 @@
             if(!$this->isSuccess()) return $this->errors;
         }
         
-        public function displayErrors(){
-            $html = '<ul>';
-                foreach($this->getErrors() as $error){
-                    $html .= '<li>'.$error.'</li>';
-                }
-            $html .= '</ul>';
-            
-            return $html;
+        public function redundantFieldErrors(){
+            $this->errors[] = 'There are some redundant fields in the body!';
+            return $this->errors;
         }
-        
+
         public function result(){
             if(!$this->isSuccess()){
                 foreach($this->getErrors() as $error){

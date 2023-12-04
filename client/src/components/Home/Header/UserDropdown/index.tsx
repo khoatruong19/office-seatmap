@@ -26,7 +26,7 @@ const UserDropdown = ({ close }: Props) => {
   };
 
   return (
-    <div className="absolute right-0 top-12 w-40 bg-white border-2 border-secondary rounded-md">
+    <div className="absolute right-0 top-14 z-20 w-40 bg-white border-2 border-secondary rounded-md">
       <div
         onClick={handleOpenProfileModal}
         className="flex items-center gap-2 px-1.5 py-2 cursor-pointer hover:bg-primary"

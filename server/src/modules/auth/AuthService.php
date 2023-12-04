@@ -24,7 +24,6 @@ class AuthService
             throw new ResponseException(HttpStatus::$BAD_REQUEST, "Email existed!");
         }
 
-        $register_data["password"] = password_hash($register_data["password"], PASSWORD_BCRYPT);
         $id = $this->user_service->create($register_data);
 
         return array(

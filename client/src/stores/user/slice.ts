@@ -3,35 +3,27 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "..";
 import { User } from "../../schema/types";
 
-type userState = {
-  user: User | null;
-  accessToken: string | null;
+type UserState = {
+  users: User[];
 };
 
 const USER_SLICE_NAME = "user";
 
 const userSlice = createSlice({
   name: USER_SLICE_NAME,
-  initialState: { user: null, accessToken: null } as userState,
+  initialState: { users: [] } as UserState,
   reducers: {
-    setCredentials: (
+    setUsers: (
       state,
-      {
-        payload: { user, accessToken },
-      }: PayloadAction<{ user: User; accessToken: string }>
+      { payload: { users } }: PayloadAction<{ users: User[] }>
     ) => {
-      state.user = user;
-      state.accessToken = accessToken;
-    },
-    deleteCredentials: (state) => {
-      state.user = null;
-      state.accessToken = null;
+      state.users = users;
     },
   },
 });
 
-export const { setCredentials, deleteCredentials } = userSlice.actions;
+export const { setUsers } = userSlice.actions;
 
 export default userSlice.reducer;
 
-export const selectCurrentUser = (state: RootState) => state.user.user;
+export const selectUsers = (state: RootState) => state.user.users;

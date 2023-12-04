@@ -9,21 +9,47 @@ use shared\enums\EnumTypeJwt;
 use shared\exceptions\ResponseException;
 use shared\enums\UserRole;
 use modules\auth\JwtService;
-use Cloudinary\Api\Upload\UploadApi;
+use modules\cloudinary\CloudinaryService;
 
 class UserService
 {
-    public function __construct(private readonly UserRepository $user_repository, private readonly JwtService $jwt_service)
+    public function __construct(private readonly UserRepository $user_repository, private readonly JwtService $jwt_service,
+     private readonly CloudinaryService $cloudinary_service)
     {
     }
 
     /**
      * @throws ResponseException
      */
-    public function create(array $data)
-    {
-        return $this->user_repository->create($data);
-    }
+    
+     public function create(array $create_data)
+     {
+        $existing_email = $this->findOne("email", $create_data['email']);
+
+        if($existing_email) {
+            throw new ResponseException(HttpStatus::$BAD_REQUEST, "Email existed!");
+        }
+
+        $create_data["password"] = password_hash($create_data["password"], PASSWORD_BCRYPT);
+
+        $id = $this->user_repository->create($create_data);
+
+        $file = isset($_FILES['file']) ? $_FILES['file'] : null;
+
+        if($file){
+            $options = [
+                'public_id' => 'profile_user_'.$id, 
+            ];
+
+            $uploadedFile = $this->cloudinary_service->uploadFile($file, $options);
+
+            $this->user_repository->updateOne($id, ['avatar' => $uploadedFile['url']]);
+        }
+
+        return array(
+            "id" => $id,
+        );
+     }
 
     /**
      * @throws ResponseException
@@ -56,6 +82,8 @@ class UserService
     {
         $user = $this->user_repository->findOne("id", strval($user_id));
 
+        if(!$user) throw new ResponseException(HttpStatus::$UNAUTHORIZED, "Not authorized!");
+
         return array(
             "user" => $user,
         );
@@ -66,13 +94,20 @@ class UserService
      */
     public function updateOne(string $user_id, array $data)
     {
-        $role = $_SESSION['role'];
-        if(isset($data['password']) && $role == UserRole::ADMIN->value){
-            $data['password'] = password_hash($data["password"], PASSWORD_BCRYPT);
+        $file = isset($_FILES['file']) ? $_FILES['file'] : null;
+
+        if($file){
+            $options = [
+                'public_id' => 'profile_user_'.$user_id, 
+            ];
+
+            $uploadedFile = $this->cloudinary_service->uploadFile($file, $options);
+
+            $data['avatar'] = $uploadedFile['url'];
         }
-        else unset($data['password']);
 
        $is_user_updated = $this->user_repository->updateOne($user_id, $data);
+
        if(!$is_user_updated) throw new ResponseException(HttpStatus::$INTERNAL_SERVER_ERROR,"Update user fail!");
 
        $user = $this->user_repository->findOne("id", $user_id);
@@ -90,34 +125,17 @@ class UserService
        if(!$is_deleted) throw new ResponseException(HttpStatus::$INTERNAL_SERVER_ERROR,"Delete user fail!");
     }
 
-     /**
-     * @throws ResponseException
-     */
+    /**
+    * @throws ResponseException
+    */
     public function upload(string $user_id)
     {
-        $max_file_size = 800000;
+        $options = [
+            'public_id' => 'profile_user_'.$user_id, 
+        ];
 
-        $allow_types = array('jpg', 'png', 'jpeg', 'gif');
-
-        $file_name_array = explode(".", $_FILES["file"]["name"]);
-
-        $ext = $file_name_array[count($file_name_array) - 1];
-
-        if ($_FILES["file"]["size"] > $max_file_size) throw new ResponseException(HttpStatus::$BAD_REQUEST,"File too large!"); 
-
-        if (!in_array($ext, $allow_types)) throw new ResponseException(HttpStatus::$BAD_REQUEST,"File wrong format!");
-
-        try {
-            $options = [
-                'public_id' => 'profile_user_'.$user_id, // Set the name of the file here
-            ];
-            
-            $data = (new UploadApi())->upload($_FILES["file"]['tmp_name'], $options);
-            $this->user_repository->updateOne($user_id, ['avatar' => $data['url']]);
-            return $data['url'];
-
-        } catch (Exception $e) {
-            throw new ResponseException(HttpStatus::$INTERNAL_SERVER_ERROR,"Can't upload file!");
-        }
+        $data = $this->cloudinary_service->uploadFile($_FILES['file'], $options);
+        $this->user_repository->updateOne($user_id, ['avatar' => $data['url']]);
+        return $data['url'];
     }
 }

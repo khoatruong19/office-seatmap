@@ -29,15 +29,34 @@ class UserController extends Controller
         return $this->response->response(HttpStatus::$OK, "Get all users successfuly!", $data);
     }
 
-       /**
+    /**
      * @throws ResponseException
      */
-    public function updateProfile()
+    public function create()
     {
         $this->requestBodyValidation([
-            'full_name' => 'min:8',
-            'email' => 'min:8|pattern:email',
-            'password' => 'min:8'
+            'email' => 'required|min:8|pattern:email',
+            'full_name' => 'required|min:8',
+            'password' => 'required|min:8',
+            'role' => 'required'
+        ]);
+
+        $request_body = $this->request->getBody();
+
+        $id = $this->user_service->create($request_body);
+
+        return $this->response->response(HttpStatus::$OK, "Create user successfully!", $id);
+    }
+
+    /**
+     * @throws ResponseException
+     */
+    public function update()
+    {
+        $this->requestBodyValidation([
+            'email' => 'required|min:8|pattern:email',
+            'full_name' => 'required|min:8',
+            'role' => 'required'
         ]);
 
         $user_id = $this->request->getParam("userId");
@@ -57,7 +76,7 @@ class UserController extends Controller
     /**
      * @throws ResponseException
      */
-    public function update()
+    public function updateProfile()
     {
         $this->requestBodyValidation([
             'full_name' => 'min:8',

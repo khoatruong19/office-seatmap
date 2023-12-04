@@ -3,11 +3,10 @@ import { ProfileSchema, ProfileSchemaType } from "../../../schema/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Label from "../../Form/Label";
 import { KeyRound, Pencil, UserIcon } from "lucide-react";
-import Input from "../../Form/Input";
 import Button from "../../Form/Button";
 import DefaultAvatar from "../../../assets/default-avatar.png";
 import { useAuth } from "../../../hooks/useAuth";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useModalContext } from "../../../providers/ModalProvider";
 import resizeImage from "../../../utils/resizeImage";
 import {
@@ -15,6 +14,7 @@ import {
   useUploadMutation,
 } from "../../../stores/user/service";
 import { User } from "../../../schema/types";
+import FieldControl from "../../Form/FieldControl";
 
 const ProfileModal = () => {
   const { user } = useAuth();
@@ -31,6 +31,7 @@ const ProfileModal = () => {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<ProfileSchemaType>({
     resolver: zodResolver(ProfileSchema),
@@ -80,12 +81,15 @@ const ProfileModal = () => {
     setAvatar(URL.createObjectURL(file));
   };
 
-  const handleCloseModal = () => closeModal();
-
   useEffect(() => {
     if (!user) return;
     setValue("full_name", user.full_name);
   }, [user]);
+
+  const isInformationChanged = useMemo(() => {
+    if (file || watch("full_name") !== user?.full_name) return true;
+    return false;
+  }, [watch("full_name"), file]);
 
   return (
     <div className="w-[500px] py-8 font-mono">
@@ -93,7 +97,7 @@ const ProfileModal = () => {
 
       <div
         onClick={handleOpenChooseFile}
-        className="relative w-40 h-40 rounded-full overflow-hidden mx-auto hover-opacity mt-5"
+        className="relative w-40 h-40 rounded-full overflow-hidden mx-auto hover-opacity mt-8"
       >
         <img
           src={!!avatar ? avatar : DefaultAvatar}
@@ -113,39 +117,30 @@ const ProfileModal = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="max-w-md w-full bg-white rounded-md flex flex-col items-center justify-center pl-20 pr-8"
       >
-        <div className="flex flex-col gap-1 w-full">
-          <Label field="Email" />
-          <div className="flex items-center gap-2 bg-primary rounded-md overflow-hidden py-1">
-            <UserIcon />
-            <Input
-              disabled
-              value={user?.email}
-              className="flex-1 disabled:bg-primary"
-            />
-          </div>
-        </div>
+        <FieldControl
+          field="Email"
+          type="email"
+          name="email"
+          inputDisabled
+          inputValue={user?.email}
+          icon={<UserIcon />}
+          inputWrapperClass={"bg-primary"}
+          inputClass="disabled:bg-primary"
+        />
 
-        <div className="flex flex-col gap-1 mt-5 w-full">
-          <Label field="Fullname" />
-          <div className="flex items-center gap-2">
-            <Pencil />
-            <Input
-              register={register}
-              placeholder="Password..."
-              name="full_name"
-              className="flex-1"
-            />
-          </div>
-          {errors.full_name && (
-            <span className="text-xs text-red-400 font-semibold">
-              {errors.full_name.message}
-            </span>
-          )}
-        </div>
+        <FieldControl
+          field="Fullname"
+          errors={errors}
+          name="full_name"
+          placeholder="Fullname..."
+          register={register}
+          icon={<Pencil />}
+          containerClass="mt-5"
+        />
 
         <div className="flex flex-col gap-1 mt-5 w-full">
           <Label field="Role" />
-          <div className="flex items-center gap-5 capitalize">
+          <div className="flex items-center gap-5 capitalize bg-primary py-2 rounded-md">
             <KeyRound />
             <span>{user?.role}</span>
           </div>
@@ -153,13 +148,14 @@ const ProfileModal = () => {
 
         <div className="flex items-center gap-4 mt-8">
           <Button
-            onClick={handleCloseModal}
+            type="button"
+            onClick={closeModal}
             className="mx-auto block rounded-lg text-primary hover:text-secondary w-fit"
           >
             Cancel
           </Button>
           <Button
-            disabled={uploadLoading || updateLoading}
+            disabled={!isInformationChanged || uploadLoading || updateLoading}
             type="submit"
             className="mx-auto block rounded-lg disabled:bg-primary bg-secondary disabled:cursor-default disabled:hover:opacity-100"
           >
