@@ -19,7 +19,7 @@ const Header = () => {
   useClickOutside(dropdownRef, handleCloseDropdown);
 
   return (
-    <header className="h-16 bg-primary">
+    <header className="h-16 bg-primary ">
       <nav className="w-full h-full px-6 flex items-center justify-between text-secondary border-b border-secondary ">
         <div className="flex items-center gap-3">
           <img

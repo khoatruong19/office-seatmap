@@ -7,7 +7,7 @@ import { UserRole } from "../../schema/types";
 const Home = () => {
   const { user } = useAuth();
   return (
-    <div className="min-h-screen font-mono flex flex-col w-screen overflow-x-hidden">
+    <div className="min-h-screen font-mono flex flex-col w-screen overflow-x-hidden ">
       <Header />
 
       <div className="relative w-full pt-10 flex-1">

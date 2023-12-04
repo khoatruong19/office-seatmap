@@ -18,7 +18,7 @@ class CloudinaryService
     */
 
     public function uploadFile($file, array $options = []){
-        $max_file_size = 800000;
+        $max_file_size = 25000;
 
         $allow_types = array('jpg', 'png', 'jpeg', 'gif');
 
