@@ -215,7 +215,11 @@ const UserEditingModal = ({ type, user }: Props) => {
             Cancel
           </Button>
           <Button
-            disabled={!isInformationChanged || createLoading || updateLoading}
+            disabled={
+              (type == "update" && !isInformationChanged) ||
+              createLoading ||
+              updateLoading
+            }
             type="submit"
             className="mx-auto block rounded-lg disabled:bg-primary bg-secondary disabled:cursor-default disabled:hover:opacity-100"
           >
