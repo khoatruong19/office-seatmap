@@ -1,4 +1,6 @@
 <?php
+    declare( strict_types=1 );
+    
     namespace core;
 
     #[\AllowDynamicProperties]
@@ -71,36 +73,6 @@
             return $this;
         }
         
-        public function equal($value){
-            if($this->value != $value){
-                $this->errors[] = 'Valore campo '.$this->name.' non corrispondente.';
-            }
-            return $this;
-        }
-
-        public static function mapMethod(string $rule){
-            if($rule == "required") return $this->required();
-        }
-        
-        public function maxSize($size){
-            if($this->file['error'] != 4 && $this->file['size'] > $size){
-                $this->errors[] = 'Il file *'.$this->name.'* supera la dimensione massima di '.number_format($size / 1048576, 2).' MB.';
-            }
-            return $this;
-        }
-        
-        public function ext($extension){
-            if($this->file['error'] != 4 && pathinfo($this->file['name'], PATHINFO_EXTENSION) != $extension && strtoupper(pathinfo($this->file['name'], PATHINFO_EXTENSION)) != $extension){
-                $this->errors[] = 'Il file '.$this->name.' non è un '.$extension.'.';
-            }
-            return $this;
-        }
-        
-        public function purify($string){
-            return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
-        }
-        
-      
         public function isSuccess(){
             if(empty($this->errors)) return true;
         }
@@ -124,7 +96,6 @@
             }else{
                 return true;
             }
-        
         }
         
         public static function is_int($value){
