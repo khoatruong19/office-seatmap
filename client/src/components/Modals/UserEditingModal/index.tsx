@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { KeyRound, Lock, Pencil, Trash, UserIcon } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import DefaultAvatar from "../../../assets/default-avatar.png";
 import { MODALS, useModalContext } from "../../../providers/ModalProvider";
@@ -39,6 +39,7 @@ const UserEditingModal = ({ type, user }: Props) => {
     handleSubmit,
     setValue,
     reset,
+    watch,
     formState: { errors },
   } = useForm<UserSchemaType>({
     resolver: zodResolver(UserSchema),
@@ -113,6 +114,16 @@ const UserEditingModal = ({ type, user }: Props) => {
     setValue("role", user.role);
     setAvatar(user.avatar ?? "");
   }, [user]);
+
+  const isInformationChanged = useMemo(() => {
+    if (!user) return false;
+    const textInfoChange =
+      watch("full_name") !== user.full_name ||
+      watch("email") !== user.email ||
+      watch("role") !== user.role;
+    if (file || textInfoChange) return true;
+    return false;
+  }, [watch("full_name"), file]);
 
   return (
     <div className="relative w-[500px] py-8 font-mono">
@@ -204,7 +215,7 @@ const UserEditingModal = ({ type, user }: Props) => {
             Cancel
           </Button>
           <Button
-            disabled={createLoading || updateLoading}
+            disabled={!isInformationChanged || createLoading || updateLoading}
             type="submit"
             className="mx-auto block rounded-lg disabled:bg-primary bg-secondary disabled:cursor-default disabled:hover:opacity-100"
           >
