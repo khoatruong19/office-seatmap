@@ -9,7 +9,7 @@ export enum UserRole {
   USER = "user",
 }
 
-export type User = {
+export type UserType = {
   id: number;
   email: string;
   full_name: string;
@@ -17,4 +17,14 @@ export type User = {
   avatar: string | null;
   created_at: Date;
   updated_at: Date;
+};
+
+export type CellType = {
+  id: string;
+  order: number;
+};
+
+export type BlockType = {
+  name: string;
+  cells: CellType[];
 };

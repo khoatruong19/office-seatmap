@@ -1,28 +1,29 @@
 import { cn } from "../../../../lib/clsx";
+import { CellType } from "../../../../schema/types";
 
 type Props = {
-  idx: number;
+  order: number;
   done: boolean;
-  seats: string[];
-  selectedCells: string[];
-  setSeats: (seats: string[]) => void;
+  seats: CellType[];
+  selectedCells: CellType[];
+  setSeats: (seats: CellType[]) => void;
 };
 
-const Cell = ({ idx, done, seats, selectedCells, setSeats }: Props) => {
+const Cell = ({ order, done, seats, selectedCells, setSeats }: Props) => {
   return (
     <div
-      id={"seat" + idx}
-      key={Math.random() * 1}
+      id={"seat" + order}
       className={cn(
         "relative h-12 w-12 border border-secondary z-20 rounded-md",
         {
           "border-2 border-red-400":
-            !done && selectedCells.includes("seat" + idx),
-          "bg-red-400": seats.includes("seat" + idx),
+            !done && selectedCells.find((item) => item.order === order),
+          "bg-red-400": seats.find((item) => item.order === order),
         }
       )}
       onClick={() =>
-        !selectedCells.length && setSeats([...seats, "seat" + idx])
+        !selectedCells.length &&
+        setSeats([...seats, { id: "seat" + order, order }])
       }
     ></div>
   );

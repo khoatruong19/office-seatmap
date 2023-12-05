@@ -1,16 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
+import { SEATMAP_COLUMNS_PER_ROW } from "../../../config/seatmapSize";
 import { cn } from "../../../lib/clsx";
 import { useModalContext } from "../../../providers/ModalProvider";
 import { MODALS } from "../../../providers/ModalProvider/constants";
+import { BlockType, CellType } from "../../../schema/types";
 import OfficeTitle from "../../Office/OfficeTitle";
-import { SEATMAP_COLUMNS_PER_ROW } from "../../../config/seatmapSize";
 import Cell from "./Cell";
 
 const Seatmap = () => {
   const [done, setDone] = useState(false);
-  const [selectedCells, setSelectedCells] = useState<string[]>([]);
-  const [blocks, setBlocks] = useState<string[][]>([]);
-  const [seats, setSeats] = useState<string[]>([]);
+  const [selectedCells, setSelectedCells] = useState<CellType[]>([]);
+  const [blocks, setBlocks] = useState<BlockType[]>([]);
+  const [seats, setSeats] = useState<CellType[]>([]);
 
   const { showModal, closeModal } = useModalContext();
 
@@ -22,13 +23,14 @@ const Seatmap = () => {
         if (!!!cellId.length) return;
 
         const lastCell = selectedCells[selectedCells.length - 1];
+        const newCellOrder = Number(cellId.split("seat")[1]);
+
         if (lastCell) {
-          const lastCellIdx = Number(lastCell.split("seat")[1]);
-          const newCellIdx = Number(cellId.split("seat")[1]);
+          const lastCellOrder = lastCell.order;
           if (
             !(
-              Math.abs(newCellIdx - lastCellIdx) == 1 ||
-              Math.abs(newCellIdx - lastCellIdx) == SEATMAP_COLUMNS_PER_ROW
+              Math.abs(newCellOrder - lastCellOrder) == 1 ||
+              Math.abs(newCellOrder - lastCellOrder) == SEATMAP_COLUMNS_PER_ROW
             )
           )
             return;
@@ -37,12 +39,12 @@ const Seatmap = () => {
         const tempCells = [...selectedCells];
 
         const existingCellIndex = selectedCells.findIndex(
-          (item) => item === cellId
+          (item) => item.id === cellId
         );
 
         if (existingCellIndex >= 0) return;
 
-        tempCells.push(cellId);
+        tempCells.push({ id: cellId, order: newCellOrder });
         setSelectedCells(tempCells);
       }
     };
@@ -67,7 +69,10 @@ const Seatmap = () => {
       showModal(MODALS.CONFIRM, {
         text: "Are you sure you want to create the block here?",
         confirmHandler: () => {
-          setBlocks((prev) => [...prev, selectedCells]);
+          setBlocks((prev) => [
+            ...prev,
+            { name: "sdhsdj", cells: selectedCells },
+          ]);
           setSelectedCells([]);
           closeModal();
         },
@@ -81,25 +86,26 @@ const Seatmap = () => {
 
   const handleOpenBlockModal = () => showModal(MODALS.CONFIRM, {});
 
-  const renderBlocks = (block: string[], idx: number) => {
-    const seatIndex = block.findIndex((item) => item === "seat" + idx);
+  const renderBlocks = (block: BlockType, order: number) => {
+    const { cells } = block;
+
+    const seatIndex = cells.findIndex((item) => item.id === "seat" + order);
 
     if (seatIndex < 0) return null;
 
-    const seatNumber = Number(block[seatIndex].split("seat")[1]);
+    const seatNumber = Number(cells[seatIndex].id.split("seat")[1]);
 
-    const foundNextToBlock = block.find(
-      (item) => Number(item.split("seat")[1]) - seatNumber == 1
-    );
+    const foundNextToBlock = cells.find((item) => item.order - seatNumber == 1);
     if (foundNextToBlock) {
-      const foundBlock = block.find(
-        (item) => Number(item.split("seat")[1]) - seatNumber == 15
+      const foundBlock = cells.find(
+        (item) => item.order - seatNumber == SEATMAP_COLUMNS_PER_ROW
       );
+
       return (
         <div
           onClick={handleOpenBlockModal}
           key={Math.random() * 1}
-          className="relative h-12 w-12  z-40"
+          className="relative h-12 w-12 z-40"
         >
           <div
             className={cn(
@@ -113,8 +119,8 @@ const Seatmap = () => {
       );
     }
 
-    const foundBlock = block.find(
-      (item) => Number(item.split("seat")[1]) - seatNumber == 15
+    const foundBlock = cells.find(
+      (item) => item.order - seatNumber == SEATMAP_COLUMNS_PER_ROW
     );
     if (foundBlock)
       return (
@@ -141,17 +147,20 @@ const Seatmap = () => {
                 ""
               )}
             >
-              Server room
+              {block.name}
             </span>
           </div>
         </div>
       );
   };
 
-  const blocksArray: string[] = useMemo(
-    () => ([] as string[]).concat(...blocks),
-    [blocks]
-  );
+  const blockCells: CellType[] = useMemo(() => {
+    const cells = ([] as CellType[]).concat(
+      ...blocks.map((block) => [...block.cells])
+    );
+
+    return cells;
+  }, [blocks]);
 
   return (
     <div className="z-1 max-w-7xl w-full mx-auto lg:px-32 py-10 rounded-2xl ">
@@ -161,12 +170,13 @@ const Seatmap = () => {
         <div className="relative flex items-center gap-3 flex-wrap">
           {new Array(100).fill(0).map((_, idx) => (
             <>
-              {blocksArray.includes("seat" + idx) ? (
+              {blockCells.find((cell) => cell.order === idx) ? (
                 <>{blocks.map((block) => renderBlocks(block, idx))}</>
               ) : (
                 <Cell
+                  key={Math.random() * 1}
                   done={done}
-                  idx={idx}
+                  order={idx}
                   seats={seats}
                   selectedCells={selectedCells}
                   setSeats={setSeats}

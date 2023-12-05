@@ -1,11 +1,12 @@
 import { RouteObject } from "react-router-dom";
 import Login from "../pages/Login";
 import Home from "../pages/Home";
-import AuthGuard from "../components/AuthGuard";
+import AuthGuard from "../guards/AuthGuard";
 import Office from "../pages/Office";
 import OfficeEditing from "../pages/OfficeEditing";
 
 const APP_ROUTES = {
+  APP: "/",
   HOME: "/",
   OFFICE: "/offices/:id",
   OFFICE_EDITING: "/offices/:id/edit",
@@ -14,10 +15,10 @@ const APP_ROUTES = {
 
 const ROUTES_CONFIG: RouteObject[] = [
   {
-    path: APP_ROUTES.HOME,
+    path: APP_ROUTES.APP,
     element: <AuthGuard />,
     children: [
-      { path: "", element: <Home /> },
+      { path: APP_ROUTES.HOME, element: <Home /> },
       { path: APP_ROUTES.OFFICE, element: <Office /> },
       { path: APP_ROUTES.OFFICE_EDITING, element: <OfficeEditing /> },
       {

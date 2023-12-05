@@ -3,6 +3,8 @@ import { APP_ROUTES } from "../../../config/routes";
 import useCheckAdmin from "../../../hooks/useCheckAdmin";
 import Button from "../../Form/Button";
 import { Pencil, Trash } from "lucide-react";
+import { useModalContext } from "../../../providers/ModalProvider";
+import { MODALS } from "../../../providers/ModalProvider/constants";
 
 type Props = {
   office: any;
@@ -10,6 +12,15 @@ type Props = {
 
 const OfficeCard = ({ office }: Props) => {
   const isAdmin = useCheckAdmin();
+
+  const { showModal } = useModalContext();
+
+  const handleOpenConfirmModal = () =>
+    showModal(MODALS.CONFIRM, {
+      text: "Are you sure you want to delete this office?",
+      confirmHandler: () => {},
+    });
+
   return (
     <div
       key={office.slug}
@@ -28,8 +39,8 @@ const OfficeCard = ({ office }: Props) => {
               <Pencil />
             </Button>
           </Link>
-          <Button className="p-0 text-tertiary">
-            <Trash strokeWidth={3} />
+          <Button onClick={handleOpenConfirmModal} className="p-0 text-danger">
+            <Trash strokeWidth={2.5} />
           </Button>
         </div>
       )}
