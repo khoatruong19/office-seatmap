@@ -1,11 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
-import { SEATMAP_COLUMNS_PER_ROW } from "../../../config/seatmapSize";
+import {
+  SEATMAP_COLUMNS_PER_ROW,
+  SEATMAP_ROWS,
+} from "../../../config/seatmapSize";
 import { cn } from "../../../lib/clsx";
 import { useModalContext } from "../../../providers/ModalProvider";
 import { MODALS } from "../../../providers/ModalProvider/constants";
 import { BlockType, CellType } from "../../../schema/types";
 import OfficeTitle from "../../Office/OfficeTitle";
 import Cell from "./Cell";
+import Button from "../../Form/Button";
 
 const Seatmap = () => {
   const [done, setDone] = useState(false);
@@ -64,27 +68,9 @@ const Seatmap = () => {
     };
   }, [selectedCells, done]);
 
-  useEffect(() => {
-    if (done) {
-      showModal(MODALS.CONFIRM, {
-        text: "Are you sure you want to create the block here?",
-        confirmHandler: () => {
-          setBlocks((prev) => [
-            ...prev,
-            { name: "sdhsdj", cells: selectedCells },
-          ]);
-          setSelectedCells([]);
-          closeModal();
-        },
-        cancelHandler: () => {
-          setSelectedCells([]);
-        },
-      });
-      setDone(false);
-    }
-  }, [done]);
-
   const handleOpenBlockModal = () => showModal(MODALS.CONFIRM, {});
+
+  const handleSaveSeatmap = () => {};
 
   const renderBlocks = (block: BlockType, order: number) => {
     const { cells } = block;
@@ -143,7 +129,7 @@ const Seatmap = () => {
             <span
               id="asdasds"
               className={cn(
-                "absolute bottom-5 right-0 w-[100px] h-full text-black font-semibold text-xs text-center pt-3 break-all",
+                "absolute bottom-5 right-0 w-fit h-full text-black font-semibold text-xs text-center pt-3 break-all",
                 ""
               )}
             >
@@ -162,28 +148,51 @@ const Seatmap = () => {
     return cells;
   }, [blocks]);
 
+  useEffect(() => {
+    if (done) {
+      showModal(MODALS.ADD_BLOCK, {
+        confirmHandler: (name: string) => {
+          setBlocks((prev) => [...prev, { name, cells: selectedCells }]);
+          setSelectedCells([]);
+          closeModal();
+        },
+        cancelHandler: () => {
+          setSelectedCells([]);
+        },
+      });
+      setDone(false);
+    }
+  }, [done]);
+
   return (
     <div className="z-1 max-w-7xl w-full mx-auto lg:px-32 py-10 rounded-2xl ">
       <OfficeTitle title="Office 101" />
-
+      <Button
+        onClick={handleSaveSeatmap}
+        className="bg-tertiary text-white rounded-md ml-auto block mb-5"
+      >
+        Save
+      </Button>
       <div className="relative max-w-4xl w-full mx-auto flex flex-col gap-4 items-start scale-50 lg:scale-[0.8] 2xl:scale-100">
         <div className="relative flex items-center gap-3 flex-wrap">
-          {new Array(100).fill(0).map((_, idx) => (
-            <>
-              {blockCells.find((cell) => cell.order === idx) ? (
-                <>{blocks.map((block) => renderBlocks(block, idx))}</>
-              ) : (
-                <Cell
-                  key={Math.random() * 1}
-                  done={done}
-                  order={idx}
-                  seats={seats}
-                  selectedCells={selectedCells}
-                  setSeats={setSeats}
-                />
-              )}
-            </>
-          ))}
+          {new Array(SEATMAP_ROWS * SEATMAP_COLUMNS_PER_ROW)
+            .fill(0)
+            .map((_, idx) => (
+              <>
+                {blockCells.find((cell) => cell.order === idx) ? (
+                  <>{blocks.map((block) => renderBlocks(block, idx))}</>
+                ) : (
+                  <Cell
+                    key={Math.random() * 1}
+                    done={done}
+                    order={idx}
+                    seats={seats}
+                    selectedCells={selectedCells}
+                    setSeats={setSeats}
+                  />
+                )}
+              </>
+            ))}
         </div>
       </div>
     </div>
