@@ -1,11 +1,11 @@
 <?php
-    declare( strict_types=1 );
+declare( strict_types=1 );
 
-    namespace core;
+namespace core;
 
-    abstract class Repository
+abstract class Repository
+{
+    public function __construct(protected readonly Database $database)
     {
-        public function __construct(protected readonly Database $database)
-        {
-        }
     }
+}

@@ -1,28 +1,25 @@
 <?php
 declare( strict_types=1 );
 
-namespace modules\user;
+namespace modules\office;
 use core\HttpStatus;
 use core\Repository;
 use shared\exceptions\ResponseException;
 use shared\interfaces\IRepository;
 use PDO;
 
-class UserRepository extends Repository implements IRepository{
+class OfficeRepository extends Repository implements IRepository{
     /**
      * @param $data
      * @return false|string
      */
     public function create($data): bool|string
     {
-        $sql = "INSERT INTO users (full_name, password, email, role, avatar) VALUES (:full_name, :password, :email, :role, :avatar)";
+        $sql = "INSERT INTO offices (name, blocks) VALUES (:name, :blocks)";
         $stmt = $this->database->getConnection()->prepare($sql);
         $result = $stmt->execute([
-            "email" => $data["email"],
-            "full_name" => $data["full_name"],
-            "role" => $data["role"] ?? 'user',
-            "password" => $data["password"],
-            "avatar" => $data["avatar"] ?? null,
+            "name" => $data["name"],
+            "blocks" => "[]",
         ]);
 
         return $this->database->getConnection()->lastInsertId();
@@ -36,13 +33,13 @@ class UserRepository extends Repository implements IRepository{
      */
     public function findOne(string $field, string $value): mixed
     {
-        $allowed_fields = ['username', 'email', 'id'];
+        $allowed_fields = ['name', 'id'];
 
         if(!in_array($field, $allowed_fields)) {
             throw new ResponseException(HttpStatus::$BAD_REQUEST,"Field is not allowed!");
         }
 
-        $sql = "SELECT * FROM users WHERE ".$field." = :value limit 1";
+        $sql = "SELECT * FROM offices WHERE ".$field." = :value limit 1";
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute([
             "value" => $value,

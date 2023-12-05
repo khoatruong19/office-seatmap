@@ -25,7 +25,9 @@ const Cell = ({ order, done, seats, selectedCells, setSeats }: Props) => {
         !selectedCells.length &&
         setSeats([...seats, { id: "seat" + order, order }])
       }
-    ></div>
+    >
+      {order}
+    </div>
   );
 };
 
