@@ -1,10 +1,8 @@
 import { User, UserRole } from "../../../../../schema/types";
 import DefaultAvatar from "../../../../../assets/default-avatar.png";
-import {
-  MODALS,
-  useModalContext,
-} from "../../../../../providers/ModalProvider";
+import { useModalContext } from "../../../../../providers/ModalProvider";
 import { useAuth } from "../../../../../hooks/useAuth";
+import { MODALS } from "../../../../../providers/ModalProvider/constants";
 
 type Props = {
   user: User;

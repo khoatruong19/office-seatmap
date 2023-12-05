@@ -2,7 +2,7 @@ import { isFulfilled, isRejectedWithValue } from "@reduxjs/toolkit";
 import type { MiddlewareAPI, Middleware } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 
-const blockToastFulfilledEndpoints = ["getAllUsers"];
+const blockToastFulfilledEndpoints = ["getAllUsers", "logout"];
 
 export const rtkQueryLogger: Middleware =
   (_: MiddlewareAPI) => (next) => (action) => {
@@ -13,7 +13,6 @@ export const rtkQueryLogger: Middleware =
       toast.success(action.payload.messages);
     }
     if (isRejectedWithValue(action)) {
-      console.log({ action });
       toast.error("👺 " + action.payload.data.messages);
     }
     return next(action);

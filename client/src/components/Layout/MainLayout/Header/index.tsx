@@ -1,9 +1,9 @@
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../../hooks/useAuth";
 import UserDropdown from "./UserDropdown";
 import { useRef, useState } from "react";
-import { useClickOutside } from "../../../hooks/useClickOutside";
-import Logo from "../../../assets/logo.jpg";
-import DefaultAvatar from "../../../assets/default-avatar.png";
+import { useClickOutside } from "../../../../hooks/useClickOutside";
+import Logo from "../../../../assets/logo.jpg";
+import DefaultAvatar from "../../../../assets/default-avatar.png";
 
 const Header = () => {
   const { user } = useAuth();

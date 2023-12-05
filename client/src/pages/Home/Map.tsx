@@ -1,5 +1,5 @@
 import React from "react";
-import { renderRow } from "../../components/Home/Seatmap/constants";
+import { renderRow } from "../../components/OfficeEditing/Seatmap/constants";
 
 const ELEMENT_WIDTH = 50;
 const ELEMENT_SPACING = 30;

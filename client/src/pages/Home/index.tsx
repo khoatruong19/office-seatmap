@@ -1,20 +1,34 @@
-import Header from "../../components/Home/Header";
-import Seatmap from "../../components/Home/Seatmap";
-import Sidebar from "../../components/Home/Sidebar";
-import { useAuth } from "../../hooks/useAuth";
-import { UserRole } from "../../schema/types";
+import AddOfficeButton from "../../components/Home/AddOfficeButton";
+import OfficeCard from "../../components/Home/OfficeCard";
+import MainLayout from "../../components/Layout/MainLayout";
+import OfficeTitle from "../../components/Office/OfficeTitle";
+
+const offices = [
+  {
+    name: "Office 101",
+    slug: "office-101",
+  },
+  {
+    name: "Office 102",
+    slug: "office-102",
+  },
+];
 
 const Home = () => {
-  const { user } = useAuth();
   return (
-    <div className="min-h-screen font-mono flex flex-col w-screen overflow-x-hidden ">
-      <Header />
+    <MainLayout>
+      <div className="max-w-5xl w-full mx-auto mt-10">
+        <OfficeTitle title="Offices" />
 
-      <div className="relative w-full pt-10 flex-1">
-        <Seatmap />
-        {user?.role === UserRole.ADMIN && <Sidebar />}
+        <AddOfficeButton />
+
+        <nav className="flex flex-col gap-4 w-full">
+          {offices.map((office) => (
+            <OfficeCard key={office.slug} office={office} />
+          ))}
+        </nav>
       </div>
-    </div>
+    </MainLayout>
   );
 };
 
