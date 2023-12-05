@@ -1,53 +1,55 @@
 <?php
+    declare( strict_types=1 );
 
-namespace modules\auth;
+    namespace modules\auth;
 
-use core\HttpStatus;
-use DateTime;
-use Exception;
-use \Firebase\JWT\JWT;
-use Firebase\JWT\Key;
-use shared\enums\EnumTypeJwt;
-use shared\exceptions\ResponseException;
+    use core\HttpStatus;
+    use DateTime;
+    use Exception;
+    use \Firebase\JWT\JWT;
+    use Firebase\JWT\Key;
+    use shared\enums\EnumTypeJwt;
+    use shared\exceptions\ResponseException;
 
-class JwtService
-{
-    private array $key;
-
-    public function __construct()
+    class JwtService
     {
-        $this->key = array(
-            EnumTypeJwt::ACCESS_TOKEN->name => $_ENV['JWT_ACCESS_KEY'],
-            EnumTypeJwt::REFRESH_TOKEN->name => $_ENV['JWT_REFRESH_KEY'],
-        );
-    }
+        private array $key;
 
-    public function generateToken(int $user_id, string $role, EnumTypeJwt $type): string
-    {
-        $iat = new DateTime();
+        public function __construct()
+        {
+            $this->key = array(
+                EnumTypeJwt::ACCESS_TOKEN->name => $_ENV['JWT_ACCESS_KEY'],
+                EnumTypeJwt::REFRESH_TOKEN->name => $_ENV['JWT_REFRESH_KEY'],
+            );
+        }
 
-        $exp = clone $iat;
-        $exp->modify('+1 day');
+        public function generateToken(int $user_id, string $role, EnumTypeJwt $type): string
+        {
+            $iat = new DateTime();
 
-        $payload = array(
-            "userId" => $user_id,
-            "role" => $role,
-            "iat" => $iat->getTimestamp(),
-            "exp" => $exp->getTimestamp(),
-        );
+            $exp = clone $iat;
+            $exp->modify('+1 day');
 
-        return JWT::encode($payload, $this->key[$type->name],'HS256');
-    }
+            $payload = array(
+                "userId" => $user_id,
+                "role" => $role,
+                "iat" => $iat->getTimestamp(),
+                "exp" => $exp->getTimestamp(),
+            );
 
-    /**
-     * @throws ResponseException
-     */
-    public function verifyToken(EnumTypeJwt $type, string $token)
-    {
-        try{
-            return JWT::decode($token, new Key($this->key[$type->name], 'HS256'));
-        }catch(Exception) {
-            throw new ResponseException(HttpStatus::$UNAUTHORIZED, "Unauthorized token");
+            return JWT::encode($payload, $this->key[$type->name],'HS256');
+        }
+
+        /**
+         * @throws ResponseException
+         * @response => {userId: string, role: string, iat: timestamp, exp: timestamp}
+         */
+        public function verifyToken(EnumTypeJwt $type, string $token)
+        {
+            try{
+                return JWT::decode($token, new Key($this->key[$type->name], 'HS256'));
+            }catch(Exception) {
+                throw new ResponseException(HttpStatus::$UNAUTHORIZED, "Unauthorized token");
+            }
         }
     }
-}

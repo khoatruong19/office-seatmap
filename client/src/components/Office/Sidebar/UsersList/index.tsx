@@ -1,10 +1,16 @@
+import ClipLoader from "react-spinners/ClipLoader";
 import { useGetAllUsersQuery } from "../../../../stores/user/service";
 import UserCard from "./UserCard";
 
 const UsersList = () => {
   const { data, isLoading } = useGetAllUsersQuery();
 
-  if (isLoading) return "Loading";
+  if (isLoading)
+    return (
+      <div className="mx-auto mt-5">
+        <ClipLoader />
+      </div>
+    );
 
   if (!data)
     return (

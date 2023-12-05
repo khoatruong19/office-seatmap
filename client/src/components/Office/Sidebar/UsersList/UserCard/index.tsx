@@ -13,16 +13,17 @@ const UserCard = ({ user }: Props) => {
   const { showModal } = useModalContext();
 
   const handleOpenUpdateModal = () => {
+    if (user.id === me!.id) {
+      showModal(MODALS.PROFILE, {});
+      return;
+    }
+
     if (user.role === UserRole.ADMIN) {
       showModal(MODALS.USER_INFORMATION, { user });
       return;
     }
 
-    if (user.id === me!.id) {
-      showModal(MODALS.PROFILE, {});
-    } else {
-      showModal(MODALS.UPDATE_USER, { type: "update", user });
-    }
+    showModal(MODALS.UPDATE_USER, { type: "update", user });
   };
 
   return (
