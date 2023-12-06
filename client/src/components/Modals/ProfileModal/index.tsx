@@ -11,9 +11,9 @@ import { useModalContext } from "../../../providers/ModalProvider";
 import resizeImage from "../../../utils/resizeImage";
 import {
   useUpdateProfileMutation,
-  useUploadMutation,
+  useUploadAvatarMutation,
 } from "../../../stores/user/service";
-import { User } from "../../../schema/types";
+import { UserType } from "../../../schema/types";
 import FieldControl from "../../Form/FieldControl";
 
 const ProfileModal = () => {
@@ -24,7 +24,7 @@ const ProfileModal = () => {
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [upload, { isLoading: uploadLoading }] = useUploadMutation();
+  const [upload, { isLoading: uploadLoading }] = useUploadAvatarMutation();
   const [update, { isLoading: updateLoading }] = useUpdateProfileMutation();
 
   const {
@@ -58,7 +58,7 @@ const ProfileModal = () => {
     let informationChanged = false;
 
     for (const [key, value] of Object.entries(values)) {
-      if (user[key as keyof User] != value) informationChanged = true;
+      if (user[key as keyof UserType] != value) informationChanged = true;
     }
 
     if (informationChanged)
@@ -75,20 +75,20 @@ const ProfileModal = () => {
     if (!e.target.files) return;
 
     const file = e.target.files[0];
-
     if (!file) return;
+
     setFile(file);
     setAvatar(URL.createObjectURL(file));
   };
 
   useEffect(() => {
     if (!user) return;
+
     setValue("full_name", user.full_name);
   }, [user]);
 
   const isInformationChanged = useMemo(() => {
-    if (file || watch("full_name") !== user?.full_name) return true;
-    return false;
+    return file || watch("full_name") !== user?.full_name;
   }, [watch("full_name"), file]);
 
   return (

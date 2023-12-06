@@ -10,6 +10,6 @@ use shared\middlewares\JwtVerify;
 
 $app->router->addRoute(RequestMethod::POST, "/auth/login", null, [AuthController::class, 'login']);
 $app->router->addRoute(RequestMethod::POST, "/auth/register", null, [AuthController::class, 'register']);
-$app->router->addRoute(RequestMethod::GET, "/auth/me", [JwtVerify::class], [AuthController::class, 'me']);
+$app->router->addRoute(RequestMethod::GET, "/auth/me", [JwtVerify::class], [AuthController::class, 'getCurrentUser']);
 $app->router->addRoute(RequestMethod::GET, "/auth/logout", [JwtVerify::class], [AuthController::class, 'logout']);
 

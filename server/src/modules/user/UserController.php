@@ -2,18 +2,24 @@
 declare( strict_types=1 );
 namespace modules\user;
 
+use core\Controller;
 use core\HttpStatus;
 use core\Request;
 use core\Response;
-use core\Controller;
+use modules\user\dto\CreateUserDto;
+use modules\user\dto\UpdateProfileDto;
+use modules\user\dto\UpdateUserDto;
+use shared\enums\AuthResponse;
+use shared\enums\ParamKeys;
+use shared\enums\UserResponse;
 use shared\exceptions\ResponseException;
 
 class UserController extends Controller
 {
     public function __construct(
-        public Request            $request,
-        public Response           $response,
-        private readonly UserService $user_service)
+        public Request               $request,
+        public Response              $response,
+        private readonly UserService $userService)
     {
     }
 
@@ -23,9 +29,8 @@ class UserController extends Controller
      */
     public function findAll()
     {
-        $data = $this->user_service->findAll();
-
-        $this->response->response(HttpStatus::$OK, "Get all users successfuly!", $data, null);
+        $users = $this->userService->findAll();
+        $this->response->response(HttpStatus::$OK, UserResponse::GET_ALL_SUCCESS->value, $users);
     }
 
     /**
@@ -40,12 +45,10 @@ class UserController extends Controller
             'password' => 'required|min:8',
             'role' => 'required'
         ]);
-
-        $request_body = $this->request->getBody();
-
-        $id = $this->user_service->create($request_body);
-
-        $this->response->response(HttpStatus::$OK, "Create user successfully!", $id, null);
+        $raw_data = $this->request->getBody();
+        $create_user_dto = CreateUserDto::fromArray($raw_data);
+        $id = $this->userService->create($create_user_dto);
+        $this->response->response(HttpStatus::$OK, UserResponse::CREATE_USER_SUCCESS->value, $id);
     }
 
     /**
@@ -59,19 +62,11 @@ class UserController extends Controller
             'full_name' => 'required|min:8',
             'role' => 'required'
         ]);
-
-        $user_id = $this->request->getParam("userId");
-
-        if (!$user_id)
-        {
-            throw new ResponseException(HttpStatus::$BAD_REQUEST,"User id not found!");
-        }
-
-        $body = $this->request->getBody() ?? [];
-
-        $data = $this->user_service->updateOne($user_id, $body);
-
-        $this->response->response(HttpStatus::$OK, "Update successfully!", $data, null);
+        $user_id = $this->request->getParam(ParamKeys::USER_ID->value);
+        $raw_data = $this->request->getBody();
+        $update_user_dto = UpdateUserDto::fromArray($raw_data);
+        $data = $this->userService->updateOne($user_id, $update_user_dto);
+        $this->response->response(HttpStatus::$OK, UserResponse::UPDATE_USER_SUCCESS->value, $data);
     }
 
     /**
@@ -83,19 +78,11 @@ class UserController extends Controller
         $this->requestBodyValidation([
             'full_name' => 'min:8',
         ]);
-
-        $user_id = $this->request->getParam("userId");
-
-        if (!$user_id)
-        {
-            throw new ResponseException(HttpStatus::$BAD_REQUEST,"User id not found!");
-        }
-
-        $body = $this->request->getBody() ?? [];
-
-        $data = $this->user_service->updateOne($user_id, $body);
-
-        $this->response->response(HttpStatus::$OK, "Update successfully!", $data, null);
+        $user_id = $this->request->getParam(ParamKeys::USER_ID->value);
+        $raw_data = $this->request->getBody();
+        $update_profile_dto = UpdateProfileDto::fromArray($raw_data);
+        $data = $this->userService->updateProfile($user_id, $update_profile_dto);
+        $this->response->response(HttpStatus::$OK, UserResponse::UPDATE_PROFILE_SUCCESS->value, $data);
     }
 
     /**
@@ -104,37 +91,24 @@ class UserController extends Controller
      */
     public function delete()
     {
-        $user_id = $this->request->getParam("userId");
-
-        if (!$user_id)
-        {
-            throw new ResponseException(HttpStatus::$BAD_REQUEST,"User id not found!");
-        }
-
-        $this->user_service->delete($user_id);
-
-         $this->response->response(HttpStatus::$OK, "Delete successfully!", null, null);
+        $user_id = $this->request->getParam(ParamKeys::USER_ID->value);
+        $this->userService->delete($user_id);
+        $this->response->response(HttpStatus::$OK, UserResponse::DELETE_USER_SUCCESS->value);
     }
 
     /**
      * @return null
      * @throws ResponseException
      */
-    public function upload()
+    public function uploadAvatar()
     {
         if (!isset($_FILES["file"]))
         {
-            throw new ResponseException(HttpStatus::$BAD_REQUEST,"No file found!");
+            throw new ResponseException(HttpStatus::$BAD_REQUEST, UserResponse::NO_FILE_FOUND->value);
         }
 
-        $user_id = $this->request->getParam("userId");
-
-        if (!$user_id)
-        {
-            throw new ResponseException(HttpStatus::$UNAUTHORIZED,"Not authorized!");
-        }
-
-        $data = $this->user_service->upload($user_id);
-        $this->response->response(HttpStatus::$OK, "Upload successfully!", $data, null);
+        $user_id = $this->request->getParam(ParamKeys::USER_ID->value);
+        $data = $this->userService->uploadAvatar($user_id);
+        $this->response->response(HttpStatus::$OK, UserResponse::UPLOAD_SUCCESS->value, $data);
     }
 }

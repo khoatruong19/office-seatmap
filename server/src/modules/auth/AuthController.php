@@ -8,7 +8,11 @@ use core\Request;
 use core\Response;
 use core\Controller;
 use core\SessionManager;
+use modules\auth\dto\LoginUserDto;
+use modules\auth\dto\RegisterUserDto;
 use modules\user\UserService;
+use shared\enums\AuthResponse;
+use shared\enums\SessionKeys;
 use shared\exceptions\ResponseException;
 
 class AuthController extends Controller
@@ -17,10 +21,9 @@ class AuthController extends Controller
         public Request               $request,
         public Response              $response,
         private readonly AuthService $authService,
-        private readonly UserService $userService)
-    {
-
-    }
+        private readonly UserService $userService
+    )
+    {}
 
     /**
      * @return void
@@ -33,15 +36,15 @@ class AuthController extends Controller
             'full_name' => 'required|min:8',
             'password' => 'required|min:8'
         ]);
-        $request_body = $this->request->getBody();
-        $id = $this->authService->register($request_body);
-
-        $this->response->response(HttpStatus::$OK, "Register successfully!", $id, null);
+        $raw_data = $this->request->getBody();
+        $register_user_dto = RegisterUserDto::fromArray($raw_data);
+        $id = $this->authService->register($register_user_dto);
+        $this->response->response(HttpStatus::$OK, AuthResponse::REGISTER_SUCCESS->value, $id);
     }
 
     /**
+     * @return void
      * @throws ResponseException
-     * @response => {status: OK, messages: string, data: {$id: string}}
      */
     public function login(): void
     {
@@ -49,22 +52,21 @@ class AuthController extends Controller
             'email' => 'required|min:8|pattern:email',
             'password' => 'required'
         ]);
-        $body = $this->request->getBody();
-        $user_credentials = $this->authService->login($body);
-
-        $this->response->response(HttpStatus::$OK, "Login successfully!", $user_credentials);
+        $raw_data = $this->request->getBody();
+        $login_user_dto = LoginUserDto::fromArray($raw_data);
+        $user_credentials = $this->authService->login($login_user_dto);
+        $this->response->response(HttpStatus::$OK, AuthResponse::LOGIN_SUCCESS->value, $user_credentials);
     }
 
     /**
      * @return void
      * @throws ResponseException
      */
-    public function me(): void
+    public function getCurrentUser(): void
     {
-        $user_id = SessionManager::get("userId");
-        $user = $this->userService->me($user_id);
-
-        $this->response->response(HttpStatus::$OK, "Welcome back!", $user, null);
+        $user_id = SessionManager::get(SessionKeys::USER_ID->value);
+        $user = $this->userService->getCurrentUser(strval($user_id));
+        $this->response->response(HttpStatus::$OK, AuthResponse::ME_SUCCESS->value, $user);
     }
 
     /**
@@ -74,8 +76,8 @@ class AuthController extends Controller
     public function logout(): void
     {
         $is_logout = $this->authService->logout();
-        if(!$is_logout) throw new ResponseException(HttpStatus::$UNAUTHORIZED,"Not authorized!");
+        if(!$is_logout) throw new ResponseException(HttpStatus::$UNAUTHORIZED,AuthResponse::UNAUTHORIZED->value);
 
-        $this->response->response(HttpStatus::$OK, "Logout successfully!", true, null);
+        $this->response->response(HttpStatus::$OK, AuthResponse::LOGOUT_SUCCESS->value, true);
     }
 }

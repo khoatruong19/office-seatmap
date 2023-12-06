@@ -5,57 +5,53 @@ namespace modules\auth;
 
 use core\HttpStatus;
 use core\SessionManager;
+use modules\auth\dto\LoginUserDto;
+use modules\auth\dto\RegisterUserDto;
+use modules\user\dto\CreateUserDto;
+use modules\user\UserEntity;
 use modules\user\UserService;
+use shared\enums\AuthResponse;
 use shared\enums\EnumTypeJwt;
+use shared\enums\SessionKeys;
+use shared\enums\UserResponse;
 use shared\exceptions\ResponseException;
 
 class AuthService
 {
-    public function __construct(private readonly UserService $user_service, private readonly JwtService $jwt_service)
+    public function __construct(private readonly UserService $userService, private readonly JwtService $jwtService)
     {
     }
 
     /**
-     * @param array $register_data
+     * @param RegisterUserDto $register_user_dto
      * @return array
      * @throws ResponseException
      */
-    public function register(array $register_data): array
+    public function register(RegisterUserDto $register_user_dto): array
     {
-        $existing_email = $this->user_service->findOne("email", $register_data['email']);
-
-        if($existing_email) {
-            throw new ResponseException(HttpStatus::$BAD_REQUEST, "Email existed!");
-        }
-
-        $id = $this->user_service->create($register_data);
-
-        return $id;
+        $create_user_dto = CreateUserDto::fromArray($register_user_dto->toArray());
+        return $this->userService->create($create_user_dto);
     }
 
     /**
-     * @param array $login_data
+     * @param LoginUserDto $login_user_dto
      * @return array
      * @throws ResponseException
      */
-    public function login(array $login_data): array
+    public function login(LoginUserDto $login_user_dto): array
     {
-        $existing_user = $this->user_service->findOne("email", $login_data["email"]);
-
+        $existing_user = $this->userService->findOne("email", $login_user_dto->getEmail());
         if (!$existing_user) {
-            throw new ResponseException(HttpStatus::$BAD_REQUEST, "Invalid credential!" );
+            throw new ResponseException(HttpStatus::$BAD_REQUEST,  AuthResponse::INVALID_CREDENTIAL->value);
         }
 
-        $is_password_matched = password_verify($login_data["password"], $existing_user["password"]);
-
+        $is_password_matched = password_verify($login_user_dto->getPassword(), $existing_user["password"]);
         if (!$is_password_matched) {
-            throw new ResponseException(HttpStatus::$BAD_REQUEST, "Invalid credential!");
+            throw new ResponseException(HttpStatus::$BAD_REQUEST, AuthResponse::INVALID_CREDENTIAL->value);
         }
 
-        $access_token = $this->jwt_service->generateToken($existing_user["id"], $existing_user["role"], EnumTypeJwt::ACCESS_TOKEN);
-
+        $access_token = $this->jwtService->generateToken($existing_user["id"], $existing_user["role"], EnumTypeJwt::ACCESS_TOKEN);
         unset($existing_user['password']);
-
         return array(
             "user" => $existing_user,
             "accessToken" => $access_token,
@@ -67,10 +63,10 @@ class AuthService
      */
     public function logout(): bool
     {
-        $user_id = SessionManager::get('userId');
+        $user_id = SessionManager::get(SessionKeys::USER_ID->value);
         if(!$user_id) return false;
 
-        SessionManager::set("userId", null);
+        SessionManager::set(SessionKeys::USER_ID->value, null);
         return true;
     }
 }

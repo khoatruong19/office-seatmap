@@ -1,11 +1,11 @@
-import { User, UserRole } from "../../../../../schema/types";
+import { UserType, UserRole } from "../../../../../schema/types";
 import DefaultAvatar from "../../../../../assets/default-avatar.png";
 import { useModalContext } from "../../../../../providers/ModalProvider";
 import { useAuth } from "../../../../../hooks/useAuth";
 import { MODALS } from "../../../../../providers/ModalProvider/constants";
 
 type Props = {
-  user: User;
+  user: UserType;
 };
 
 const UserCard = ({ user }: Props) => {
@@ -37,7 +37,9 @@ const UserCard = ({ user }: Props) => {
         alt=""
       />
       <div>
-        <h3 className="text-lg font-semibold">{user.full_name}</h3>
+        <h3 className="text-lg font-semibold truncate max-w-[260px]">
+          {user.full_name}
+        </h3>
         <p className="capitalize text-sm">{user.role}</p>
       </div>
     </div>

@@ -6,8 +6,8 @@ import { setUser } from "../auth/slice";
 import {
   UpdateProfileResponse,
   UpdateProfileRequest,
-  UploadRequest,
-  UploadResponse,
+  UploadAvatarRequest,
+  UploadAvatarResponse,
   GetAllResponse,
   CreateUserResponse,
   CreateUserRequest,
@@ -34,9 +34,9 @@ export const userApi = createApi({
   }),
   tagTypes: ["Users"],
   endpoints: (builder) => ({
-    upload: builder.mutation<UploadResponse, UploadRequest>({
+    uploadAvatar: builder.mutation<UploadAvatarResponse, UploadAvatarRequest>({
       query: ({ userId, formData }) => ({
-        url: `/${userId}/upload`,
+        url: `/${userId}/upload-avatar`,
         method: "POST",
         body: formData,
       }),
@@ -102,13 +102,17 @@ export const userApi = createApi({
         body: { full_name },
       }),
       invalidatesTags: ["Users"],
-      onQueryStarted(_, { dispatch, queryFulfilled }) {
+      onQueryStarted(_, { dispatch, queryFulfilled, getState }) {
         queryFulfilled
           .then((data) => {
             const {
               data: { data: user },
             } = data;
-            dispatch(setUser({ user }));
+            dispatch(
+              setUser({
+                user: { ...(getState() as RootState).auth.user, ...user },
+              })
+            );
           })
           .catch(() => {});
       },
@@ -132,5 +136,5 @@ export const {
   useUpdateUserMutation,
   useUpdateProfileMutation,
   useDeleteUserMutation,
-  useUploadMutation,
+  useUploadAvatarMutation,
 } = userApi;

@@ -8,8 +8,10 @@ use DateTime;
 use Exception;
 use \Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use shared\enums\AuthResponse;
 use shared\enums\EnumTypeJwt;
 use shared\exceptions\ResponseException;
+use stdClass;
 
 class JwtService
 {
@@ -32,32 +34,29 @@ class JwtService
     public function generateToken(int $user_id, string $role, EnumTypeJwt $type): string
     {
         $iat = new DateTime();
-
         $exp = clone $iat;
         $exp->modify('+1 day');
-
         $payload = array(
             "userId" => $user_id,
             "role" => $role,
             "iat" => $iat->getTimestamp(),
             "exp" => $exp->getTimestamp(),
         );
-
         return JWT::encode($payload, $this->key[$type->name],'HS256');
     }
 
     /**
      * @param EnumTypeJwt $type
      * @param string $token
-     * @return \stdClass
+     * @return stdClass
      * @throws ResponseException
      */
-    public function verifyToken(EnumTypeJwt $type, string $token): \stdClass
+    public function verifyToken(EnumTypeJwt $type, string $token): stdClass
     {
         try{
             return JWT::decode($token, new Key($this->key[$type->name], 'HS256'));
         }catch(Exception) {
-            throw new ResponseException(HttpStatus::$UNAUTHORIZED, "Unauthorized token");
+            throw new ResponseException(HttpStatus::$UNAUTHORIZED, AuthResponse::UNAUTHORIZED->value);
         }
     }
 }

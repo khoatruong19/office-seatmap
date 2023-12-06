@@ -13,18 +13,11 @@ class UserRepository extends Repository implements IRepository{
      * @param $data
      * @return false|string
      */
-    public function create($data): bool|string
+    public function create(array $data): bool|string
     {
         $sql = "INSERT INTO users (full_name, password, email, role, avatar) VALUES (:full_name, :password, :email, :role, :avatar)";
         $stmt = $this->database->getConnection()->prepare($sql);
-        $result = $stmt->execute([
-            "email" => $data["email"],
-            "full_name" => $data["full_name"],
-            "role" => $data["role"] ?? 'user',
-            "password" => $data["password"],
-            "avatar" => $data["avatar"] ?? null,
-        ]);
-
+        $result = $stmt->execute($data);
         return $this->database->getConnection()->lastInsertId();
     }
 
@@ -37,7 +30,6 @@ class UserRepository extends Repository implements IRepository{
     public function findOne(string $field, string $value): mixed
     {
         $allowed_fields = ['username', 'email', 'id'];
-
         if(!in_array($field, $allowed_fields)) {
             throw new ResponseException(HttpStatus::$BAD_REQUEST,"Field is not allowed!");
         }
@@ -48,7 +40,6 @@ class UserRepository extends Repository implements IRepository{
             "value" => $value,
         ]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
         return $result ?? null;
     }
 
@@ -60,9 +51,7 @@ class UserRepository extends Repository implements IRepository{
         $sql = "SELECT id, role, full_name, email, avatar, created_at, updated_at FROM users ORDER BY full_name ";
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        return $result;
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -73,18 +62,13 @@ class UserRepository extends Repository implements IRepository{
     public function updateOne(string $user_id, array $data): bool
     {
         $sql = "UPDATE users SET ";
-
         $setValues = "";
         foreach ($data as $column => $value) {
             $setValues .= "$column = :$column, ";
         }
-
         $setValues = rtrim($setValues, ', ') . " WHERE id = :id";
-
         $stmt = $this->database->getConnection()->prepare($sql.$setValues);
-
         $data['id'] = $user_id;
-
         return $stmt->execute($data);
     }
 
@@ -112,7 +96,6 @@ class UserRepository extends Repository implements IRepository{
             "value" => $user_id,
         ]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
         return $result ? $result['role'] : null;
     }
 }

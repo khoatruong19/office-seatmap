@@ -5,6 +5,7 @@ type Props = {
   text?: string;
   confirmHandler: () => void;
   cancelHandler?: () => void;
+  isLoading?: boolean;
 };
 
 const ConfirmModal = (props: Props) => {
@@ -12,8 +13,9 @@ const ConfirmModal = (props: Props) => {
     text = "Are you sure you want to do this action?",
     confirmHandler,
     cancelHandler = () => {},
+    isLoading = false,
   } = props;
-
+  console.log({ isLoading });
   const { closeModal } = useModalContext();
 
   const handleCancel = () => {
@@ -34,9 +36,10 @@ const ConfirmModal = (props: Props) => {
           No
         </Button>
         <Button
+          disabled={isLoading}
           onClick={confirmHandler}
           type="submit"
-          className="rounded-lg bg-secondary"
+          className="mx-auto block rounded-lg disabled:bg-primary bg-secondary disabled:cursor-default disabled:hover:opacity-100"
         >
           Yes
         </Button>
