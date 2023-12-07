@@ -17,7 +17,6 @@
   </component>
   <component name="PhpIncludePathManager">
     <include_path>
-      <path value="$PROJECT_DIR$/server/vendor/composer" />
       <path value="$PROJECT_DIR$/server/vendor/psr/event-dispatcher" />
       <path value="$PROJECT_DIR$/server/vendor/psr/http-message" />
       <path value="$PROJECT_DIR$/server/vendor/psr/container" />
@@ -54,6 +53,7 @@
       <path value="$PROJECT_DIR$/server/vendor/cloudinary/transformation-builder-sdk" />
       <path value="$PROJECT_DIR$/server/vendor/cloudinary/cloudinary_php" />
       <path value="$PROJECT_DIR$/server/vendor/guzzlehttp/promises" />
+      <path value="$PROJECT_DIR$/server/vendor/composer" />
       <path value="$PROJECT_DIR$/server/vendor/guzzlehttp/psr7" />
       <path value="$PROJECT_DIR$/server/vendor/guzzlehttp/guzzle" />
       <path value="$PROJECT_DIR$/server/vendor/friendsofphp/php-cs-fixer" />
@@ -65,6 +65,11 @@
   </component>
   <component name="PhpStanOptionsConfiguration">
     <option name="transferred" value="true" />
+  </component>
+  <component name="PhpUnit">
+    <phpunit_settings>
+      <PhpUnitSettings custom_loader_path="$PROJECT_DIR$/server/vendor/autoload.php" />
+    </phpunit_settings>
   </component>
   <component name="PsalmOptionsConfiguration">
     <option name="transferred" value="true" />
