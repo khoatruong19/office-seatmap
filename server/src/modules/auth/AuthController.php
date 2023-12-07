@@ -32,9 +32,9 @@ class AuthController extends Controller
     public function register(): void
     {
         $this->requestBodyValidation([
-            'email' => 'required|min:8|pattern:email',
-            'full_name' => 'required|min:8',
-            'password' => 'required|min:8'
+            'email' => 'required|min:8|max:100|pattern:email',
+            'full_name' => 'required|min:8|max:100',
+            'password' => 'required|min:8|max:100'
         ]);
         $raw_data = $this->request->getBody();
         $register_user_dto = RegisterUserDto::fromArray($raw_data);
@@ -49,8 +49,8 @@ class AuthController extends Controller
     public function login(): void
     {
         $this->requestBodyValidation([
-            'email' => 'required|min:8|pattern:email',
-            'password' => 'required'
+            'email' => 'required|min:8|max:100|pattern:email',
+            'password' => 'required|min:8|max:100'
         ]);
         $raw_data = $this->request->getBody();
         $login_user_dto = LoginUserDto::fromArray($raw_data);

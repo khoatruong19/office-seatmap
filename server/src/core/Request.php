@@ -96,11 +96,9 @@ class Request
             if($value == "") continue;
 
             $rules = explode('|', $value);
-
             foreach ($rules as $rule) {
                 $rule_array = explode(':', $rule);
                 $rule_method = $rule_array[0];
-
                 if (count($rule_array) > 1) {
                     $rule_method_parameter = $rule_array[1];
                 }

@@ -22,7 +22,6 @@ class Controller
     public function requestBodyValidation(array $body_schema)
     {
         $errors = $this->request->validateBody($body_schema);
-
         if(is_array($errors) && count($errors) > 0) {
             throw new ResponseException(HttpStatus::$BAD_REQUEST, "Some fields are not valid!", $errors);
         }

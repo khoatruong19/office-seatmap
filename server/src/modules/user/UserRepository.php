@@ -90,7 +90,7 @@ class UserRepository extends Repository implements IRepository{
      */
     public function getRole(string $user_id): mixed
     {
-        $sql = "select * from users where id = :value limit 1";
+        $sql = "SELECT * FROM users WHERE id = :value limit 1";
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute([
             "value" => $user_id,

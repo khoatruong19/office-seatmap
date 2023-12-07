@@ -40,9 +40,9 @@ class UserController extends Controller
     public function create()
     {
         $this->requestBodyValidation([
-            'email' => 'required|min:8|pattern:email',
-            'full_name' => 'required|min:8',
-            'password' => 'required|min:8',
+            'email' => 'required|min:8|max:100|pattern:email',
+            'full_name' => 'required|min:8|max:100',
+            'password' => 'required|min:8|max:100',
             'role' => 'required'
         ]);
         $raw_data = $this->request->getBody();
@@ -58,8 +58,8 @@ class UserController extends Controller
     public function update()
     {
         $this->requestBodyValidation([
-            'email' => 'required|min:8|pattern:email',
-            'full_name' => 'required|min:8',
+            'email' => 'required|min:8|max:100|pattern:email',
+            'full_name' => 'required|min:8|max:100',
             'role' => 'required'
         ]);
         $user_id = $this->request->getParam(ParamKeys::USER_ID->value);
@@ -76,7 +76,7 @@ class UserController extends Controller
     public function updateProfile()
     {
         $this->requestBodyValidation([
-            'full_name' => 'min:8',
+            'full_name' => 'min:8|max:100',
         ]);
         $user_id = $this->request->getParam(ParamKeys::USER_ID->value);
         $raw_data = $this->request->getBody();
