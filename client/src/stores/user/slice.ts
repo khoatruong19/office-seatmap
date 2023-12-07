@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "..";
-import { User } from "../../schema/types";
+import { UserType } from "../../schema/types";
 
 type UserState = {
-  users: User[];
+  users: UserType[];
 };
 
 const USER_SLICE_NAME = "user";
@@ -15,7 +15,7 @@ const userSlice = createSlice({
   reducers: {
     setUsers: (
       state,
-      { payload: { users } }: PayloadAction<{ users: User[] }>
+      { payload: { users } }: PayloadAction<{ users: UserType[] }>
     ) => {
       state.users = users;
     },

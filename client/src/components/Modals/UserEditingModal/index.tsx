@@ -3,9 +3,9 @@ import { KeyRound, Lock, Pencil, Trash, UserIcon } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import DefaultAvatar from "../../../assets/default-avatar.png";
-import { MODALS, useModalContext } from "../../../providers/ModalProvider";
+import { useModalContext } from "../../../providers/ModalProvider";
 import { UserSchema, UserSchemaType } from "../../../schema/form";
-import { User, UserRole } from "../../../schema/types";
+import { UserType, UserRole } from "../../../schema/types";
 import {
   useCreateUserMutation,
   useDeleteUserMutation,
@@ -15,12 +15,13 @@ import Button from "../../Form/Button";
 import Label from "../../Form/Label";
 import FieldControl from "../../Form/FieldControl";
 import resizeImage from "../../../utils/resizeImage";
+import { MODALS } from "../../../providers/ModalProvider/constants";
 
 type ModalType = "create" | "update";
 
 type Props = {
   type: ModalType;
-  user?: User;
+  user?: UserType;
 };
 
 const UserEditingModal = ({ type, user }: Props) => {
@@ -32,7 +33,7 @@ const UserEditingModal = ({ type, user }: Props) => {
 
   const [create, { isLoading: createLoading }] = useCreateUserMutation();
   const [update, { isLoading: updateLoading }] = useUpdateUserMutation();
-  const [deleteUser] = useDeleteUserMutation();
+  const [deleteUser, { isLoading: deleteLoading }] = useDeleteUserMutation();
 
   const {
     register,
@@ -56,20 +57,18 @@ const UserEditingModal = ({ type, user }: Props) => {
   const onSubmit: SubmitHandler<UserSchemaType> = (values: UserSchemaType) => {
     const submitHandler =
       type === "create" ? createSubmitHandler : updateSubmitHandler;
-
     const formData = new FormData();
-
     Object.entries(values).forEach(([key, value]) => {
       formData.append(key, value);
     });
-
     if (file) {
       resizeImage({ file }, async (resultBlob) => {
         formData.append("file", resultBlob);
         submitHandler(formData)
-          .then(() => {
-            closeModal();
+          .then((data) => {
+            if ("error" in data) return;
             reset();
+            closeModal();
           })
           .catch(() => {});
       });
@@ -77,9 +76,10 @@ const UserEditingModal = ({ type, user }: Props) => {
     }
 
     submitHandler(formData)
-      .then(() => {
-        closeModal();
+      .then((data) => {
+        if ("error" in data) return;
         reset();
+        closeModal();
       })
       .catch(() => {});
   };
@@ -92,7 +92,6 @@ const UserEditingModal = ({ type, user }: Props) => {
     if (!e.target.files) return;
 
     const file = e.target.files[0];
-
     if (!file) return;
     setFile(file);
     setAvatar(URL.createObjectURL(file));
@@ -103,7 +102,10 @@ const UserEditingModal = ({ type, user }: Props) => {
       deleteUser({ userId: user?.id! })
         .then(() => closeModal())
         .catch(() => {});
-    showModal(MODALS.CONFIRM, { confirmHandler: deleteHandler });
+    showModal(MODALS.CONFIRM, {
+      confirmHandler: deleteHandler,
+      isLoading: deleteLoading,
+    });
   };
 
   useEffect(() => {
@@ -117,13 +119,15 @@ const UserEditingModal = ({ type, user }: Props) => {
 
   const isInformationChanged = useMemo(() => {
     if (!user) return false;
+
     const textInfoChange =
       watch("full_name") !== user.full_name ||
       watch("email") !== user.email ||
       watch("role") !== user.role;
     if (file || textInfoChange) return true;
+
     return false;
-  }, [watch("full_name"), file]);
+  }, [watch("full_name"), watch("email"), watch("role"), file]);
 
   return (
     <div className="relative w-[500px] py-8 font-mono">

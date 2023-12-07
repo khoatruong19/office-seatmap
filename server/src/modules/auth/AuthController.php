@@ -1,87 +1,83 @@
 <?php
-    declare( strict_types=1 );
+declare( strict_types=1 );
 
-    namespace modules\auth;
+namespace modules\auth;
 
-    use core\HttpStatus;
-    use core\Request;
-    use core\Response;
-    use core\Controller;
-    use shared\middlewares\ValidationIncomingData;
-    use modules\user\UserService;
-    use modules\auth\AuthService;
-    use http\Client\Curl\User;
-    use shared\exceptions\ResponseException;
+use core\HttpStatus;
+use core\Request;
+use core\Response;
+use core\Controller;
+use core\SessionManager;
+use modules\auth\dto\LoginUserDto;
+use modules\auth\dto\RegisterUserDto;
+use modules\user\UserService;
+use shared\enums\AuthResponse;
+use shared\enums\SessionKeys;
+use shared\exceptions\ResponseException;
 
-    class AuthController extends Controller
+class AuthController extends Controller
+{
+    public function __construct(
+        public Request               $request,
+        public Response              $response,
+        private readonly AuthService $authService,
+        private readonly UserService $userService
+    )
+    {}
+
+    /**
+     * @return void
+     * @throws ResponseException
+     */
+    public function register(): void
     {
-        public function __construct(
-            public Request $request,
-            public Response $response,
-            private readonly AuthService $auth_service,
-            private readonly UserService $user_service)
-        {
-        }
-
-        /**
-         * @throws ResponseException
-         * @response => {status: OK, messages: string, data: {$id: string}}
-         */
-        public function register()
-        {
-            $this->requestBodyValidation([
-                'email' => 'required|min:8|pattern:email',
-                'full_name' => 'required|min:8',
-                'password' => 'required|min:8'
-            ]);
-
-            $request_body = $this->request->getBody();
-
-            $id = $this->auth_service->register($request_body);
-
-            return $this->response->response(HttpStatus::$OK, "Register successfully!", $id);
-        }
-
-        /**
-         * @throws ResponseException
-         * @response => {status: OK, messages: string, data: {$id: string}}
-         */
-        public function login()
-        {
-            $this->requestBodyValidation([
-                'email' => 'required|min:8|pattern:email',
-                'password' => 'required'
-            ]);
-
-            $body = $this->request->getBody();
-            $user_credentials = $this->auth_service->login($body);
-
-            return $this->response->response(HttpStatus::$OK, "Login successfully!", $user_credentials);
-        }
-
-        /**
-         * @throws ResponseException
-         * @response => {status: OK, messages: string, data: boolean}}
-         */
-        public function me()
-        {
-            $user_id = $_SESSION["userId"];
-
-            $user = $this->user_service->me($user_id);
-
-            return $this->response->response(HttpStatus::$OK, "Welcome back!", $user);
-        }
-
-        /**
-         * @throws ResponseException
-         * @response => {status: OK, messages: string, data: boolean}}
-         */
-        public function logout()
-        {
-            $is_logout = $this->auth_service->logout();
-
-            if(!$is_logout) throw new ResponseException(HttpStatus::$UNAUTHORIZED,"Not authourized 2!");
-
-            $this->response->response(HttpStatus::$OK, "Logout successfully!", true);
-        }
+        $this->requestBodyValidation([
+            'email' => 'required|min:8|max:100|pattern:email',
+            'full_name' => 'required|min:8|max:100',
+            'password' => 'required|min:8|max:100'
+        ]);
+        $raw_data = $this->request->getBody();
+        $register_user_dto = RegisterUserDto::fromArray($raw_data);
+        $id = $this->authService->register($register_user_dto);
+        $this->response->response(HttpStatus::$OK, AuthResponse::REGISTER_SUCCESS->value, $id);
     }
+
+    /**
+     * @return void
+     * @throws ResponseException
+     */
+    public function login(): void
+    {
+        $this->requestBodyValidation([
+            'email' => 'required|min:8|max:100|pattern:email',
+            'password' => 'required|min:8|max:100'
+        ]);
+        $raw_data = $this->request->getBody();
+        $login_user_dto = LoginUserDto::fromArray($raw_data);
+        $user_credentials = $this->authService->login($login_user_dto);
+        $this->response->response(HttpStatus::$OK, AuthResponse::LOGIN_SUCCESS->value, $user_credentials);
+    }
+
+    /**
+     * @return void
+     * @throws ResponseException
+     */
+    public function getCurrentUser(): void
+    {
+        $user_id = SessionManager::get(SessionKeys::USER_ID->value);
+        $user = $this->userService->getCurrentUser(strval($user_id));
+        $this->response->response(HttpStatus::$OK, AuthResponse::ME_SUCCESS->value, $user);
+    }
+
+    /**
+     * @return void
+     * @throws ResponseException
+     */
+    public function logout(): void
+    {
+        $is_logout = $this->authService->logout();
+        if(!$is_logout) throw new ResponseException(HttpStatus::$UNAUTHORIZED,AuthResponse::UNAUTHORIZED->value);
+
+        $this->response->response(HttpStatus::$OK, AuthResponse::LOGOUT_SUCCESS->value, true);
+    }
+}

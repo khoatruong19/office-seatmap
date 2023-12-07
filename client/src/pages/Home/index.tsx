@@ -1,20 +1,32 @@
-import Header from "../../components/Home/Header";
-import Seatmap from "../../components/Home/Seatmap";
-import Sidebar from "../../components/Home/Sidebar";
-import { useAuth } from "../../hooks/useAuth";
-import { UserRole } from "../../schema/types";
+import AddOfficeButton from "../../components/Home/AddOfficeButton";
+import OfficeCard from "../../components/Home/OfficeCard";
+import MainLayout from "../../components/Layout/MainLayout";
+import OfficeTitle from "../../components/Office/OfficeTitle";
+import { useGetAllOfficesQuery } from "../../stores/office/service";
 
 const Home = () => {
-  const { user } = useAuth();
-  return (
-    <div className="min-h-screen font-mono flex flex-col w-screen overflow-x-hidden">
-      <Header />
+  const { data, isLoading } = useGetAllOfficesQuery();
+  const offices = (data && data?.data) ?? [];
 
-      <div className="relative w-full pt-10 flex-1">
-        <Seatmap />
-        {user?.role === UserRole.ADMIN && <Sidebar />}
+  return (
+    <MainLayout>
+      <div className="max-w-5xl w-full mx-auto mt-10">
+        <OfficeTitle title="Offices" />
+
+        <AddOfficeButton />
+
+        <nav className="flex flex-col gap-4 w-full">
+          {offices.map((office) => (
+            <OfficeCard key={office.id} office={office} />
+          ))}
+        </nav>
+        {!isLoading && !offices.length && (
+          <h2 className="text-center text-2xl font-semibold text-secondary">
+            No offices found!
+          </h2>
+        )}
       </div>
-    </div>
+    </MainLayout>
   );
 };
 

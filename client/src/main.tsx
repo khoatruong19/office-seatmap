@@ -10,7 +10,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
     <AppProviders>
       <App />
-      <ToastContainer position="top-center" />
+      <ToastContainer position="top-center" autoClose={2000} />
     </AppProviders>
   </BrowserRouter>
 );
