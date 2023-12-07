@@ -15,7 +15,9 @@ const AuthGuard = () => {
       if (!accessToken) return navigate(APP_ROUTES.LOGIN);
 
       me(null)
-        .then(() => {})
+        .then((data) => {
+          if ("error" in data) navigate(APP_ROUTES.LOGIN);
+        })
         .catch(() => {
           navigate(APP_ROUTES.LOGIN);
         });
