@@ -15,7 +15,7 @@ const UserDropdown = ({ close }: Props) => {
   const [logout] = useLogoutMutation();
   const { showModal } = useModalContext();
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     logout(null)
       .then(() => navigate(APP_ROUTES.LOGIN))
       .catch(() => {});

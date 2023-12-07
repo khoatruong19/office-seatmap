@@ -5,35 +5,35 @@ import { CellType } from "../schema/types";
 
 const useGetOfficeInfo = () => {
   const { id } = useParams();
-  const { data, isLoading } = useGetOfficeQuery(id!);
+  const { data: response, isLoading } = useGetOfficeQuery(id!);
 
   const initBlocks = useMemo(() => {
-    if (!data?.data) return [];
+    if (!response?.data) return [];
     let blocks = [];
     try {
-      blocks = JSON.parse(data.data.blocks);
+      blocks = JSON.parse(response.data.blocks);
     } catch (error) {}
     return blocks;
-  }, [data]);
+  }, [response]);
 
   const initSeats: CellType[] = useMemo(() => {
-    if (!data?.data) return [];
-    return data?.data.seats
-      ? data?.data.seats.map((seat) => ({
+    if (!response?.data) return [];
+    return response?.data.seats
+      ? response?.data.seats.map((seat) => ({
           label: seat.label,
           position: seat.position,
         }))
       : [];
-  }, [data]);
+  }, [response]);
 
   return {
     isLoading,
-    officeId: data?.data.id ?? 0,
-    officeName: data?.data.name ?? "Untitled",
-    visible: !!data?.data.visible,
+    officeId: response?.data.id ?? 0,
+    officeName: response?.data.name ?? "Untitled",
+    visible: !!response?.data.visible,
     initBlocks,
     initSeats,
-    success: !!data?.data,
+    success: !!response?.data,
   };
 };
 

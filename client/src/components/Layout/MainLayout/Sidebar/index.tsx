@@ -21,7 +21,7 @@ const Sidebar = () => {
         className={cn(
           "w-96 bg-primary h-[calc(100vh-4rem)] overflow-y-auto flex items-start transition-all duration-200 translate-x-0 border-l-2 border-primary",
           {
-            "translate-x-[100%]": !open,
+            "translate-x-[100%] w-0": !open,
           }
         )}
       >

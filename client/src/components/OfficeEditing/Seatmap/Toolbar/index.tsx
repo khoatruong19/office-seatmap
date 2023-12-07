@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
 import Button from "../../../Form/Button";
-import { ArrowBigRight, Eye, EyeOff, Trash } from "lucide-react";
+import { ArrowBigRight, Check, Eye, EyeOff, Trash } from "lucide-react";
 import { APP_ROUTES } from "../../../../config/routes";
 
 type Props = {
@@ -24,7 +24,7 @@ const Toolbar = ({
     navigate(APP_ROUTES.OFFICE.replace(":id", `${officeId}`));
 
   return (
-    <div className="flex items-center gap-4 justify-end mb-5">
+    <div className="flex flex-col items-center gap-4 justify-end mb-5">
       <Button onClick={handleNavigateToOffice} className="px-0 text-sky-400">
         <ArrowBigRight size={30} strokeWidth={2.5} />
       </Button>
@@ -34,11 +34,8 @@ const Toolbar = ({
       <Button onClick={handleToggleVisible} className="px-0 text-secondary">
         {visible ? <EyeOff /> : <Eye />}
       </Button>
-      <Button
-        onClick={handleSaveSeatmap}
-        className="bg-tertiary text-white rounded-md"
-      >
-        Save
+      <Button onClick={handleSaveSeatmap} className="px-0 text-green-500">
+        <Check strokeWidth={3} />
       </Button>
     </div>
   );

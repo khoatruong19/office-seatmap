@@ -14,22 +14,22 @@ const AddOfficeButton = () => {
   const { showModal, closeModal } = useModalContext();
   const [createOffice] = useCreateOfficeMutation();
 
+  if (!isAdmin) return null;
+
   const handleOpenAddOfficeModal = () => {
-    const confirmHandler = (name: string) =>
-      createOffice({ name })
-        .then((data) => {
-          if ("data" in data) {
-            navigate(
-              APP_ROUTES.OFFICE_EDITING.replace(":id", `${data.data.data}`)
-            );
-            closeModal();
-          }
-        })
-        .catch(() => {});
+    const confirmHandler = async (name: string) => {
+      try {
+        const data = await createOffice({ name });
+        if ("data" in data) {
+          navigate(
+            APP_ROUTES.OFFICE_EDITING.replace(":id", `${data.data.data}`)
+          );
+          closeModal();
+        }
+      } catch (error) {}
+    };
     showModal(MODALS.ADD_OFFICE, { confirmHandler });
   };
-
-  if (!isAdmin) return null;
 
   return (
     <Button

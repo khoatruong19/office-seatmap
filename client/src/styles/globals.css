@@ -10,3 +10,7 @@ input:-webkit-autofill:focus {
 .hover-opacity {
   @apply cursor-pointer hover:opacity-80;
 }
+
+body {
+  overflow-x: hidden;
+}
