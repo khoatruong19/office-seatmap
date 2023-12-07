@@ -10,19 +10,16 @@ const AuthGuard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handleGetMe = async () => {
-      const accessToken = cookieManagement.getAccessToken();
-      if (!accessToken) return navigate(APP_ROUTES.LOGIN);
+    const accessToken = cookieManagement.getAccessToken();
+    if (!accessToken) return navigate(APP_ROUTES.LOGIN);
 
-      me(null)
-        .then((data) => {
-          if ("error" in data) navigate(APP_ROUTES.LOGIN);
-        })
-        .catch(() => {
-          navigate(APP_ROUTES.LOGIN);
-        });
-    };
-    handleGetMe();
+    me(null)
+      .then((data) => {
+        if ("error" in data) navigate(APP_ROUTES.LOGIN);
+      })
+      .catch(() => {
+        navigate(APP_ROUTES.LOGIN);
+      });
   }, []);
 
   if (isLoading)

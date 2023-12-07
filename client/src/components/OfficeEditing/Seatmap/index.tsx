@@ -225,15 +225,17 @@ const Seatmap = ({
   }, [done]);
 
   return (
-    <div className="z-1 max-w-7xl w-full mx-auto lg:px-32 py-10 rounded-2xl ">
+    <div className="relative z-1 max-w-7xl w-full mx-auto lg:px-32 py-10 rounded-2xl ">
       <OfficeTitleInput title={name} onChange={handleChangeName} />
-      <Toolbar
-        handleDeleteOffice={handleDeleteOffice}
-        handleSaveSeatmap={handleSaveSeatmap}
-        handleToggleVisible={handleToggleVisible}
-        visible={visible}
-        officeId={officeId}
-      />
+      <div className="absolute right-32 top-52">
+        <Toolbar
+          handleDeleteOffice={handleDeleteOffice}
+          handleSaveSeatmap={handleSaveSeatmap}
+          handleToggleVisible={handleToggleVisible}
+          visible={visible}
+          officeId={officeId}
+        />
+      </div>
       <div className="relative max-w-4xl w-full mx-auto flex flex-col gap-4 items-start scale-50 lg:scale-[0.8] 2xl:scale-100">
         <div className="relative flex items-center gap-3 flex-wrap">
           {new Array(SEATMAP_ROWS * SEATMAP_COLUMNS_PER_ROW)

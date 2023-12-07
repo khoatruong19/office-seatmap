@@ -7,6 +7,7 @@ const blockToastFulfilledEndpoints = [
   "logout",
   "getAllOffices",
   "getOffice",
+  "me",
 ];
 
 const blockToastErrorEndpoints = ["getOffice"];
