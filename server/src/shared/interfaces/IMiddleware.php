@@ -1,8 +1,8 @@
 <?php
-    declare( strict_types=1 );
+declare( strict_types=1 );
 
-    namespace shared\interfaces;
+namespace shared\interfaces;
 
-    interface IMiddleware {
-        public function execute(): bool;
-    }
+interface IMiddleware {
+    public function execute(): bool;
+}

@@ -47,3 +47,23 @@ export const UserSchema = z.object({
 });
 
 export type UserSchemaType = z.infer<typeof UserSchema>;
+
+export const AddOfficeSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(4, "Office's name must contain at least 8 characters!")
+    .max(60, "Office's name must be no more than 60 characters!"),
+});
+
+export type AddOfficeSchemaType = z.infer<typeof AddOfficeSchema>;
+
+export const AddBlockSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(1, "Block's name must contain at least 1 characters!")
+    .max(12, "Block's name must be no more than 12 characters!"),
+});
+
+export type AddBlockSchemaType = z.infer<typeof AddBlockSchema>;

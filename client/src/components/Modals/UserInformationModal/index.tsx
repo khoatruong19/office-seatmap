@@ -1,13 +1,13 @@
 import { KeyRound, Pencil, UserIcon } from "lucide-react";
 import DefaultAvatar from "../../../assets/default-avatar.png";
 import { useModalContext } from "../../../providers/ModalProvider";
-import { User } from "../../../schema/types";
+import { UserType } from "../../../schema/types";
 import Button from "../../Form/Button";
 import FieldControl from "../../Form/FieldControl";
 import Label from "../../Form/Label";
 
 type Props = {
-  user?: User;
+  user?: UserType;
 };
 
 const UserInformationModal = ({ user }: Props) => {

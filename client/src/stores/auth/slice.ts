@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "..";
-import { User } from "../../schema/types";
+import { UserType } from "../../schema/types";
 
 type AuthState = {
-  user: User | null;
+  user: UserType | null;
   accessToken: string | null;
 };
 
@@ -18,12 +18,15 @@ const authSlice = createSlice({
       state,
       {
         payload: { user, accessToken },
-      }: PayloadAction<{ user: User; accessToken: string }>
+      }: PayloadAction<{ user: UserType; accessToken: string }>
     ) => {
       state.user = user;
       state.accessToken = accessToken;
     },
-    setUser: (state, { payload: { user } }: PayloadAction<{ user: User }>) => {
+    setUser: (
+      state,
+      { payload: { user } }: PayloadAction<{ user: UserType }>
+    ) => {
       state.user = user;
     },
     deleteCredentials: (state) => {

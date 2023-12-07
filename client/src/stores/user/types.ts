@@ -1,17 +1,17 @@
 import { BaseResponse } from "../../schema/response";
-import { User } from "../../schema/types";
+import { UserType } from "../../schema/types";
 
-export type UploadRequest = {
+export type UploadAvatarRequest = {
   formData: FormData;
   userId: number;
 };
 
-export type UploadResponse = BaseResponse & {
+export type UploadAvatarResponse = BaseResponse & {
   data: string;
 };
 
 export type GetAllResponse = BaseResponse & {
-  data: User[];
+  data: UserType[];
 };
 
 export type CreateUserRequest = FormData;
@@ -29,7 +29,7 @@ export type UpdateUserRequest = {
 
 export type UpdateUserResponse = BaseResponse & {
   data: {
-    user: User;
+    user: UserType;
   };
 };
 
@@ -39,7 +39,7 @@ export type UpdateProfileRequest = {
 };
 
 export type UpdateProfileResponse = BaseResponse & {
-  data: User;
+  data: UserType;
 };
 
 export type DeleteUserRequest = {

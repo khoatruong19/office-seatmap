@@ -1,16 +1,16 @@
 import { BaseResponse } from "../../schema/response";
-import { User } from "../../schema/types";
+import { UserType } from "../../schema/types";
 
 export type LoginResponse = BaseResponse & {
   data: {
-    user: User;
+    user: UserType;
     accessToken: string;
   };
 };
 
 export type GetMeResponse = BaseResponse & {
   data: {
-    user: User;
+    user: UserType;
   };
 };
 

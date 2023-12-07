@@ -1,22 +1,29 @@
 <?php
-    declare( strict_types=1 );
+declare( strict_types=1 );
 
-    namespace core;
+namespace core;
 
-    class Controller
+use shared\exceptions\ResponseException;
+
+class Controller
+{
+    public Request $request;
+    public Response $response;
+    public function __construct()
     {
-        public Request $request;
-        public Response $response;
-        public function __construct()
-        {
-            $this->request = $GLOBALS['request'];
-            $this->response = $GLOBALS['response'];
-        }
+        $this->request = $GLOBALS['request'];
+        $this->response = $GLOBALS['response'];
+    }
 
-        public function requestBodyValidation(array $body_schema){
-            $errors = $this->request->validateBody($body_schema);
-            
-            if(is_array($errors) && count($errors) > 0)
-            return $this->response->response(HttpStatus::$BAD_REQUEST, $errors);
+    /**
+     * @param array $body_schema
+     * @return void
+     */
+    public function requestBodyValidation(array $body_schema)
+    {
+        $errors = $this->request->validateBody($body_schema);
+        if(is_array($errors) && count($errors) > 0) {
+            throw new ResponseException(HttpStatus::$BAD_REQUEST, "Some fields are not valid!", $errors);
         }
     }
+}

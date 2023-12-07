@@ -1,31 +1,34 @@
 <?php
-    declare( strict_types=1 );
+declare( strict_types=1 );
 
-    namespace shared\middlewares;
+namespace shared\middlewares;
 
-    use core\HttpStatus;
-    use modules\user\UserService;
-    use shared\enums\UserRole;
-    use shared\exceptions\ResponseException;
-    use shared\interfaces\IMiddleware;
+use core\HttpStatus;
+use core\SessionManager;
+use modules\user\UserService;
+use shared\enums\AuthResponse;
+use shared\enums\SessionKeys;
+use shared\enums\UserRole;
+use shared\exceptions\ResponseException;
+use shared\interfaces\IMiddleware;
 
-    class AdminGuard implements IMiddleware
+class AdminGuard implements IMiddleware
+{
+
+    public function __construct(private readonly UserService $userService)
     {
 
-        public function __construct(private readonly UserService $user_service)
-        {
-
-        }
-
-        /**
-         * @throws ResponseException
-         */
-        public function execute(): bool
-        {
-            $role = $_SESSION["role"];
-            
-            if($role != UserRole::ADMIN->value) throw new ResponseException(HttpStatus::$UNAUTHORIZED, "Not authorizied!");
-
-            return true;
-        }
     }
+
+    /**
+     * @return bool
+     * @throws ResponseException
+     */
+    public function execute(): bool
+    {
+        $role = SessionManager::get(SessionKeys::USER_ROLE->value);
+        if($role != UserRole::ADMIN->value) throw new ResponseException(HttpStatus::$UNAUTHORIZED, AuthResponse::UNAUTHORIZED->value);
+
+        return true;
+    }
+}

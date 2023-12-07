@@ -1,10 +1,10 @@
 <?php
-    declare( strict_types=1 );
+declare( strict_types=1 );
 
-    namespace shared\utils;
+namespace shared\utils;
 
-    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-    $dotenv->load();
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 
-    class Constant {
-    }
+class Constant {
+}
