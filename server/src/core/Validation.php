@@ -24,7 +24,7 @@ class Validation {
         'bool'          => '/^(?:true|false)$/igm'
     );
 
-    public array $errors = array();
+    public array $errors = [];
 
     /**
      * @param $name
@@ -214,6 +214,6 @@ class Validation {
      */
     public function resetErrors()
     {
-        $this->error = array();
+        $this->error = [];
     }
 }

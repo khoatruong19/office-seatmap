@@ -8,8 +8,8 @@ use core\Validation;
 
 class Request
 {
-    protected array $params = array();
-    protected array $queries = array();
+    protected array $params = [];
+    protected array $queries = [];
 
     public function __construct(public Validation $validation)
     {
