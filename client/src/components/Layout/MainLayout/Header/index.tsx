@@ -4,9 +4,12 @@ import { useRef, useState } from "react";
 import { useClickOutside } from "../../../../hooks/useClickOutside";
 import Logo from "../../../../assets/logo.jpg";
 import DefaultAvatar from "../../../../assets/default-avatar.png";
+import { Link } from "react-router-dom";
+import { APP_ROUTES } from "../../../../config/routes";
 
 const Header = () => {
   const { user } = useAuth();
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const [openDropdown, setOpenDropdown] = useState(false);
 
@@ -14,14 +17,15 @@ const Header = () => {
 
   const handleCloseDropdown = () => setOpenDropdown(false);
 
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
-
   useClickOutside(dropdownRef, handleCloseDropdown);
 
   return (
     <header className="h-16 bg-primary ">
       <nav className="w-full h-full px-6 flex items-center justify-between text-secondary border-b border-secondary ">
-        <div className="flex items-center gap-3">
+        <Link
+          to={APP_ROUTES.HOME}
+          className="flex items-center gap-3 hover-opacity"
+        >
           <img
             src={Logo}
             className="w-11 h-11 rounded-full object-cover shadow-sm"
@@ -30,7 +34,7 @@ const Header = () => {
           <h1 className="text-2xl font-semibold italic font-poppins ">
             Cybozu Seatmap
           </h1>
-        </div>
+        </Link>
         <div ref={dropdownRef} className="relative">
           <div
             onClick={handleToggleDropdown}

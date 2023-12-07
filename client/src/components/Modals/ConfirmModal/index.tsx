@@ -15,7 +15,6 @@ const ConfirmModal = (props: Props) => {
     cancelHandler = () => {},
     isLoading = false,
   } = props;
-  console.log({ isLoading });
   const { closeModal } = useModalContext();
 
   const handleCancel = () => {

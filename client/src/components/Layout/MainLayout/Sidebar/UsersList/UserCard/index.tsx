@@ -1,8 +1,8 @@
-import { UserType, UserRole } from "../../../../../schema/types";
-import DefaultAvatar from "../../../../../assets/default-avatar.png";
-import { useModalContext } from "../../../../../providers/ModalProvider";
-import { useAuth } from "../../../../../hooks/useAuth";
-import { MODALS } from "../../../../../providers/ModalProvider/constants";
+import { useAuth } from "../../../../../../hooks/useAuth";
+import { useModalContext } from "../../../../../../providers/ModalProvider";
+import { MODALS } from "../../../../../../providers/ModalProvider/constants";
+import { UserRole, UserType } from "../../../../../../schema/types";
+import DefaultAvatar from "../../../../../../assets/default-avatar.png";
 
 type Props = {
   user: UserType;

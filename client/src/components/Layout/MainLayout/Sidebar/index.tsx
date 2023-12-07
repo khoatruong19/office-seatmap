@@ -1,16 +1,17 @@
 import { Contact2, PlusCircle, X } from "lucide-react";
 import { useState } from "react";
-import { cn } from "../../../lib/clsx";
-import { useModalContext } from "../../../providers/ModalProvider";
-import Button from "../../Form/Button";
+import { cn } from "../../../../lib/clsx";
+import { useModalContext } from "../../../../providers/ModalProvider";
+import Button from "../../../Form/Button";
 import UsersList from "./UsersList";
-import { MODALS } from "../../../providers/ModalProvider/constants";
+import { MODALS } from "../../../../providers/ModalProvider/constants";
 
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
   const { showModal } = useModalContext();
 
   const handleToggleOpen = () => setOpen((prev) => !prev);
+
   const handleOpenCreateModal = () =>
     showModal(MODALS.CREATE_USER, { type: "create" });
 
@@ -46,7 +47,7 @@ const Sidebar = () => {
          duration-200 text-secondary`,
           {
             "right-0": !open,
-            "left-[-53px]": open,
+            "left-[-20px]": open,
           }
         )}
       >

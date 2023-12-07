@@ -18,6 +18,10 @@ import {
 } from "./types";
 import { setUsers } from "./slice";
 
+const TAGS = {
+  USERS: "users",
+};
+
 export const userApi = createApi({
   reducerPath: "user-api",
   baseQuery: fetchBaseQuery({
@@ -32,7 +36,7 @@ export const userApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Users"],
+  tagTypes: [...Object.values(TAGS)],
   endpoints: (builder) => ({
     uploadAvatar: builder.mutation<UploadAvatarResponse, UploadAvatarRequest>({
       query: ({ userId, formData }) => ({
@@ -58,7 +62,7 @@ export const userApi = createApi({
     }),
     getAllUsers: builder.query<GetAllResponse, void>({
       query: () => ({ url: "" }),
-      providesTags: ["Users"],
+      providesTags: [TAGS.USERS],
       onQueryStarted(_, { dispatch, queryFulfilled }) {
         queryFulfilled
           .then((data) => {
@@ -76,7 +80,7 @@ export const userApi = createApi({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Users"],
+      invalidatesTags: [TAGS.USERS],
       onQueryStarted(_, { queryFulfilled }) {
         queryFulfilled.then(() => {}).catch(() => {});
       },
@@ -87,7 +91,7 @@ export const userApi = createApi({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Users"],
+      invalidatesTags: [TAGS.USERS],
       onQueryStarted(_, { queryFulfilled }) {
         queryFulfilled.then(() => {}).catch(() => {});
       },
@@ -101,7 +105,7 @@ export const userApi = createApi({
         method: "PATCH",
         body: { full_name },
       }),
-      invalidatesTags: ["Users"],
+      invalidatesTags: [TAGS.USERS],
       onQueryStarted(_, { dispatch, queryFulfilled, getState }) {
         queryFulfilled
           .then((data) => {
@@ -122,7 +126,7 @@ export const userApi = createApi({
         url: `/${userId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Users"],
+      invalidatesTags: [TAGS.USERS],
       onQueryStarted(_, { queryFulfilled }) {
         queryFulfilled.then(() => {}).catch(() => {});
       },

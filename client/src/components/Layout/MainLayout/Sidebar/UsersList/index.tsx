@@ -1,5 +1,5 @@
 import ClipLoader from "react-spinners/ClipLoader";
-import { useGetAllUsersQuery } from "../../../../stores/user/service";
+import { useGetAllUsersQuery } from "../../../../../stores/user/service";
 import UserCard from "./UserCard";
 
 const UsersList = () => {

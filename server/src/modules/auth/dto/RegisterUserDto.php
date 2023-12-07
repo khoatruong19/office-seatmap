@@ -8,8 +8,8 @@ class RegisterUserDto implements IDto
 {
     private string $email;
     private string $full_name;
-
     private string $password;
+    private string $role = "admin";
 
     public function __construct(string $email, string $full_name, string $password)
     {
@@ -55,7 +55,8 @@ class RegisterUserDto implements IDto
         return [
             "email" => $this->email,
             "full_name" => $this->full_name,
-            "password" => $this->password
+            "password" => $this->password,
+            "role" => $this->role
         ];
     }
 }

@@ -1,7 +1,8 @@
 export type SeatType = {
   id: string;
-  row: string;
-  order: number;
+  label: string;
+  position: number;
+  available: boolean;
 };
 
 export enum UserRole {
@@ -20,11 +21,19 @@ export type UserType = {
 };
 
 export type CellType = {
-  id: string;
-  order: number;
+  label: string;
+  position: number;
 };
 
 export type BlockType = {
   name: string;
   cells: CellType[];
+};
+
+export type OfficeType = {
+  id: number;
+  name: string;
+  visible: boolean;
+  blocks: string;
+  seats: SeatType[];
 };

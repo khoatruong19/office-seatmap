@@ -22,6 +22,6 @@ export const MODAL_ELEMENTS: Record<MODALS, ReactElement> = {
   [MODALS.UPDATE_USER]: <UserEditingModal type="update" />,
   [MODALS.USER_INFORMATION]: <UserInformationModal />,
   [MODALS.CONFIRM]: <ConfirmModal confirmHandler={() => {}} />,
-  [MODALS.ADD_OFFICE]: <AddOfficeModal />,
+  [MODALS.ADD_OFFICE]: <AddOfficeModal confirmHandler={() => {}} />,
   [MODALS.ADD_BLOCK]: <AddBlockModal confirmHandler={() => {}} />,
 };

@@ -10,18 +10,14 @@ use PDO;
 
 class OfficeRepository extends Repository implements IRepository{
     /**
-     * @param $data
+     * @param array $data
      * @return false|string
      */
-    public function create($data): bool|string
+    public function create(array $data): bool|string
     {
-        $sql = "INSERT INTO offices (name, blocks) VALUES (:name, :blocks)";
+        $sql = "INSERT INTO offices (name, visible, blocks) VALUES (:name, :visible, :blocks)";
         $stmt = $this->database->getConnection()->prepare($sql);
-        $result = $stmt->execute([
-            "name" => $data["name"],
-            "blocks" => "[]",
-        ]);
-
+        $stmt->execute($data);
         return $this->database->getConnection()->lastInsertId();
     }
 
@@ -34,82 +30,58 @@ class OfficeRepository extends Repository implements IRepository{
     public function findOne(string $field, string $value): mixed
     {
         $allowed_fields = ['name', 'id'];
-
         if(!in_array($field, $allowed_fields)) {
             throw new ResponseException(HttpStatus::$BAD_REQUEST,"Field is not allowed!");
         }
 
-        $sql = "SELECT * FROM offices WHERE ".$field." = :value limit 1";
+        $sql = "SELECT * from offices WHERE ".$field." = :value ";
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute([
             "value" => $value,
         ]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
         return $result ?? null;
     }
+
 
     /**
      * @return array|false
      */
     public function findAll(): bool|array
     {
-        $sql = "SELECT id, role, full_name, email, avatar, created_at, updated_at FROM users ORDER BY full_name ";
+        $sql = "SELECT * FROM offices ORDER BY created_at DESC";
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        return $result;
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
-     * @param string $user_id
+     * @param string $office_id
      * @param array $data
      * @return bool
      */
-    public function updateOne(string $user_id, array $data): bool
+    public function updateOne(string $office_id, array $data): bool
     {
-        $sql = "UPDATE users SET ";
-
+        $sql = "UPDATE offices SET ";
         $setValues = "";
         foreach ($data as $column => $value) {
             $setValues .= "$column = :$column, ";
         }
-
         $setValues = rtrim($setValues, ', ') . " WHERE id = :id";
-
         $stmt = $this->database->getConnection()->prepare($sql.$setValues);
-
-        $data['id'] = $user_id;
-
+        $data['id'] = $office_id;
         return $stmt->execute($data);
     }
 
     /**
-     * @param string $user_id
+     * @param string $office_id
      * @return bool
      */
-    public function delete(string $user_id): bool
+    public function delete(string $office_id): bool
     {
-        $sql = "DELETE FROM users WHERE id = :id";
+        $sql = "DELETE FROM offices WHERE id = :id";
         $stmt = $this->database->getConnection()->prepare($sql);
-        $stmt->bindParam(':id', $user_id);
+        $stmt->bindParam(':id', $office_id);
         return $stmt->execute();
-    }
-
-    /**
-     * @param string $user_id
-     * @return mixed|null
-     */
-    public function getRole(string $user_id): mixed
-    {
-        $sql = "select * from users where id = :value limit 1";
-        $stmt = $this->database->getConnection()->prepare($sql);
-        $stmt->execute([
-            "value" => $user_id,
-        ]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return $result ? $result['role'] : null;
     }
 }

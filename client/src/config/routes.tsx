@@ -4,6 +4,7 @@ import Home from "../pages/Home";
 import AuthGuard from "../guards/AuthGuard";
 import Office from "../pages/Office";
 import OfficeEditing from "../pages/OfficeEditing";
+import NotFound from "../pages/NotFound";
 
 const APP_ROUTES = {
   APP: "/",
@@ -11,6 +12,7 @@ const APP_ROUTES = {
   OFFICE: "/offices/:id",
   OFFICE_EDITING: "/offices/:id/edit",
   LOGIN: "/login",
+  NOT_FOUND: "*",
 };
 
 const ROUTES_CONFIG: RouteObject[] = [
@@ -27,6 +29,7 @@ const ROUTES_CONFIG: RouteObject[] = [
       },
     ],
   },
+  { path: APP_ROUTES.NOT_FOUND, element: <NotFound /> },
 ];
 
 export { APP_ROUTES, ROUTES_CONFIG };

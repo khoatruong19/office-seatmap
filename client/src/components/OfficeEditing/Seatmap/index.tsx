@@ -7,51 +7,71 @@ import { cn } from "../../../lib/clsx";
 import { useModalContext } from "../../../providers/ModalProvider";
 import { MODALS } from "../../../providers/ModalProvider/constants";
 import { BlockType, CellType } from "../../../schema/types";
-import OfficeTitle from "../../Office/OfficeTitle";
 import Cell from "./Cell";
-import Button from "../../Form/Button";
+import {
+  useDeleteOfficeMutation,
+  useUpdateOfficeMutation,
+} from "../../../stores/office/service";
+import Toolbar from "./Toolbar";
+import { useNavigate } from "react-router";
+import { APP_ROUTES } from "../../../config/routes";
+import OfficeTitleInput from "../OfficeTitleInput";
 
-const Seatmap = () => {
+type Props = {
+  officeName: string;
+  officeId: number;
+  initBlocks: BlockType[];
+  initSeats: CellType[];
+  isVisible: boolean;
+};
+
+const Seatmap = ({
+  officeName,
+  officeId,
+  initBlocks,
+  initSeats,
+  isVisible,
+}: Props) => {
   const [done, setDone] = useState(false);
   const [selectedCells, setSelectedCells] = useState<CellType[]>([]);
-  const [blocks, setBlocks] = useState<BlockType[]>([]);
-  const [seats, setSeats] = useState<CellType[]>([]);
+  const [blocks, setBlocks] = useState<BlockType[]>(initBlocks);
+  const [seats, setSeats] = useState<CellType[]>(initSeats);
   const [lastSelectingCell, setLastSelectingCell] = useState<CellType | null>(
     null
   );
+  const [visible, setVisible] = useState(isVisible);
+  const [name, setName] = useState(officeName);
+
+  const navigate = useNavigate();
 
   const { showModal, closeModal } = useModalContext();
+  const [updateOffice] = useUpdateOfficeMutation();
+  const [deleteOffice] = useDeleteOfficeMutation();
 
   useEffect(() => {
     const selectingCells = (e: any) => {
       if (e.shiftKey) {
         const cellId = e.target.id;
-
         if (!!!cellId.length) return;
 
-        // const lastCell = selectedCells[selectedCells.length - 1];
-        const newCellOrder = Number(cellId.split("seat")[1]);
-
+        const newCellPosition = Number(cellId.split("seat")[1]);
         if (lastSelectingCell) {
-          const lastCellOrder = lastSelectingCell.order;
+          const lastCellPosition = lastSelectingCell.position;
           if (
-            Math.abs(newCellOrder - lastCellOrder) !== 1 &&
-            Math.abs(newCellOrder - lastCellOrder) !== SEATMAP_COLUMNS_PER_ROW
+            Math.abs(newCellPosition - lastCellPosition) !== 1 &&
+            Math.abs(newCellPosition - lastCellPosition) !==
+              SEATMAP_COLUMNS_PER_ROW
           )
             return;
         }
-
-        setLastSelectingCell({ order: newCellOrder, id: cellId });
-
+        setLastSelectingCell({ position: newCellPosition, label: cellId });
         const tempCells = [...selectedCells];
-
         const existingCellIndex = selectedCells.findIndex(
-          (item) => item.id === cellId
+          (item) => item.label === cellId
         );
-
         if (existingCellIndex >= 0) return;
 
-        tempCells.push({ id: cellId, order: newCellOrder });
+        tempCells.push({ label: cellId, position: newCellPosition });
         setSelectedCells(tempCells);
       }
     };
@@ -62,7 +82,6 @@ const Seatmap = () => {
         setLastSelectingCell(null);
       }
     };
-
     window.addEventListener("mouseover", selectingCells);
     window.addEventListener("keyup", doneSelectingCells);
 
@@ -74,7 +93,37 @@ const Seatmap = () => {
 
   const handleOpenBlockModal = () => showModal(MODALS.CONFIRM, {});
 
-  const handleSaveSeatmap = () => {};
+  const handleToggleVisible = () => setVisible((prev) => !prev);
+
+  const handleChangeName = (value: string) => setName(value);
+
+  const handleDeleteOffice = () => {
+    const confirmHandler = () => {
+      deleteOffice({ id: officeId })
+        .then(() => {
+          closeModal();
+          navigate(APP_ROUTES.HOME);
+        })
+        .catch(() => {});
+    };
+
+    showModal(MODALS.CONFIRM, {
+      text: "Are you sure you want to delete this office?",
+      confirmHandler,
+    });
+  };
+
+  const handleSaveSeatmap = () => {
+    updateOffice({
+      id: officeId,
+      name,
+      visible,
+      seats,
+      blocks: JSON.stringify(blocks),
+    })
+      .then(() => {})
+      .catch(() => {});
+  };
 
   const renderBlockName = (name: string) => (
     <span
@@ -86,19 +135,20 @@ const Seatmap = () => {
     </span>
   );
 
-  const renderBlocks = (block: BlockType, order: number) => {
+  const renderBlocks = (block: BlockType, position: number) => {
     const { cells } = block;
-
-    const seatIndex = cells.findIndex((item) => item.id === "seat" + order);
-
+    const seatIndex = cells.findIndex((item) => item.position === position);
     if (seatIndex < 0) return null;
 
-    const seatNumber = Number(cells[seatIndex].id.split("seat")[1]);
-
-    const foundNextToBlock = cells.find((item) => item.order - seatNumber == 1);
+    const seatNumber = cells[seatIndex].position;
+    const foundNextToBlock = cells.find(
+      (item) =>
+        item.position - seatNumber == 1 &&
+        seatNumber % SEATMAP_COLUMNS_PER_ROW !== SEATMAP_COLUMNS_PER_ROW - 1
+    );
     if (foundNextToBlock) {
       const foundBlock = cells.find(
-        (item) => item.order - seatNumber == SEATMAP_COLUMNS_PER_ROW
+        (item) => item.position - seatNumber == SEATMAP_COLUMNS_PER_ROW
       );
 
       return (
@@ -122,13 +172,13 @@ const Seatmap = () => {
     }
 
     const foundBlock = cells.find(
-      (item) => item.order - seatNumber == SEATMAP_COLUMNS_PER_ROW
+      (item) => item.position - seatNumber == SEATMAP_COLUMNS_PER_ROW
     );
     if (foundBlock)
       return (
         <div
           onClick={handleOpenBlockModal}
-          key={Math.random() * 1}
+          key={Math.random() * 2}
           className="relative h-12 w-12 z-40"
         >
           <div className="absolute top-0 left-0 w-[100%] h-[125%] bg-primary">
@@ -140,7 +190,7 @@ const Seatmap = () => {
       return (
         <div
           onClick={handleOpenBlockModal}
-          key={Math.random() * 1}
+          key={Math.random() * 3}
           className="relative h-12 w-12 z-40"
         >
           <div className="absolute top-0 left-0 w-[100%] h-[100%] bg-primary">
@@ -176,33 +226,37 @@ const Seatmap = () => {
 
   return (
     <div className="z-1 max-w-7xl w-full mx-auto lg:px-32 py-10 rounded-2xl ">
-      <OfficeTitle title="Office 101" />
-      <Button
-        onClick={handleSaveSeatmap}
-        className="bg-tertiary text-white rounded-md ml-auto block mb-5"
-      >
-        Save
-      </Button>
+      <OfficeTitleInput title={name} onChange={handleChangeName} />
+      <Toolbar
+        handleDeleteOffice={handleDeleteOffice}
+        handleSaveSeatmap={handleSaveSeatmap}
+        handleToggleVisible={handleToggleVisible}
+        visible={visible}
+        officeId={officeId}
+      />
       <div className="relative max-w-4xl w-full mx-auto flex flex-col gap-4 items-start scale-50 lg:scale-[0.8] 2xl:scale-100">
         <div className="relative flex items-center gap-3 flex-wrap">
           {new Array(SEATMAP_ROWS * SEATMAP_COLUMNS_PER_ROW)
             .fill(0)
-            .map((_, idx) => (
-              <>
-                {blockCells.find((cell) => cell.order === idx) ? (
-                  <>{blocks.map((block) => renderBlocks(block, idx))}</>
-                ) : (
+            .map((_, idx) => {
+              if (blockCells.find((cell) => cell.position === idx))
+                return (
+                  <div key={Math.random() * 4}>
+                    {blocks.map((block) => renderBlocks(block, idx))}
+                  </div>
+                );
+              else
+                return (
                   <Cell
-                    key={Math.random() * 1}
+                    key={Math.random() * 4}
                     done={done}
-                    order={idx}
+                    position={idx}
                     seats={seats}
                     selectedCells={selectedCells}
                     setSeats={setSeats}
                   />
-                )}
-              </>
-            ))}
+                );
+            })}
         </div>
       </div>
     </div>

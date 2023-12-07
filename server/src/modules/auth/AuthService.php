@@ -8,12 +8,10 @@ use core\SessionManager;
 use modules\auth\dto\LoginUserDto;
 use modules\auth\dto\RegisterUserDto;
 use modules\user\dto\CreateUserDto;
-use modules\user\UserEntity;
 use modules\user\UserService;
 use shared\enums\AuthResponse;
 use shared\enums\EnumTypeJwt;
 use shared\enums\SessionKeys;
-use shared\enums\UserResponse;
 use shared\exceptions\ResponseException;
 
 class AuthService

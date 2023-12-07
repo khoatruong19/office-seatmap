@@ -6,7 +6,11 @@ import { useModalContext } from "../../../providers/ModalProvider";
 import FieldControl from "../../Form/FieldControl";
 import { Building } from "lucide-react";
 
-const AddOfficeModal = () => {
+type Props = {
+  confirmHandler: (name: string) => void;
+};
+
+const AddOfficeModal = ({ confirmHandler }: Props) => {
   const { closeModal } = useModalContext();
 
   const {
@@ -20,7 +24,7 @@ const AddOfficeModal = () => {
   const onSubmit: SubmitHandler<AddOfficeSchemaType> = (
     values: AddOfficeSchemaType
   ) => {
-    console.log(values);
+    confirmHandler(values.name);
   };
 
   return (

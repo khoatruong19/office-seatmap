@@ -20,7 +20,8 @@ class Validation {
         'address'       => '[\p{L}0-9\s.,()°-]+',
         'date_dmy'      => '[0-9]{1,2}\-[0-9]{1,2}\-[0-9]{4}',
         'date_ymd'      => '[0-9]{4}\-[0-9]{1,2}\-[0-9]{1,2}',
-        'email'         => '[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$'
+        'email'         => '[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$',
+        'bool'          => '/^(?:true|false)$/igm'
     );
 
     public array $errors = array();
@@ -39,7 +40,7 @@ class Validation {
      * @param $value
      * @return $this
      */
-    public function value($value): static
+    public function value(mixed $value): static
     {
         $this->value = $value;
         return $this;
@@ -64,7 +65,6 @@ class Validation {
      */
     public function customPattern($pattern): static
     {
-        echo $this->value;
         $regex = '/^('.$pattern.')$/u';
         if($this->value != '' && !preg_match($regex, $this->value)){
             $this->errors[] = 'Field %'.$this->name.'% is not valid.';

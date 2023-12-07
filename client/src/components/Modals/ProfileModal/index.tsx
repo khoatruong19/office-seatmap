@@ -43,9 +43,7 @@ const ProfileModal = () => {
     if (!user) return;
 
     let formData = new FormData();
-
     formData.append("full_name", values.full_name);
-
     if (file) {
       resizeImage({ file }, async (resultBlob) => {
         formData.append("file", resultBlob);
@@ -56,11 +54,9 @@ const ProfileModal = () => {
     }
 
     let informationChanged = false;
-
     for (const [key, value] of Object.entries(values)) {
       if (user[key as keyof UserType] != value) informationChanged = true;
     }
-
     if (informationChanged)
       update({ userId: user.id, ...values })
         .then(() => !file && closeModal())

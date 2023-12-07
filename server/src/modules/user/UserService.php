@@ -139,8 +139,6 @@ class UserService
         $user = $this->userRepository->findOne("id", $user_id);
         if(!$user) throw new ResponseException(HttpStatus::$BAD_REQUEST, UserResponse::NOT_FOUND->value);
 
-        if($user['role'] == UserRole::ADMIN->value) throw new ResponseException(HttpStatus::$BAD_REQUEST, UserResponse::NO_PERMISSION->value);
-
         $is_deleted = $this->userRepository->delete($user_id);
         if(!$is_deleted) throw new ResponseException(HttpStatus::$INTERNAL_SERVER_ERROR, UserResponse::DELETE_USER_FAIL->value);
 

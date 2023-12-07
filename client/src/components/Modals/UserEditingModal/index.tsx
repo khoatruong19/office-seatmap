@@ -57,18 +57,16 @@ const UserEditingModal = ({ type, user }: Props) => {
   const onSubmit: SubmitHandler<UserSchemaType> = (values: UserSchemaType) => {
     const submitHandler =
       type === "create" ? createSubmitHandler : updateSubmitHandler;
-
     const formData = new FormData();
-
     Object.entries(values).forEach(([key, value]) => {
       formData.append(key, value);
     });
-
     if (file) {
       resizeImage({ file }, async (resultBlob) => {
         formData.append("file", resultBlob);
         submitHandler(formData)
-          .then(() => {
+          .then((data) => {
+            if ("error" in data) return;
             reset();
             closeModal();
           })
@@ -94,7 +92,6 @@ const UserEditingModal = ({ type, user }: Props) => {
     if (!e.target.files) return;
 
     const file = e.target.files[0];
-
     if (!file) return;
     setFile(file);
     setAvatar(URL.createObjectURL(file));

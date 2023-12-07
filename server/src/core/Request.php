@@ -93,6 +93,8 @@ class Request
         }
 
         foreach ($field_rules as $field => $value) {
+            if($value == "") continue;
+
             $rules = explode('|', $value);
 
             foreach ($rules as $rule) {
@@ -104,7 +106,7 @@ class Request
                 }
 
                 $this->validation->name($field)->value($body[$field] ?? "");
-                if (isset($rule_method_parameter)) {
+                if (isset($rule_method_parameter) && $rule_method_parameter != "") {
                     call_user_func(array($this->validation, $rule_method), $rule_method_parameter);
                 } else {
                     call_user_func(array($this->validation, $rule_method));
@@ -133,6 +135,11 @@ class Request
     public function getParam($key): mixed
     {
         return $this->params[$key];
+    }
+
+    public function getIntParam($key): int
+    {
+        return intval($this->params[$key]);
     }
 
     /**

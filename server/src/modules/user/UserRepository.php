@@ -10,14 +10,14 @@ use PDO;
 
 class UserRepository extends Repository implements IRepository{
     /**
-     * @param $data
+     * @param array $data
      * @return false|string
      */
     public function create(array $data): bool|string
     {
         $sql = "INSERT INTO users (full_name, password, email, role, avatar) VALUES (:full_name, :password, :email, :role, :avatar)";
         $stmt = $this->database->getConnection()->prepare($sql);
-        $result = $stmt->execute($data);
+        $stmt->execute($data);
         return $this->database->getConnection()->lastInsertId();
     }
 

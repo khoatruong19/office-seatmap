@@ -5,41 +5,48 @@ import Button from "../../Form/Button";
 import { Pencil, Trash } from "lucide-react";
 import { useModalContext } from "../../../providers/ModalProvider";
 import { MODALS } from "../../../providers/ModalProvider/constants";
+import { OfficeType } from "../../../schema/types";
+import { useDeleteOfficeMutation } from "../../../stores/office/service";
 
 type Props = {
-  office: any;
+  office: OfficeType;
 };
 
 const OfficeCard = ({ office }: Props) => {
   const isAdmin = useCheckAdmin();
 
-  const { showModal } = useModalContext();
+  const { showModal, closeModal } = useModalContext();
+  const [deleteOffice] = useDeleteOfficeMutation();
 
-  const handleOpenConfirmModal = () =>
+  const handleDeleteOffice = () => {
+    const confirmHandler = () => {
+      deleteOffice({ id: office.id })
+        .then(() => closeModal())
+        .catch(() => {});
+    };
+
     showModal(MODALS.CONFIRM, {
       text: "Are you sure you want to delete this office?",
-      confirmHandler: () => {},
+      confirmHandler,
     });
+  };
 
   return (
-    <div
-      key={office.slug}
-      className="flex items-center justify-between w-full  bg-primary px-5 py-4 rounded-lg"
-    >
+    <div className="flex items-center justify-between w-full  bg-primary px-5 py-4 rounded-lg">
       <Link
-        to={APP_ROUTES.OFFICE.replace(":id", office.slug)}
+        to={APP_ROUTES.OFFICE.replace(":id", `${office.id}`)}
         className="text-2xl text-secondary font-semibold underline hover-opacity"
       >
         {office.name}
       </Link>
       {isAdmin && (
         <div className="flex items-center gap-3">
-          <Link to={APP_ROUTES.OFFICE_EDITING.replace(":id", office.slug)}>
+          <Link to={APP_ROUTES.OFFICE_EDITING.replace(":id", `${office.id}`)}>
             <Button className="p-0 pt-2 text-secondary">
               <Pencil />
             </Button>
           </Link>
-          <Button onClick={handleOpenConfirmModal} className="p-0 text-danger">
+          <Button onClick={handleDeleteOffice} className="p-0 text-danger">
             <Trash strokeWidth={2.5} />
           </Button>
         </div>

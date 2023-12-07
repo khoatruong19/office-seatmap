@@ -3,11 +3,31 @@ import { Plus } from "lucide-react";
 import { useModalContext } from "../../../providers/ModalProvider";
 import { MODALS } from "../../../providers/ModalProvider/constants";
 import useCheckAdmin from "../../../hooks/useCheckAdmin";
+import { useCreateOfficeMutation } from "../../../stores/office/service";
+import { useNavigate } from "react-router";
+import { APP_ROUTES } from "../../../config/routes";
 
 const AddOfficeButton = () => {
   const isAdmin = useCheckAdmin();
-  const { showModal } = useModalContext();
-  const handleOpenAddOfficeModal = () => showModal(MODALS.ADD_OFFICE, {});
+  const navigate = useNavigate();
+
+  const { showModal, closeModal } = useModalContext();
+  const [createOffice] = useCreateOfficeMutation();
+
+  const handleOpenAddOfficeModal = () => {
+    const confirmHandler = (name: string) =>
+      createOffice({ name })
+        .then((data) => {
+          if ("data" in data) {
+            navigate(
+              APP_ROUTES.OFFICE_EDITING.replace(":id", `${data.data.data}`)
+            );
+            closeModal();
+          }
+        })
+        .catch(() => {});
+    showModal(MODALS.ADD_OFFICE, { confirmHandler });
+  };
 
   if (!isAdmin) return null;
 

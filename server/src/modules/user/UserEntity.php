@@ -107,6 +107,9 @@ class UserEntity
         $this->avatar = $avatar;
     }
 
+    /**
+     * @return array
+     */
     public function toArray(): array
     {
         return [

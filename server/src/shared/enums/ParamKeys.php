@@ -5,4 +5,5 @@ namespace shared\enums;
 
 enum ParamKeys : string {
     case USER_ID = "userId";
+    case OFFICE_ID = "officeId";
 }
