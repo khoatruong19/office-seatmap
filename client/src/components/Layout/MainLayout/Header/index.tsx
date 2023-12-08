@@ -46,7 +46,7 @@ const Header = () => {
               alt=""
             />
             <div>
-              <h3 className="font-semibold text-lg capitalize mb-[-5px] max-w-[120px] truncate">
+              <h3 className="font-semibold text-lg mb-[-5px] max-w-[120px] truncate">
                 {user?.full_name}
               </h3>
               <span className="text-sm">{user?.role}</span>
