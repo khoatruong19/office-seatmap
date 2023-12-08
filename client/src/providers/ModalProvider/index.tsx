@@ -8,7 +8,6 @@ import {
   useMemo,
 } from "react";
 import ModalLayout from "@components/Modals/ModalLayout";
-
 import { MODALS, MODAL_ELEMENTS } from "./constants";
 
 type ModalContextValues = {

@@ -12,12 +12,15 @@ const useGetOfficeInfo = () => {
     let blocks = [];
     try {
       blocks = JSON.parse(response.data.blocks);
-    } catch (error) {}
+    } catch (error) {
+      return;
+    }
     return blocks;
   }, [response]);
 
   const initSeats: CellType[] = useMemo(() => {
     if (!response?.data) return [];
+
     return response?.data.seats
       ? response?.data.seats.map((seat) => ({
           label: seat.label,

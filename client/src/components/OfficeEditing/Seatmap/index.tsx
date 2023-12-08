@@ -46,9 +46,11 @@ const Seatmap = ({
   const [deleteOffice] = useDeleteOfficeMutation();
 
   useEffect(() => {
-    const selectingCells = (e: any) => {
+    const selectingCells = (e: MouseEvent) => {
+      if (!e.target) return;
+
       if (e.shiftKey) {
-        const cellId = e.target.id;
+        const cellId = (e.target as HTMLDivElement).id;
         if (!!!cellId.length) return;
 
         const newCellPosition = Number(cellId.split("seat")[1]);
@@ -73,7 +75,7 @@ const Seatmap = ({
       }
     };
 
-    const doneSelectingCells = (event: any) => {
+    const doneSelectingCells = (event: KeyboardEvent) => {
       if (event.keyCode === 16 && selectedCells.length > 0) {
         setDone(true);
         setLastSelectingCell(null);

@@ -100,8 +100,12 @@ const UserEditingModal = ({ type, user }: Props) => {
   const handleDeleteUser = () => {
     const deleteHandler = () =>
       deleteUser({ userId: user?.id! })
-        .then(() => closeModal())
-        .catch(() => {});
+        .then(() => {
+          closeModal();
+        })
+        .catch(() => {
+          return;
+        });
     showModal(MODALS.CONFIRM, {
       confirmHandler: deleteHandler,
       isLoading: deleteLoading,

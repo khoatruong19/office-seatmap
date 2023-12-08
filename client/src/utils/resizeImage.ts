@@ -20,7 +20,7 @@ const resizeImage = (
     context.drawImage(img, 0, 0, canvas.width, canvas.height);
 
     canvas.toBlob((blob) => {
-      let result = new File([blob!], "fileName.jpg", { type: "image/jpeg" });
+      const result = new File([blob!], "fileName.jpg", { type: "image/jpeg" });
       callback(result);
     }, "image/jpeg");
   };

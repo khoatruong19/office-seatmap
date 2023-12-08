@@ -1,9 +1,9 @@
-import React, { forwardRef } from "react";
+import React, { LegacyRef, forwardRef } from "react";
 import { cn } from "@lib/clsx";
 
 type Props = React.InputHTMLAttributes<HTMLInputElement>;
 
-const Input = forwardRef((props: Props, ref: any) => {
+const Input = forwardRef((props: Props, ref: LegacyRef<HTMLInputElement>) => {
   const { className } = props;
   return (
     <input

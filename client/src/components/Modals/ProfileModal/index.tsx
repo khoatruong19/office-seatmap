@@ -42,7 +42,7 @@ const ProfileModal = () => {
   ) => {
     if (!user) return;
 
-    let formData = new FormData();
+    const formData = new FormData();
     formData.append("full_name", values.full_name);
     if (file) {
       resizeImage({ file }, async (resultBlob) => {
@@ -81,11 +81,11 @@ const ProfileModal = () => {
     if (!user) return;
 
     setValue("full_name", user.full_name);
-  }, [user]);
+  }, [user, setValue]);
 
   const isInformationChanged = useMemo(() => {
-    return file || watch("full_name") !== user?.full_name;
-  }, [watch("full_name"), file]);
+    return file || watch("full_name") != user?.full_name;
+  }, [watch("full_name"), file, user]);
 
   return (
     <div className="w-[500px] py-8 font-mono">

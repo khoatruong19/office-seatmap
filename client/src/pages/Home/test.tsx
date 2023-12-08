@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { cn } from "../../lib/clsx";
 import Map from "./Map";
 
 type User = {

@@ -26,7 +26,9 @@ const AddOfficeButton = () => {
           );
           closeModal();
         }
-      } catch (error) {}
+      } catch (error) {
+        return;
+      }
     };
     showModal(MODALS.ADD_OFFICE, { confirmHandler });
   };
