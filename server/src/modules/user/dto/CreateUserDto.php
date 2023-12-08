@@ -11,11 +11,11 @@ class CreateUserDto implements IDto
     private string $password;
     private string $role;
 
-    public function __construct(string $email, string $fullName, string $password, string $role)
+    public function __construct(string $email, string $full_name, string $password, string $role)
     {
-        $this->email = $email;
-        $this->full_name = $fullName;
-        $this->password = $password;
+        $this->email = htmlspecialchars_decode($email, ENT_QUOTES);
+        $this->full_name = htmlspecialchars_decode($full_name, ENT_QUOTES);
+        $this->password = htmlspecialchars_decode($password, ENT_QUOTES);
         $this->role = $role;
     }
 

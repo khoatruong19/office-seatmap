@@ -12,8 +12,8 @@ class UpdateUserDto implements IDto
 
     public function __construct(string $email, string $full_name, string $role)
     {
-        $this->email = $email;
-        $this->full_name = $full_name;
+        $this->email = htmlspecialchars_decode($email, ENT_QUOTES);
+        $this->full_name = htmlspecialchars_decode($full_name, ENT_QUOTES);
         $this->role = $role;
     }
 
