@@ -1,7 +1,7 @@
 import { FieldErrors } from "react-hook-form";
-import { cn } from "../../../lib/clsx";
-import Input from "../Input";
-import Label from "../Label";
+import { cn } from "@lib/clsx";
+import Input from "@components/Form/Input";
+import Label from "@components/Form/Label";
 
 type Props = {
   containerClass?: string;

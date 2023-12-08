@@ -1,5 +1,5 @@
 import React, { forwardRef } from "react";
-import { cn } from "../../../lib/clsx";
+import { cn } from "@lib/clsx";
 
 type Props = React.InputHTMLAttributes<HTMLInputElement>;
 

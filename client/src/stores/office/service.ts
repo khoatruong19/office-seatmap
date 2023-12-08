@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "..";
-import cookieManagement from "../../lib/js-cookie";
-import { BASE_URL, ENDPOINTS } from "../../config/api";
+import cookieManagement from "@lib/js-cookie";
+import { BASE_URL, ENDPOINTS } from "@config/api";
 import {
   CreateOfficeRequest,
   CreateOfficeResponse,

@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import { ACCESS_TOKEN_KEY } from "../config/api";
+import { ACCESS_TOKEN_KEY } from "@config/api";
 
 const cookieManagement = () => {
   const setAccessToken = (accessToken: string) => {

@@ -1,10 +1,10 @@
 import { RouteObject } from "react-router-dom";
-import Login from "../pages/Login";
-import Home from "../pages/Home";
-import AuthGuard from "../guards/AuthGuard";
-import Office from "../pages/Office";
-import OfficeEditing from "../pages/OfficeEditing";
-import NotFound from "../pages/NotFound";
+import Login from "@pages/Login";
+import Home from "@pages/Home";
+import AuthGuard from "@guards/AuthGuard";
+import Office from "@pages/Office";
+import OfficeEditing from "@pages/OfficeEditing";
+import NotFound from "@pages/NotFound";
 
 const APP_ROUTES = {
   APP: "/",

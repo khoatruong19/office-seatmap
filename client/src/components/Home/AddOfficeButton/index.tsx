@@ -1,11 +1,11 @@
-import Button from "../../Form/Button";
+import Button from "@components/Form/Button";
 import { Plus } from "lucide-react";
-import { useModalContext } from "../../../providers/ModalProvider";
-import { MODALS } from "../../../providers/ModalProvider/constants";
-import useCheckAdmin from "../../../hooks/useCheckAdmin";
-import { useCreateOfficeMutation } from "../../../stores/office/service";
+import { useModalContext } from "@providers/ModalProvider";
+import { MODALS } from "@providers/ModalProvider/constants";
+import useCheckAdmin from "@hooks/useCheckAdmin";
+import { useCreateOfficeMutation } from "@stores/office/service";
 import { useNavigate } from "react-router";
-import { APP_ROUTES } from "../../../config/routes";
+import { APP_ROUTES } from "@config/routes";
 
 const AddOfficeButton = () => {
   const isAdmin = useCheckAdmin();

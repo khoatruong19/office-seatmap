@@ -1,5 +1,5 @@
-import Divider from "../../Divider";
-import Input from "../../Form/Input";
+import Divider from "@components/Divider";
+import Input from "@components/Form/Input";
 
 type Props = {
   title: string;

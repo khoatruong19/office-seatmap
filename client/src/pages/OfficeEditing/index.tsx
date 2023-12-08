@@ -1,7 +1,7 @@
-import MainLayout from "../../components/Layout/MainLayout";
-import Loader from "../../components/Loader";
-import Seatmap from "../../components/OfficeEditing/Seatmap";
-import useGetOfficeInfo from "../../hooks/useGetOfficeInfo";
+import MainLayout from "@components/Layout/MainLayout";
+import Loader from "@components/Loader";
+import Seatmap from "@components/OfficeEditing/Seatmap";
+import useGetOfficeInfo from "@hooks/useGetOfficeInfo";
 
 const OfficeEditing = () => {
   const {

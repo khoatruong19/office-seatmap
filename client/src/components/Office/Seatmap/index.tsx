@@ -1,11 +1,8 @@
 import { useMemo } from "react";
-import {
-  SEATMAP_COLUMNS_PER_ROW,
-  SEATMAP_ROWS,
-} from "../../../config/seatmapSize";
-import { cn } from "../../../lib/clsx";
-import { BlockType, CellType } from "../../../schema/types";
-import OfficeTitle from "../OfficeTitle";
+import { SEATMAP_COLUMNS_PER_ROW, SEATMAP_ROWS } from "@config/seatmapSize";
+import { cn } from "@lib/clsx";
+import { BlockType, CellType } from "@schema/types";
+import OfficeTitle from "@components/Office/OfficeTitle";
 import Seat from "./Seat";
 
 type Props = {

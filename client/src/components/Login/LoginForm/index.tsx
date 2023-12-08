@@ -1,13 +1,13 @@
 import { Lock, User } from "lucide-react";
-import Button from "../../Form/Button";
-import { useLoginMutation } from "../../../stores/auth/service";
+import Button from "@components/Form/Button";
+import FieldControl from "@components/Form/FieldControl";
+import { useLoginMutation } from "@stores/auth/service";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginSchema, LoginSchemaType } from "../../../schema/form";
+import { LoginSchema, LoginSchemaType } from "@schema/form";
 import { useNavigate } from "react-router";
-import { cn } from "../../../lib/clsx";
-import { APP_ROUTES } from "../../../config/routes";
-import FieldControl from "../../Form/FieldControl";
+import { cn } from "@lib/clsx";
+import { APP_ROUTES } from "@config/routes";
 
 const LoginForm = () => {
   const navigate = useNavigate();

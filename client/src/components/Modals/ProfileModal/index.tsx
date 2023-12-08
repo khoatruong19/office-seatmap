@@ -1,20 +1,20 @@
-import { SubmitHandler, useForm } from "react-hook-form";
-import { ProfileSchema, ProfileSchemaType } from "../../../schema/form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Label from "../../Form/Label";
-import { KeyRound, Pencil, UserIcon } from "lucide-react";
-import Button from "../../Form/Button";
-import DefaultAvatar from "../../../assets/default-avatar.png";
-import { useAuth } from "../../../hooks/useAuth";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useModalContext } from "../../../providers/ModalProvider";
-import resizeImage from "../../../utils/resizeImage";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { ProfileSchema, ProfileSchemaType } from "@schema/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Button from "@components/Form/Button";
+import Label from "@components/Form/Label";
+import FieldControl from "@components/Form/FieldControl";
+import { KeyRound, Pencil, UserIcon } from "lucide-react";
+import DefaultAvatar from "@assets/default-avatar.png";
+import { useAuth } from "@hooks/useAuth";
+import { useModalContext } from "@providers/ModalProvider";
+import resizeImage from "@utils/resizeImage";
 import {
   useUpdateProfileMutation,
   useUploadAvatarMutation,
-} from "../../../stores/user/service";
-import { UserType } from "../../../schema/types";
-import FieldControl from "../../Form/FieldControl";
+} from "@stores/user/service";
+import { UserType } from "@schema/types";
 
 const ProfileModal = () => {
   const { user } = useAuth();

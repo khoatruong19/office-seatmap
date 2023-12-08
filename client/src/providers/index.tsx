@@ -2,7 +2,7 @@ import React from "react";
 import ModalProvider from "./ModalProvider";
 
 import { Provider as ReduxProvider } from "react-redux";
-import { store } from "../stores";
+import { store } from "@stores/index";
 
 type Props = {
   children: React.ReactNode;

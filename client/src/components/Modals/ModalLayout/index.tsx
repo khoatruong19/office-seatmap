@@ -1,5 +1,5 @@
 import React, { ReactNode, useRef } from "react";
-import { useClickOutside } from "../../../hooks/useClickOutside";
+import { useClickOutside } from "@hooks/useClickOutside";
 
 type ModalLayoutProps = {
   children: ReactNode;

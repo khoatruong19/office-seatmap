@@ -1,9 +1,9 @@
 import { LogOut, User } from "lucide-react";
-import { useLogoutMutation } from "../../../../../stores/auth/service";
+import { useLogoutMutation } from "@stores/auth/service";
 import { useNavigate } from "react-router";
-import { useModalContext } from "../../../../../providers/ModalProvider";
-import { APP_ROUTES } from "../../../../../config/routes";
-import { MODALS } from "../../../../../providers/ModalProvider/constants";
+import { useModalContext } from "@providers/ModalProvider";
+import { APP_ROUTES } from "@config/routes";
+import { MODALS } from "@providers/ModalProvider/constants";
 
 type Props = {
   close: () => void;

@@ -1,8 +1,8 @@
-import AddOfficeButton from "../../components/Home/AddOfficeButton";
-import OfficeCard from "../../components/Home/OfficeCard";
-import MainLayout from "../../components/Layout/MainLayout";
-import OfficeTitle from "../../components/Office/OfficeTitle";
-import { useGetAllOfficesQuery } from "../../stores/office/service";
+import AddOfficeButton from "@components/Home/AddOfficeButton";
+import OfficeCard from "@components/Home/OfficeCard";
+import MainLayout from "@components/Layout/MainLayout";
+import OfficeTitle from "@components/Office/OfficeTitle";
+import { useGetAllOfficesQuery } from "@stores/office/service";
 
 const Home = () => {
   const { data, isLoading } = useGetAllOfficesQuery();

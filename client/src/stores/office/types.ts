@@ -1,5 +1,5 @@
-import { BaseResponse } from "../../schema/response";
-import { CellType, OfficeType } from "../../schema/types";
+import { BaseResponse } from "@schema/response";
+import { CellType, OfficeType } from "@schema/types";
 
 export type CreateOfficeRequest = {
   name: string;

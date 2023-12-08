@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import { useMeMutation } from "../stores/auth/service";
+import { useMeMutation } from "@stores/auth/service";
 import { useNavigate } from "react-router";
-import { APP_ROUTES } from "../config/routes";
+import { APP_ROUTES } from "@config/routes";
 
 export const useCheckAuth = () => {
   const [me, { isError }] = useMeMutation();

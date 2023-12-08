@@ -1,4 +1,4 @@
-import { UserRole } from "../schema/types";
+import { UserRole } from "@schema/types";
 import { useAuth } from "./useAuth";
 
 const useCheckAdmin = () => {

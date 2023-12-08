@@ -1,5 +1,5 @@
-import LoginForm from "../../components/Login/LoginForm";
-import useDisableBackButton from "../../hooks/useDisableBackButton";
+import LoginForm from "@components/Login/LoginForm";
+import useDisableBackButton from "@hooks/useDisableBackButton";
 
 const Login = () => {
   useDisableBackButton();

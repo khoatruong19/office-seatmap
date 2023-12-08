@@ -1,6 +1,6 @@
 import React from "react";
 import Header from "./Header";
-import useCheckAdmin from "../../../hooks/useCheckAdmin";
+import useCheckAdmin from "@hooks/useCheckAdmin";
 import Sidebar from "./Sidebar";
 
 type Props = {

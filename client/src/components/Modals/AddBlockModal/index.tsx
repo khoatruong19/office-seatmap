@@ -1,9 +1,9 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import { AddBlockSchema, AddBlockSchemaType } from "../../../schema/form";
+import { AddBlockSchema, AddBlockSchemaType } from "@schema/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Button from "../../Form/Button";
-import { useModalContext } from "../../../providers/ModalProvider";
-import FieldControl from "../../Form/FieldControl";
+import Button from "@components/Form/Button";
+import { useModalContext } from "@providers/ModalProvider";
+import FieldControl from "@components/Form/FieldControl";
 import { Building } from "lucide-react";
 
 type Props = {

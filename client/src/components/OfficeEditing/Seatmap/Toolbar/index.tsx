@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router";
-import Button from "../../../Form/Button";
+import Button from "@components/Form/Button";
 import { ArrowBigRight, Check, Eye, EyeOff, Trash } from "lucide-react";
-import { APP_ROUTES } from "../../../../config/routes";
+import { APP_ROUTES } from "@config/routes";
 
 type Props = {
   handleDeleteOffice: () => void;

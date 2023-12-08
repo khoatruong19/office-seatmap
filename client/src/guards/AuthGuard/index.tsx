@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { useMeMutation } from "../../stores/auth/service";
+import { useMeMutation } from "@stores/auth/service";
 import { Outlet, useNavigate } from "react-router";
-import { APP_ROUTES } from "../../config/routes";
-import cookieManagement from "../../lib/js-cookie";
+import { APP_ROUTES } from "@config/routes";
+import cookieManagement from "@lib/js-cookie";
 import ClipLoader from "react-spinners/ClipLoader";
 
 const AuthGuard = () => {

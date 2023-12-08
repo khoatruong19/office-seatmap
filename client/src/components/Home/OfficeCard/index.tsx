@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
-import { APP_ROUTES } from "../../../config/routes";
-import useCheckAdmin from "../../../hooks/useCheckAdmin";
+import { APP_ROUTES } from "@config/routes";
+import useCheckAdmin from "@hooks/useCheckAdmin";
 import Button from "../../Form/Button";
 import { Pencil, Trash } from "lucide-react";
-import { useModalContext } from "../../../providers/ModalProvider";
-import { MODALS } from "../../../providers/ModalProvider/constants";
-import { OfficeType } from "../../../schema/types";
-import { useDeleteOfficeMutation } from "../../../stores/office/service";
+import { useModalContext } from "@providers/ModalProvider";
+import { MODALS } from "@providers/ModalProvider/constants";
+import { OfficeType } from "@schema/types";
+import { useDeleteOfficeMutation } from "@stores/office/service";
 
 type Props = {
   office: OfficeType;

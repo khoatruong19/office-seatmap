@@ -2,20 +2,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { KeyRound, Lock, Pencil, Trash, UserIcon } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import DefaultAvatar from "../../../assets/default-avatar.png";
-import { useModalContext } from "../../../providers/ModalProvider";
-import { UserSchema, UserSchemaType } from "../../../schema/form";
-import { UserType, UserRole } from "../../../schema/types";
+import DefaultAvatar from "@assets/default-avatar.png";
+import { useModalContext } from "@providers/ModalProvider";
+import { UserSchema, UserSchemaType } from "@schema/form";
+import { UserType, UserRole } from "@schema/types";
 import {
   useCreateUserMutation,
   useDeleteUserMutation,
   useUpdateUserMutation,
-} from "../../../stores/user/service";
-import Button from "../../Form/Button";
-import Label from "../../Form/Label";
-import FieldControl from "../../Form/FieldControl";
-import resizeImage from "../../../utils/resizeImage";
-import { MODALS } from "../../../providers/ModalProvider/constants";
+} from "@stores/user/service";
+import Button from "@components/Form/Button";
+import Label from "@components/Form/Label";
+import FieldControl from "@components/Form/FieldControl";
+import resizeImage from "@utils/resizeImage";
+import { MODALS } from "@providers/ModalProvider/constants";
 
 type ModalType = "create" | "update";
 

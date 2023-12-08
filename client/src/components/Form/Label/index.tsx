@@ -1,4 +1,4 @@
-import { cn } from "../../../lib/clsx";
+import { cn } from "@lib/clsx";
 
 type Props = React.LabelHTMLAttributes<HTMLLabelElement> & {
   field: string;

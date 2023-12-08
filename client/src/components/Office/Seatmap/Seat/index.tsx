@@ -1,8 +1,5 @@
-import {
-  ROW_LABEL,
-  SEATMAP_COLUMNS_PER_ROW,
-} from "../../../../config/seatmapSize";
-import { cn } from "../../../../lib/clsx";
+import { ROW_LABEL, SEATMAP_COLUMNS_PER_ROW } from "@config/seatmapSize";
+import { cn } from "@lib/clsx";
 
 type Props = {
   position: number;

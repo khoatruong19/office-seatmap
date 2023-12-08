@@ -1,5 +1,5 @@
-import { useModalContext } from "../../../providers/ModalProvider";
-import Button from "../../Form/Button";
+import { useModalContext } from "@providers/ModalProvider";
+import Button from "@components/Form/Button";
 
 type Props = {
   text?: string;

@@ -1,21 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-  SEATMAP_COLUMNS_PER_ROW,
-  SEATMAP_ROWS,
-} from "../../../config/seatmapSize";
-import { cn } from "../../../lib/clsx";
-import { useModalContext } from "../../../providers/ModalProvider";
-import { MODALS } from "../../../providers/ModalProvider/constants";
-import { BlockType, CellType } from "../../../schema/types";
+import { SEATMAP_COLUMNS_PER_ROW, SEATMAP_ROWS } from "@config/seatmapSize";
+import { cn } from "@lib/clsx";
+import { useModalContext } from "@providers/ModalProvider";
+import { MODALS } from "@providers/ModalProvider/constants";
+import { BlockType, CellType } from "@schema/types";
 import Cell from "./Cell";
 import {
   useDeleteOfficeMutation,
   useUpdateOfficeMutation,
-} from "../../../stores/office/service";
+} from "@stores/office/service";
 import Toolbar from "./Toolbar";
 import { useNavigate } from "react-router";
-import { APP_ROUTES } from "../../../config/routes";
-import OfficeTitleInput from "../OfficeTitleInput";
+import { APP_ROUTES } from "@config/routes";
+import OfficeTitleInput from "@components/OfficeEditing/OfficeTitleInput";
 
 type Props = {
   officeName: string;

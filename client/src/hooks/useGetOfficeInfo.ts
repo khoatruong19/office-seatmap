@@ -1,7 +1,7 @@
 import { useParams } from "react-router";
-import { useGetOfficeQuery } from "../stores/office/service";
+import { useGetOfficeQuery } from "@stores/office/service";
 import { useMemo } from "react";
-import { CellType } from "../schema/types";
+import { CellType } from "@schema/types";
 
 const useGetOfficeInfo = () => {
   const { id } = useParams();

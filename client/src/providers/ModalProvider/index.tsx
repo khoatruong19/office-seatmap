@@ -7,7 +7,7 @@ import {
   ReactNode,
   useMemo,
 } from "react";
-import ModalLayout from "../../components/Modals/ModalLayout";
+import ModalLayout from "@components/Modals/ModalLayout";
 
 import { MODALS, MODAL_ELEMENTS } from "./constants";
 

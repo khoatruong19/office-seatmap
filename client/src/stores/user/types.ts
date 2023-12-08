@@ -1,5 +1,5 @@
-import { BaseResponse } from "../../schema/response";
-import { UserType } from "../../schema/types";
+import { BaseResponse } from "@schema/response";
+import { UserType } from "@schema/types";
 
 export type UploadAvatarRequest = {
   formData: FormData;

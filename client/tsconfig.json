@@ -8,11 +8,17 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@redux/*": ["./src/redux/*"],
+      "@stores/*": ["./src/stores/*"],
       "@components/*": ["./src/components/*"],
+      "@providers/*": ["./src/providers/*"],
       "@lib/*": ["./src/lib/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@schema/*": ["./src/schema/*"],
       "@pages/*": ["./src/pages/*"],
-      "@config/*": ["./src/config/*"]
+      "@config/*": ["./src/config/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@guards/*": ["./src/guards/*"]
     },
     /* Bundler mode */
     "moduleResolution": "bundler",

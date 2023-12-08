@@ -5,8 +5,6 @@
       <sourceFolder url="file://$MODULE_DIR$/server/src/core" isTestSource="false" packagePrefix="core\" />
       <sourceFolder url="file://$MODULE_DIR$/server/src/modules" isTestSource="false" packagePrefix="modules\" />
       <sourceFolder url="file://$MODULE_DIR$/server/src/shared" isTestSource="false" packagePrefix="shared\" />
-      <sourceFolder url="file://$MODULE_DIR$/server/spec" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/server/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/spec" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/server/vendor/cloudinary/cloudinary_php" />
