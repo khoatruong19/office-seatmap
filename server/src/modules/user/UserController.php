@@ -30,7 +30,7 @@ class UserController extends Controller
     public function findAll()
     {
         $users = $this->userService->findAll();
-        $this->response->response(HttpStatus::$OK, UserResponse::GET_ALL_SUCCESS->value, $users);
+        $this->response->response(HttpStatus::$OK, UserResponse::GET_ALL_SUCCESS->value, null, $users);
     }
 
     /**
@@ -48,7 +48,7 @@ class UserController extends Controller
         $raw_data = $this->request->getBody();
         $create_user_dto = CreateUserDto::fromArray($raw_data);
         $id = $this->userService->create($create_user_dto);
-        $this->response->response(HttpStatus::$OK, UserResponse::CREATE_USER_SUCCESS->value, $id);
+        $this->response->response(HttpStatus::$OK, UserResponse::CREATE_USER_SUCCESS->value, null, $id);
     }
 
     /**
@@ -66,7 +66,7 @@ class UserController extends Controller
         $raw_data = $this->request->getBody();
         $update_user_dto = UpdateUserDto::fromArray($raw_data);
         $data = $this->userService->updateOne($user_id, $update_user_dto);
-        $this->response->response(HttpStatus::$OK, UserResponse::UPDATE_USER_SUCCESS->value, $data);
+        $this->response->response(HttpStatus::$OK, UserResponse::UPDATE_USER_SUCCESS->value, null, $data);
     }
 
     /**
@@ -82,7 +82,7 @@ class UserController extends Controller
         $raw_data = $this->request->getBody();
         $update_profile_dto = UpdateProfileDto::fromArray($raw_data);
         $data = $this->userService->updateProfile($user_id, $update_profile_dto);
-        $this->response->response(HttpStatus::$OK, UserResponse::UPDATE_PROFILE_SUCCESS->value, $data);
+        $this->response->response(HttpStatus::$OK, UserResponse::UPDATE_PROFILE_SUCCESS->value, null, $data);
     }
 
     /**
@@ -109,6 +109,6 @@ class UserController extends Controller
 
         $user_id = $this->request->getParam(ParamKeys::USER_ID->value);
         $data = $this->userService->uploadAvatar($user_id);
-        $this->response->response(HttpStatus::$OK, UserResponse::UPLOAD_SUCCESS->value, $data);
+        $this->response->response(HttpStatus::$OK, UserResponse::UPLOAD_SUCCESS->value, null, $data);
     }
 }

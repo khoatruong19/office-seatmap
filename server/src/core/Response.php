@@ -18,7 +18,7 @@ class Response {
      * @param $data
      * @return void
      */
-    public function response($http_status_code, $message, mixed $data = null, $errors = null): void
+    public function response($http_status_code, $message, mixed $errors = null, mixed $data = null,): void
     {
         header('Content-Type: application/json');
         http_response_code($http_status_code);

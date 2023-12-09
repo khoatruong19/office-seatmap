@@ -34,7 +34,7 @@ class OfficeController extends Controller
         $raw_data = $this->request->getBody();
         $create_office_dto = CreateOfficeDto::fromArray($raw_data);
         $id = $this->officeService->create($create_office_dto);
-        $this->response->response(HttpStatus::$OK, OfficeResponse::CREATE_OFFICE_SUCCESS->value , $id);
+        $this->response->response(HttpStatus::$OK, OfficeResponse::CREATE_OFFICE_SUCCESS->value , null, $id);
     }
 
     /**
@@ -54,7 +54,7 @@ class OfficeController extends Controller
         $raw_data['id'] = $office_id;
         $update_office_dto = UpdateOfficeDto::fromArray($raw_data);
         $this->officeService->update($update_office_dto);
-        $this->response->response(HttpStatus::$OK, OfficeResponse::UPDATE_OFFICE_SUCCESS->value , $office_id);
+        $this->response->response(HttpStatus::$OK, OfficeResponse::UPDATE_OFFICE_SUCCESS->value , null, $office_id);
     }
 
     /**
@@ -65,7 +65,7 @@ class OfficeController extends Controller
     {
         $office_id = $this->request->getParam(ParamKeys::OFFICE_ID->value);
         $office = $this->officeService->findOne("id", $office_id);
-        $this->response->response(HttpStatus::$OK, OfficeResponse::GET_ONE_OFFICE_SUCCESS->value, $office);
+        $this->response->response(HttpStatus::$OK, OfficeResponse::GET_ONE_OFFICE_SUCCESS->value, null, $office);
     }
 
     /**
@@ -74,7 +74,7 @@ class OfficeController extends Controller
     public function findAll(): void
     {
         $offices = $this->officeService->findAll();
-        $this->response->response(HttpStatus::$OK, OfficeResponse::GET_ALL_OFFICES_SUCCESS->value, $offices);
+        $this->response->response(HttpStatus::$OK, OfficeResponse::GET_ALL_OFFICES_SUCCESS->value, null, $offices);
     }
 
     /**

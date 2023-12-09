@@ -39,7 +39,7 @@ class AuthController extends Controller
         $raw_data = $this->request->getBody();
         $register_user_dto = RegisterUserDto::fromArray($raw_data);
         $id = $this->authService->register($register_user_dto);
-        $this->response->response(HttpStatus::$OK, AuthResponse::REGISTER_SUCCESS->value, $id);
+        $this->response->response(HttpStatus::$OK, AuthResponse::REGISTER_SUCCESS->value, null, $id);
     }
 
     /**
@@ -55,7 +55,7 @@ class AuthController extends Controller
         $raw_data = $this->request->getBody();
         $login_user_dto = LoginUserDto::fromArray($raw_data);
         $user_credentials = $this->authService->login($login_user_dto);
-        $this->response->response(HttpStatus::$OK, AuthResponse::LOGIN_SUCCESS->value, $user_credentials);
+        $this->response->response(HttpStatus::$OK, AuthResponse::LOGIN_SUCCESS->value, null, $user_credentials);
     }
 
     /**
@@ -66,7 +66,7 @@ class AuthController extends Controller
     {
         $user_id = SessionManager::get(SessionKeys::USER_ID->value);
         $user = $this->userService->getCurrentUser(strval($user_id));
-        $this->response->response(HttpStatus::$OK, AuthResponse::ME_SUCCESS->value, $user);
+        $this->response->response(HttpStatus::$OK, AuthResponse::ME_SUCCESS->value, null, $user);
     }
 
     /**
@@ -78,6 +78,6 @@ class AuthController extends Controller
         $is_logout = $this->authService->logout();
         if(!$is_logout) throw new ResponseException(HttpStatus::$UNAUTHORIZED,AuthResponse::UNAUTHORIZED->value);
 
-        $this->response->response(HttpStatus::$OK, AuthResponse::LOGOUT_SUCCESS->value, true);
+        $this->response->response(HttpStatus::$OK, AuthResponse::LOGOUT_SUCCESS->value, null, true);
     }
 }
