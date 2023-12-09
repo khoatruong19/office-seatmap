@@ -43,6 +43,23 @@ class SeatRepository extends Repository implements IRepository{
         return $result ?? null;
     }
 
+    public function findOneWithOfficeId(string $field, string $value, int $office_id): mixed
+    {
+        $allowed_fields = ['label', 'id'];
+        if(!in_array($field, $allowed_fields)) {
+            throw new ResponseException(HttpStatus::$BAD_REQUEST,"Field is not allowed!");
+        }
+
+        $sql = "SELECT * FROM seats WHERE ".$field." = :value AND office_id = :office_id limit 1";
+        $stmt = $this->database->getConnection()->prepare($sql);
+        $stmt->execute([
+            "value" => $value,
+            "office_id" => $office_id
+        ]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ?? null;
+    }
+
     /**
      * @return array|false
      */
@@ -56,7 +73,8 @@ class SeatRepository extends Repository implements IRepository{
 
     public function findAllByOfficeId(string $office_id): bool|array
     {
-        $sql = "SELECT * FROM seats WHERE office_id = :value ORDER BY created_at DESC";
+        $sql = "SELECT seats.label, seats.position, seats.id, users.id as userId, users.avatar, users.role, users.full_name FROM 
+                seats LEFT JOIN users ON seats.user_id=users.id  WHERE office_id = :value";
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute([
             "value" => $office_id,
@@ -71,7 +89,15 @@ class SeatRepository extends Repository implements IRepository{
      */
     public function updateOne(string $seat_id, array $data): bool
     {
-        return true;
+        $sql = "UPDATE seats SET ";
+        $setValues = "";
+        foreach ($data as $column => $value) {
+            $setValues .= "$column = :$column, ";
+        }
+        $setValues = rtrim($setValues, ', ') . " WHERE id = :id";
+        $stmt = $this->database->getConnection()->prepare($sql.$setValues);
+        $data['id'] = $seat_id;
+        return $stmt->execute($data);
     }
 
     /**

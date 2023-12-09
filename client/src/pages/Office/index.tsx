@@ -4,13 +4,7 @@ import Seatmap from "@components/Office/Seatmap";
 import useGetOfficeInfo from "@hooks/useGetOfficeInfo";
 
 const Office = () => {
-  const {
-    isLoading,
-    officeName,
-    initBlocks: blocks,
-    initSeats: seats,
-    success,
-  } = useGetOfficeInfo();
+  const { isLoading, officeName, blocks, seats, success } = useGetOfficeInfo();
 
   if (isLoading) return <Loader />;
 

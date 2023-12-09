@@ -1,8 +1,12 @@
 export type SeatType = {
-  id: string;
+  id: number;
   label: string;
   position: number;
   available: boolean;
+  userId?: number;
+  avatar?: string;
+  full_name?: string;
+  role?: string;
 };
 
 export enum UserRole {

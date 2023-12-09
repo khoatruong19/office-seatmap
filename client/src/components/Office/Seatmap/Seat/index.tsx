@@ -1,23 +1,53 @@
+import { SeatType } from "@/schema/types";
+import { useSetUserMutation } from "@/stores/seat/service";
 import { ROW_LABEL, SEATMAP_COLUMNS_PER_ROW } from "@config/seatmapSize";
 import { cn } from "@lib/clsx";
+import DefaultAvatar from "@assets/default-avatar.png";
 
 type Props = {
-  position: number;
+  seat: SeatType;
 };
 
-const Seat = ({ position }: Props) => {
+const Seat = ({ seat }: Props) => {
+  const { position, avatar, userId } = seat;
   const rowLabelIndex = Math.floor(position / SEATMAP_COLUMNS_PER_ROW);
   const rowIndex = position % SEATMAP_COLUMNS_PER_ROW;
   const rowLabel = ROW_LABEL[rowLabelIndex];
 
+  const [setUser] = useSetUserMutation();
+
+  const handleOnDrop = async (e: React.DragEvent) => {
+    const userId = e.dataTransfer.getData("userId");
+    if (!userId) return;
+
+    try {
+      await setUser({ id: seat.id, user_id: Number(userId) });
+    } catch (error) {
+      return;
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
   return (
     <div
-      draggable
+      onDrop={handleOnDrop}
+      onDragOver={handleDragOver}
       className={cn(
-        "h-12 w-12 bg-secondary text-white z-20 rounded-md flex items-center justify-center shadow-md"
+        "relative h-12 w-12 bg-secondary text-white z-20 rounded-md flex items-center justify-center shadow-md overflow-hidden"
       )}
     >
-      {rowLabel + rowIndex}
+      {userId ? (
+        <img
+          alt=""
+          className="absolute top-0 left-0 w-full h-full object-cover"
+          src={avatar ?? DefaultAvatar}
+        />
+      ) : (
+        rowLabel + rowIndex
+      )}
     </div>
   );
 };

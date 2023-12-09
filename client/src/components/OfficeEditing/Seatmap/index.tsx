@@ -18,7 +18,7 @@ type Props = {
   officeName: string;
   officeId: number;
   initBlocks: BlockType[];
-  initSeats: CellType[];
+  cells: CellType[];
   isVisible: boolean;
 };
 
@@ -26,13 +26,14 @@ const Seatmap = ({
   officeName,
   officeId,
   initBlocks,
-  initSeats,
+  cells,
   isVisible,
 }: Props) => {
+  console.log({ cells });
   const [done, setDone] = useState(false);
   const [selectedCells, setSelectedCells] = useState<CellType[]>([]);
   const [blocks, setBlocks] = useState<BlockType[]>(initBlocks);
-  const [seats, setSeats] = useState<CellType[]>(initSeats);
+  const [seats, setSeats] = useState<CellType[]>(cells);
   const [lastSelectingCell, setLastSelectingCell] = useState<CellType | null>(
     null
   );

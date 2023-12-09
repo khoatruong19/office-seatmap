@@ -9,8 +9,8 @@ const OfficeEditing = () => {
     officeId,
     officeName,
     visible,
-    initBlocks,
-    initSeats,
+    blocks: initBlocks,
+    cells,
     success,
   } = useGetOfficeInfo();
 
@@ -23,7 +23,7 @@ const OfficeEditing = () => {
           officeName={officeName}
           officeId={officeId}
           initBlocks={initBlocks}
-          initSeats={initSeats}
+          cells={cells}
           isVisible={visible}
         />
       )}

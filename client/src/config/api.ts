@@ -4,6 +4,7 @@ const ENDPOINTS = {
   AUTH: "auth",
   USER: "users",
   OFFICE: "offices",
+  SEAT: "seats",
 };
 
 const ACCESS_TOKEN_KEY = "accessToken";

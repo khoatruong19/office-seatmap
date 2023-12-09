@@ -25,5 +25,6 @@ $app = $container->get(Application::class);
 require_once __DIR__ . "/../src/modules/auth/routes.php";
 require_once __DIR__ . "/../src/modules/user/routes.php";
 require_once __DIR__ . "/../src/modules/office/routes.php";
+require_once __DIR__ . "/../src/modules/seat/routes.php";
 
 $app->run();

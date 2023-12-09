@@ -7,7 +7,7 @@ const useGetOfficeInfo = () => {
   const { id } = useParams();
   const { data: response, isLoading } = useGetOfficeQuery(id!);
 
-  const initBlocks = useMemo(() => {
+  const blocks = useMemo(() => {
     if (!response?.data) return [];
     let blocks = [];
     try {
@@ -18,7 +18,7 @@ const useGetOfficeInfo = () => {
     return blocks;
   }, [response]);
 
-  const initSeats: CellType[] = useMemo(() => {
+  const cells: CellType[] = useMemo(() => {
     if (!response?.data) return [];
 
     return response?.data.seats
@@ -34,8 +34,9 @@ const useGetOfficeInfo = () => {
     officeId: response?.data.id ?? 0,
     officeName: response?.data.name ?? "Untitled",
     visible: !!response?.data.visible,
-    initBlocks,
-    initSeats,
+    blocks,
+    cells,
+    seats: response?.data.seats ?? [],
     success: !!response?.data,
   };
 };

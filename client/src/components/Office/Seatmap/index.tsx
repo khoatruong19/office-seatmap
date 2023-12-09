@@ -1,14 +1,14 @@
 import { useMemo } from "react";
 import { SEATMAP_COLUMNS_PER_ROW, SEATMAP_ROWS } from "@config/seatmapSize";
 import { cn } from "@lib/clsx";
-import { BlockType, CellType } from "@schema/types";
+import { BlockType, CellType, SeatType } from "@schema/types";
 import OfficeTitle from "@components/Office/OfficeTitle";
 import Seat from "./Seat";
 
 type Props = {
   officeName: string;
   blocks: BlockType[];
-  seats: CellType[];
+  seats: SeatType[];
 };
 
 const Seatmap = ({ officeName, blocks, seats }: Props) => {
@@ -101,7 +101,12 @@ const Seatmap = ({ officeName, blocks, seats }: Props) => {
               if (!seats.find((seat) => seat.position == idx))
                 return <div key={Math.random() * 4} className="w-12 h-12" />;
 
-              return <Seat key={idx} position={idx} />;
+              const seat = seats.find((item) => item.position == idx);
+
+              if (!seat)
+                return <div key={Math.random() * 4} className="w-12 h-12" />;
+
+              return <Seat key={idx} seat={seat} />;
             })}
         </div>
       </div>
