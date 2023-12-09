@@ -5,7 +5,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import DefaultAvatar from "@assets/default-avatar.png";
 import { useModalContext } from "@providers/ModalProvider";
 import { UserSchema, UserSchemaType } from "@schema/form";
-import { UserType, UserRole } from "@schema/types";
+import { UserType, UserRole, UserEditingModalType } from "@schema/types";
 import {
   useCreateUserMutation,
   useDeleteUserMutation,
@@ -17,10 +17,8 @@ import FieldControl from "@components/Form/FieldControl";
 import resizeImage from "@utils/resizeImage";
 import { MODALS } from "@providers/ModalProvider/constants";
 
-type ModalType = "create" | "update";
-
 type Props = {
-  type: ModalType;
+  type: UserEditingModalType;
   user?: UserType;
 };
 

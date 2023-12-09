@@ -5,6 +5,8 @@ import Button from "@components/Form/Button";
 import { useModalContext } from "@providers/ModalProvider";
 import FieldControl from "@components/Form/FieldControl";
 import { Building } from "lucide-react";
+import { useClickOutside } from "@/hooks/useClickOutside";
+import { useRef } from "react";
 
 type Props = {
   confirmHandler: (blockName: string) => void;
@@ -13,6 +15,8 @@ type Props = {
 
 const AddBlockModal = ({ confirmHandler, cancelHandler = () => {} }: Props) => {
   const { closeModal } = useModalContext();
+
+  const modalRef = useRef<HTMLFormElement | null>(null);
 
   const {
     register,
@@ -33,8 +37,14 @@ const AddBlockModal = ({ confirmHandler, cancelHandler = () => {} }: Props) => {
     closeModal();
   };
 
+  useClickOutside(modalRef, cancelHandler);
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="w-96 py-5 px-10">
+    <form
+      ref={modalRef}
+      onSubmit={handleSubmit(onSubmit)}
+      className="w-96 py-5 px-10"
+    >
       <h3 className="text-center font-semibold text-3xl mb-2">Add new block</h3>
 
       <FieldControl

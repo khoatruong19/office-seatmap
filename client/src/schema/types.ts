@@ -37,3 +37,8 @@ export type OfficeType = {
   blocks: string;
   seats: SeatType[];
 };
+
+export enum UserEditingModalType {
+  CREATE = "create",
+  UPDATE = "update",
+}

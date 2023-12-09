@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { APP_ROUTES } from "@config/routes";
 import useCheckAdmin from "@hooks/useCheckAdmin";
-import Button from "../../Form/Button";
+import Button from "@components/Form/Button";
 import { Pencil, Trash } from "lucide-react";
 import { useModalContext } from "@providers/ModalProvider";
 import { MODALS } from "@providers/ModalProvider/constants";

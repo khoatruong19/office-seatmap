@@ -62,7 +62,6 @@ class Request
     public function getBody(): array
     {
         $body = json_decode(file_get_contents('php://input'), true);
-
         if (!is_array($body)) {
             $body = [];
             switch (strtoupper($this->getMethod())) {
