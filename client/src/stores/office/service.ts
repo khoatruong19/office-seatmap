@@ -51,7 +51,7 @@ export const officeApi = createApi({
         method: "PATCH",
         body: rest,
       }),
-      invalidatesTags: [TAGS.OFFICE],
+      invalidatesTags: [TAGS.OFFICE, TAGS.OFFICES],
       onQueryStarted(_, { queryFulfilled }) {
         queryFulfilled.then(() => {}).catch(() => null);
       },

@@ -29,7 +29,7 @@ class OfficeController extends Controller
     public function create(): void
     {
         $this->requestBodyValidation([
-            'name' => 'required|min:4|max:12',
+            'name' => 'required|min:4|max:100',
         ]);
         $raw_data = $this->request->getBody();
         $create_office_dto = CreateOfficeDto::fromArray($raw_data);
@@ -44,7 +44,7 @@ class OfficeController extends Controller
     public function update(): void
     {
         $this->requestBodyValidation([
-            'name' => 'required|min:4|max:12',
+            'name' => 'required|min:4|max:100',
             'seats' => '',
             'blocks' => '',
             'visible' => 'is_bool',

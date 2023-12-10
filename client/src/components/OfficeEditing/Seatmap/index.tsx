@@ -13,6 +13,7 @@ import Toolbar from "./Toolbar";
 import { useNavigate } from "react-router";
 import { APP_ROUTES } from "@config/routes";
 import OfficeTitleInput from "@components/OfficeEditing/OfficeTitleInput";
+import { toast } from "react-toastify";
 
 type Props = {
   officeName: string;
@@ -113,6 +114,17 @@ const Seatmap = ({
   };
 
   const handleSaveSeatmap = () => {
+    if (name.length > 100) {
+      toast.error(`Office's name must be no more than 100 characters`, {
+        theme: "colored",
+        style: {
+          fontWeight: 600,
+          backgroundColor: "#FF8080",
+          color: "#fff",
+        },
+      });
+      return;
+    }
     updateOffice({
       id: officeId,
       name,
