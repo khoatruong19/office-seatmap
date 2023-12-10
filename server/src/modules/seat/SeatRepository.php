@@ -43,7 +43,14 @@ class SeatRepository extends Repository implements IRepository{
         return $result ?? null;
     }
 
-    public function findOneWithOfficeId(string $field, string $value, int $office_id): mixed
+    /**
+     * @param string $field
+     * @param string $value
+     * @param int $office_id
+     * @return mixed
+     * @throws ResponseException
+     */
+    public function findByOfficeId(string $field, string $value, int $office_id): mixed
     {
         $allowed_fields = ['label', 'id'];
         if(!in_array($field, $allowed_fields)) {
@@ -61,14 +68,19 @@ class SeatRepository extends Repository implements IRepository{
     }
 
     /**
-     * @return array|false
+     * @param int $user_id
+     * @param int $office_id
+     * @return mixed|null
      */
-    public function findAll(): bool|array
-    {
-        $sql = "SELECT * FROM seats ORDER BY created_at DESC";
+    public function findByUserId(int $user_id, int $office_id){
+        $sql = "SELECT * FROM seats WHERE user_id = :user_id AND office_id = :office_id limit 1";
         $stmt = $this->database->getConnection()->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->execute([
+            "user_id" => $user_id,
+            "office_id" => $office_id
+        ]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ?? null;
     }
 
     public function findAllByOfficeId(string $office_id): bool|array

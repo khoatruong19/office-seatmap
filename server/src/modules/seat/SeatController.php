@@ -26,6 +26,7 @@ class SeatController extends Controller
     {
         $this->requestBodyValidation([
             'user_id' => 'required',
+            'office_id' => 'required',
         ]);
         $seat_id = $this->request->getIntParam(ParamKeys::SEAT_ID->value);
         $raw_data = $this->request->getBody();

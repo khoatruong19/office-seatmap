@@ -3,6 +3,7 @@ import { BaseResponse } from "@schema/response";
 export type SetUserRequest = {
   id: number;
   user_id: number;
+  office_id: number;
 };
 
 export type SetUserResponse = BaseResponse & {

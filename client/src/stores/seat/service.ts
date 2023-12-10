@@ -30,10 +30,10 @@ export const seatApi = createApi({
   }),
   endpoints: (builder) => ({
     setUser: builder.mutation<SetUserResponse, SetUserRequest>({
-      query: ({ id, user_id }) => ({
+      query: ({ id, ...data }) => ({
         url: `/${id}/set-user`,
         method: "PATCH",
-        body: { user_id },
+        body: data,
       }),
       onQueryStarted(_, { queryFulfilled, dispatch }) {
         queryFulfilled
