@@ -16,6 +16,8 @@ import Label from "@components/Form/Label";
 import FieldControl from "@components/Form/FieldControl";
 import resizeImage from "@utils/resizeImage";
 import { MODALS } from "@providers/ModalProvider/constants";
+import ClipBackground from "../ModalLayout/ClipBackground";
+import { useClickOutside } from "@/hooks/useClickOutside";
 
 type Props = {
   type: UserEditingModalType;
@@ -28,6 +30,7 @@ const UserEditingModal = ({ type, user }: Props) => {
   const [avatar, setAvatar] = useState("");
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const [create, { isLoading: createLoading }] = useCreateUserMutation();
   const [update, { isLoading: updateLoading }] = useUpdateUserMutation();
@@ -131,18 +134,20 @@ const UserEditingModal = ({ type, user }: Props) => {
     return false;
   }, [watch("full_name"), watch("email"), watch("role"), file]);
 
+  useClickOutside(containerRef, () => reset());
+
   return (
-    <div className="relative w-[500px] py-8 font-mono">
+    <div ref={containerRef} className="relative w-[500px] py-8 font-mono">
       {type === "update" && (
         <Button
           onClick={handleDeleteUser}
-          className="absolute right-0 top-5 text-red-400"
+          className="absolute right-0 top-5 text-white"
         >
-          <Trash strokeWidth={2.5} />
+          <Trash strokeWidth={2.5} fill="#FF6969" />
         </Button>
       )}
 
-      <h1 className="text-3xl font-semibold text-center">
+      <h1 className="text-3xl font-semibold text-center text-white">
         {type === "create" ? "Create User" : "Update User"}
       </h1>
 
@@ -166,7 +171,7 @@ const UserEditingModal = ({ type, user }: Props) => {
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="max-w-md w-full bg-white rounded-md flex flex-col gap-5 items-center justify-center pl-20 pr-8"
+        className="max-w-md w-full rounded-md flex flex-col gap-5 items-center justify-center pl-20 pr-8"
       >
         <FieldControl
           field="Email"
@@ -174,7 +179,8 @@ const UserEditingModal = ({ type, user }: Props) => {
           name="email"
           placeholder="Email..."
           register={register}
-          icon={<UserIcon />}
+          icon={<UserIcon color="#fff" />}
+          inputClass="text-white"
         />
 
         {type === "create" && (
@@ -184,7 +190,8 @@ const UserEditingModal = ({ type, user }: Props) => {
             name="password"
             placeholder="Password..."
             register={register}
-            icon={<Lock />}
+            icon={<Lock color="#fff" />}
+            inputClass="text-white"
           />
         )}
 
@@ -194,16 +201,17 @@ const UserEditingModal = ({ type, user }: Props) => {
           name="full_name"
           placeholder="Fullname..."
           register={register}
-          icon={<Pencil />}
+          icon={<Pencil color="#fff" />}
+          inputClass="text-white"
         />
 
         <div className="flex flex-col gap-1 w-full">
           <Label field="Role" />
           <div className="flex items-center gap-5 capitalize">
-            <KeyRound />
+            <KeyRound color="#fff" />
             <select
               {...register("role")}
-              className="capitalize focus:outline-0"
+              className="capitalize focus:outline-0 bg-transparent text-white font-semibold"
               defaultValue={UserRole.USER}
             >
               <option value={UserRole.ADMIN}>Admin</option>
@@ -212,11 +220,11 @@ const UserEditingModal = ({ type, user }: Props) => {
           </div>
         </div>
 
-        <div className="flex items-center gap-4 mt-8">
+        <div className="flex items-center gap-4 mt-10 pt-5">
           <Button
             type="button"
             onClick={closeModal}
-            className="mx-auto block rounded-lg text-primary hover:text-secondary w-fit"
+            className="mx-auto block rounded-lg  text-tertiary hover:text-black  w-fit"
           >
             Cancel
           </Button>
@@ -227,12 +235,13 @@ const UserEditingModal = ({ type, user }: Props) => {
               updateLoading
             }
             type="submit"
-            className="mx-auto block rounded-lg disabled:bg-primary bg-secondary disabled:cursor-default disabled:hover:opacity-100"
+            className="mx-auto block rounded-lg disabled:bg-primary text-white bg-tertiary disabled:cursor-default disabled:hover:opacity-100"
           >
             Save
           </Button>
         </div>
       </form>
+      <ClipBackground />
     </div>
   );
 };

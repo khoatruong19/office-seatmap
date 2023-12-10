@@ -20,7 +20,7 @@ const UsersList = () => {
     );
 
   return (
-    <div className="mt-5">
+    <div className="mt-8 pl-1 pr-1.5">
       {data.data.map((user) => (
         <UserCard key={user.id} user={user} />
       ))}

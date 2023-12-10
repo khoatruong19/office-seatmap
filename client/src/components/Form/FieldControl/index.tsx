@@ -52,7 +52,7 @@ const FieldControl = (props: Props) => {
           {...register(name)}
           type={type}
           placeholder={placeholder}
-          className={cn("flex-1 bg-transparent", inputClass)}
+          className={cn("flex-1 bg-transparent font-semibold", inputClass)}
           disabled={inputDisabled}
           value={inputValue}
         />

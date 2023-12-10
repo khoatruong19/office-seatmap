@@ -4,14 +4,20 @@ import Seatmap from "@components/Office/Seatmap";
 import useGetOfficeInfo from "@hooks/useGetOfficeInfo";
 
 const Office = () => {
-  const { isLoading, officeName, blocks, seats, success } = useGetOfficeInfo();
+  const { isLoading, officeName, officeId, blocks, seats, success } =
+    useGetOfficeInfo();
 
   if (isLoading) return <Loader />;
 
   return (
     <MainLayout>
       {success && (
-        <Seatmap officeName={officeName} blocks={blocks} seats={seats} />
+        <Seatmap
+          officeId={officeId}
+          officeName={officeName}
+          blocks={blocks}
+          seats={seats}
+        />
       )}
       {!isLoading && !success && (
         <div className="mx-auto w-fit mt-10">

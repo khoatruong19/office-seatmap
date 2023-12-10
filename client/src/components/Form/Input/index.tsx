@@ -9,7 +9,10 @@ const Input = forwardRef((props: Props, ref: LegacyRef<HTMLInputElement>) => {
     <input
       ref={ref}
       {...props}
-      className={cn("px-2 py-1 outline-none flex-1", className)}
+      className={cn(
+        "px-2 py-1 outline-none flex-1 placeholder:text-white/70",
+        className
+      )}
     />
   );
 });

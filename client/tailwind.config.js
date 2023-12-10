@@ -10,10 +10,10 @@ export default {
         "login-background": "url('/src/assets/login-background.jpg')",
       },
       colors: {
-        primary: "#BFD5E3",
-        secondary: "#376380",
-        tertiary: "#13242E",
-        danger: "#E85D4C",
+        primary: "#97DEFF",
+        secondary: "#164863",
+        tertiary: "#427D9D",
+        danger: "#EB455F",
         room: "#B99470",
       },
       fontFamily: {

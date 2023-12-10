@@ -61,6 +61,7 @@ const LoginForm = () => {
         register={register}
         icon={<Lock strokeWidth={2.5} />}
         iconPosition="right"
+        containerClass="mt-3"
         inputWrapperClass={cn("px-4 h-12 border-2 border-white rounded-3xl", {
           "border-danger ": errors.password,
         })}

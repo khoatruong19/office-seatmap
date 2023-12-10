@@ -6,7 +6,10 @@ type Props = React.LabelHTMLAttributes<HTMLLabelElement> & {
 
 const Label = ({ field, htmlFor = "", className = "" }: Props) => {
   return (
-    <label htmlFor={htmlFor} className={cn("text-lg font-semibold", className)}>
+    <label
+      htmlFor={htmlFor}
+      className={cn("text-lg font-semibold text-white", className)}
+    >
       {field}
     </label>
   );

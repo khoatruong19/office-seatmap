@@ -20,7 +20,10 @@ const ModalLayout = (props: ModalLayoutProps) => {
         !isOpen ? "hidden" : "flex"
       } `}
     >
-      <div ref={wrapperRef} className="bg-white rounded-md z-50">
+      <div
+        ref={wrapperRef}
+        className="relative bg-white rounded-xl overflow-hidden z-50"
+      >
         {children}
       </div>
     </div>

@@ -26,11 +26,11 @@ const ConfirmModal = (props: Props) => {
     <div className="w-96 py-8 px-5">
       <p className="text-center font-semibold text-lg">{text}</p>
 
-      <div className="flex items-center justify-center mt-8 ">
+      <div className="w-fit mx-auto mt-8 flex gap-10">
         <Button
           type="button"
           onClick={handleCancel}
-          className="rounded-lg text-primary hover:text-secondary w-fit"
+          className="rounded-lg text-tertiary hover:text-black w-fit p-0"
         >
           No
         </Button>
@@ -38,7 +38,7 @@ const ConfirmModal = (props: Props) => {
           disabled={isLoading}
           onClick={confirmHandler}
           type="submit"
-          className="mx-auto block rounded-lg disabled:bg-primary bg-secondary disabled:cursor-default disabled:hover:opacity-100"
+          className="mx-auto block rounded-lg disabled:bg-primary bg-tertiary text-white disabled:cursor-default disabled:hover:opacity-100"
         >
           Yes
         </Button>

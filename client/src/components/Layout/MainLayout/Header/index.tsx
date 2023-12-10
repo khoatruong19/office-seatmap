@@ -21,7 +21,7 @@ const Header = () => {
 
   return (
     <header className="h-16 bg-primary ">
-      <nav className="w-full h-full px-6 flex items-center justify-between text-secondary border-b border-secondary ">
+      <nav className="w-full h-full px-6 flex items-center justify-between text-secondary border-b-[1px] border-tertiary ">
         <Link
           to={APP_ROUTES.HOME}
           className="flex items-center gap-3 hover-opacity"
@@ -46,7 +46,7 @@ const Header = () => {
               alt=""
             />
             <div>
-              <h3 className="font-semibold text-lg mb-[-5px] max-w-[120px] truncate">
+              <h3 className="font-semibold text-lg mb-[-5px] max-w-[200px] truncate">
                 {user?.full_name}
               </h3>
               <span className="text-sm">{user?.role}</span>

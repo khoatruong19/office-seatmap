@@ -41,20 +41,22 @@ const AddOfficeModal = ({ confirmHandler }: Props) => {
         register={register}
         icon={<Building />}
         containerClass="mt-5"
+        labelClass="text-black"
+        inputClass="placeholder:text-black/30 font-medium"
       />
 
       <div className="flex items-center gap-4 mt-5">
         <Button
           type="button"
           onClick={closeModal}
-          className="mx-auto block rounded-lg text-primary hover:text-secondary w-fit"
+          className="mx-auto block rounded-lg text-tertiary hover:text-black w-fit"
         >
           Cancel
         </Button>
         <Button
           disabled={!isValid}
           type="submit"
-          className="mx-auto block rounded-lg disabled:bg-primary bg-secondary disabled:cursor-default disabled:hover:opacity-100"
+          className="mx-auto block rounded-lg disabled:bg-primary bg-secondary text-white disabled:cursor-default disabled:hover:opacity-100"
         >
           Create
         </Button>

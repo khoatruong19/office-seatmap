@@ -29,7 +29,6 @@ const Seatmap = ({
   cells,
   isVisible,
 }: Props) => {
-  console.log({ cells });
   const [done, setDone] = useState(false);
   const [selectedCells, setSelectedCells] = useState<CellType[]>([]);
   const [blocks, setBlocks] = useState<BlockType[]>(initBlocks);
@@ -146,11 +145,33 @@ const Seatmap = ({
         item.position - seatNumber == 1 &&
         seatNumber % SEATMAP_COLUMNS_PER_ROW !== SEATMAP_COLUMNS_PER_ROW - 1
     );
-    if (foundNextToBlock) {
-      const foundBlock = cells.find(
-        (item) => item.position - seatNumber == SEATMAP_COLUMNS_PER_ROW
+    const foundBelowBlock = cells.find(
+      (item) => item.position - seatNumber == SEATMAP_COLUMNS_PER_ROW
+    );
+    const foundRightBelowBlock = cells.find(
+      (item) => item.position - seatNumber == SEATMAP_COLUMNS_PER_ROW + 1
+    );
+    if (foundBelowBlock && foundNextToBlock && !foundRightBelowBlock)
+      return (
+        <div key={Math.random() * 1} className="relative h-12 w-12 z-40">
+          <div
+            className={cn("absolute top-0 left-0 w-[100%] h-[100%] bg-primary")}
+          >
+            {seatIndex == 0 && renderBlockName(block.name)}
+          </div>
+          <div
+            className={cn(
+              "absolute top-0 left-[100%] w-[30%] h-[100%] bg-primary"
+            )}
+          />
+          <div
+            className={cn(
+              "absolute top-[100%] left-0 w-[100%] h-[30%] bg-primary"
+            )}
+          />
+        </div>
       );
-
+    if (foundNextToBlock) {
       return (
         <div
           onClick={handleOpenBlockModal}
@@ -161,7 +182,7 @@ const Seatmap = ({
             className={cn(
               "absolute top-0 left-0 w-[125%] h-[100%] bg-primary",
               {
-                "h-[125%]": foundBlock,
+                "h-[125%]": foundBelowBlock,
               }
             )}
           >
@@ -171,10 +192,7 @@ const Seatmap = ({
       );
     }
 
-    const foundBlock = cells.find(
-      (item) => item.position - seatNumber == SEATMAP_COLUMNS_PER_ROW
-    );
-    if (foundBlock)
+    if (foundBelowBlock)
       return (
         <div
           onClick={handleOpenBlockModal}
@@ -186,18 +204,18 @@ const Seatmap = ({
           </div>
         </div>
       );
-    else
-      return (
-        <div
-          onClick={handleOpenBlockModal}
-          key={Math.random() * 3}
-          className="relative h-12 w-12 z-40"
-        >
-          <div className="absolute top-0 left-0 w-[100%] h-[100%] bg-primary">
-            {seatIndex == 0 && renderBlockName(block.name)}
-          </div>
+
+    return (
+      <div
+        onClick={handleOpenBlockModal}
+        key={Math.random() * 3}
+        className="relative h-12 w-12 z-40"
+      >
+        <div className="absolute top-0 left-0 w-[100%] h-[100%] bg-primary">
+          {seatIndex == 0 && renderBlockName(block.name)}
         </div>
-      );
+      </div>
+    );
   };
 
   const blockCells: CellType[] = useMemo(() => {

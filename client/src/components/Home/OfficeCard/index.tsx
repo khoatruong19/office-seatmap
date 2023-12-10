@@ -46,8 +46,8 @@ const OfficeCard = ({ office }: Props) => {
               <Pencil />
             </Button>
           </Link>
-          <Button onClick={handleDeleteOffice} className="p-0 text-danger">
-            <Trash strokeWidth={2.5} />
+          <Button onClick={handleDeleteOffice} className="p-0 text-secondary">
+            <Trash strokeWidth={3} fill="#FA7070" />
           </Button>
         </div>
       )}

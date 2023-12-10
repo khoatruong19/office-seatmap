@@ -5,6 +5,7 @@ import { UserType } from "@schema/types";
 import Button from "@components/Form/Button";
 import FieldControl from "@components/Form/FieldControl";
 import Label from "@components/Form/Label";
+import ClipBackground from "../ModalLayout/ClipBackground";
 
 type Props = {
   user?: UserType;
@@ -15,7 +16,9 @@ const UserInformationModal = ({ user }: Props) => {
 
   return (
     <div className="w-[500px] py-8 font-mono">
-      <h1 className="text-3xl font-semibold text-center">User Information</h1>
+      <h1 className="text-3xl font-semibold text-center text-white">
+        User Information
+      </h1>
 
       <div className="relative w-40 h-40 rounded-full overflow-hidden mx-auto mt-8">
         <img
@@ -25,14 +28,14 @@ const UserInformationModal = ({ user }: Props) => {
         />
       </div>
 
-      <div className="max-w-md w-full bg-white rounded-md flex flex-col gap-5 items-center justify-center pl-20 pr-8">
+      <div className="max-w-md w-full rounded-md flex flex-col gap-5 items-center justify-center pl-20 pr-8">
         <FieldControl
           field="Email"
           name="email"
           inputDisabled
           inputValue={user?.email}
-          icon={<UserIcon />}
-          inputWrapperClass={"bg-primary"}
+          icon={<UserIcon color="#fff" />}
+          inputClass="text-white/70"
         />
 
         <FieldControl
@@ -40,15 +43,15 @@ const UserInformationModal = ({ user }: Props) => {
           name="full_name"
           inputDisabled
           inputValue={user?.full_name}
-          icon={<Pencil />}
-          inputWrapperClass={"bg-primary"}
+          icon={<Pencil color="#fff" />}
+          inputClass="text-white/70"
         />
 
         <div className="flex flex-col gap-1 w-full">
           <Label field="Role" />
-          <div className="flex items-center gap-5 capitalize bg-primary py-2 rounded-md">
-            <KeyRound />
-            <span>{user?.role}</span>
+          <div className="flex items-center gap-5 capitalize py-2 rounded-md">
+            <KeyRound color="#fff" />
+            <span className="text-white/70">{user?.role}</span>
           </div>
         </div>
 
@@ -56,12 +59,13 @@ const UserInformationModal = ({ user }: Props) => {
           <Button
             type="button"
             onClick={closeModal}
-            className="mx-auto block rounded-lg text-primary hover:text-secondary w-fit"
+            className="mx-auto block rounded-lg text-tertiary hover:text-black w-fit"
           >
             Close
           </Button>
         </div>
       </div>
+      <ClipBackground />
     </div>
   );
 };

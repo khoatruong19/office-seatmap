@@ -14,3 +14,9 @@ input:-webkit-autofill:focus {
 body {
   overflow-x: hidden;
 }
+
+@layer utilities {
+  .clip-circle {
+    clip-path: circle(102% at 0 0);
+  }
+}

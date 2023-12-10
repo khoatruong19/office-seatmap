@@ -17,14 +17,28 @@ export const rtkQueryLogger: Middleware = () => (next) => (action) => {
     isFulfilled(action) &&
     !blockToastFulfilledEndpoints.includes(action.meta.arg.endpointName)
   ) {
-    toast.success(action.payload.messages);
+    toast.success(` ${action.payload.messages}`, {
+      theme: "colored",
+      style: {
+        fontWeight: 600,
+        backgroundColor: "#fff",
+        color: "#164863",
+      },
+    });
   }
 
   if (
     isRejectedWithValue(action) &&
     !blockToastErrorEndpoints.includes(action.meta.arg.endpointName)
   ) {
-    toast.error("👺 " + action.payload.data.messages);
+    toast.error(`${action.payload.data.messages}`, {
+      theme: "colored",
+      style: {
+        fontWeight: 600,
+        backgroundColor: "#FF8080",
+        color: "#fff",
+      },
+    });
   }
 
   return next(action);

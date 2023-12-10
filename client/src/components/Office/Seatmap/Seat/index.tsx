@@ -6,9 +6,10 @@ import DefaultAvatar from "@assets/default-avatar.png";
 
 type Props = {
   seat: SeatType;
+  officeId: number;
 };
 
-const Seat = ({ seat }: Props) => {
+const Seat = ({ seat, officeId }: Props) => {
   const { position, avatar, userId } = seat;
   const rowLabelIndex = Math.floor(position / SEATMAP_COLUMNS_PER_ROW);
   const rowIndex = position % SEATMAP_COLUMNS_PER_ROW;
@@ -21,7 +22,11 @@ const Seat = ({ seat }: Props) => {
     if (!userId) return;
 
     try {
-      await setUser({ id: seat.id, user_id: Number(userId) });
+      await setUser({
+        id: seat.id,
+        user_id: Number(userId),
+        office_id: officeId,
+      });
     } catch (error) {
       return;
     }
@@ -36,7 +41,7 @@ const Seat = ({ seat }: Props) => {
       onDrop={handleOnDrop}
       onDragOver={handleDragOver}
       className={cn(
-        "relative h-12 w-12 bg-secondary text-white z-20 rounded-md flex items-center justify-center shadow-md overflow-hidden"
+        "relative h-12 w-12 bg-tertiary font-semibold text-white z-20 rounded-md flex items-center justify-center shadow-md overflow-hidden"
       )}
     >
       {userId ? (

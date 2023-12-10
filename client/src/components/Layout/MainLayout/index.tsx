@@ -12,7 +12,7 @@ function MainLayout({ children }: Props) {
   return (
     <div className="min-h-screen font-mono flex flex-col w-screen overflow-x-hidden ">
       <Header />
-      <div className="relative w-full pt-10 flex-1">
+      <div className="relative w-full pt-10 flex-1 bg-white">
         {children}
 
         {isAdmin && <Sidebar />}

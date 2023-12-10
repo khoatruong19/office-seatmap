@@ -35,20 +35,22 @@ const UserCard = ({ user }: Props) => {
   return (
     <div
       onClick={handleOpenUpdateModal}
-      className="w-full h-16 px-2 border-b flex items-center gap-2 bg-white hover-opacity"
+      className="w-full h-[70px] px-2 flex items-center gap-2 hover-opacity bg-white rounded-2xl mb-1"
     >
       <img
         draggable
         src={user?.avatar ?? DefaultAvatar}
-        className="w-12 h-12 rounded-full object-cover"
+        className="w-12 h-12 rounded-full object-cover shadow-sm"
         alt=""
         onDragStart={(e) => handleOnDrag(e, user)}
       />
       <div>
-        <h3 className="text-lg font-semibold truncate max-w-[260px]">
+        <h3 className="font-semibold truncate max-w-[260px] text-secondary">
           {user.full_name}
         </h3>
-        <p className="capitalize text-sm">{user.role}</p>
+        <p className="capitalize text-sm font-bold text-[#0081C9]">
+          {user.role}
+        </p>
       </div>
     </div>
   );

@@ -15,6 +15,7 @@ import {
   useUploadAvatarMutation,
 } from "@stores/user/service";
 import { UserType } from "@schema/types";
+import ClipBackground from "../ModalLayout/ClipBackground";
 
 const ProfileModal = () => {
   const { user } = useAuth();
@@ -89,7 +90,7 @@ const ProfileModal = () => {
 
   return (
     <div className="w-[500px] py-8 font-mono">
-      <h1 className="text-3xl font-semibold text-center">Profile</h1>
+      <h1 className="text-3xl font-semibold text-center text-white">Profile</h1>
 
       <div
         onClick={handleOpenChooseFile}
@@ -111,7 +112,7 @@ const ProfileModal = () => {
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="max-w-md w-full bg-white rounded-md flex flex-col items-center justify-center pl-20 pr-8"
+        className="max-w-md w-full bg-transparent rounded-md flex flex-col items-center justify-center pl-20 pr-8"
       >
         <FieldControl
           field="Email"
@@ -119,9 +120,8 @@ const ProfileModal = () => {
           name="email"
           inputDisabled
           inputValue={user?.email}
-          icon={<UserIcon />}
-          inputWrapperClass={"bg-primary"}
-          inputClass="disabled:bg-primary"
+          icon={<UserIcon color="#fff" />}
+          inputClass="text-white/70"
         />
 
         <FieldControl
@@ -130,35 +130,37 @@ const ProfileModal = () => {
           name="full_name"
           placeholder="Fullname..."
           register={register}
-          icon={<Pencil />}
-          containerClass="mt-5"
+          icon={<Pencil color="#fff" />}
+          containerClass="mt-5 text-white"
+          inputClass="font-semibold"
         />
 
         <div className="flex flex-col gap-1 mt-5 w-full">
           <Label field="Role" />
-          <div className="flex items-center gap-5 capitalize bg-primary py-2 rounded-md">
-            <KeyRound />
-            <span>{user?.role}</span>
+          <div className="flex items-center gap-5 capitalize py-2 rounded-md">
+            <KeyRound color="#fff" />
+            <span className="text-white/70">{user?.role}</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-4 mt-8">
+        <div className="flex items-center gap-4 mt-10 pt-5">
           <Button
             type="button"
             onClick={closeModal}
-            className="mx-auto block rounded-lg text-primary hover:text-secondary w-fit"
+            className="mx-auto block rounded-lg  text-tertiary hover:text-black  w-fit"
           >
             Cancel
           </Button>
           <Button
             disabled={!isInformationChanged || uploadLoading || updateLoading}
             type="submit"
-            className="mx-auto block rounded-lg disabled:bg-primary bg-secondary disabled:cursor-default disabled:hover:opacity-100"
+            className="mx-auto block rounded-lg text-white disabled:bg-primary bg-tertiary disabled:cursor-default disabled:hover:opacity-100"
           >
             Save
           </Button>
         </div>
       </form>
+      <ClipBackground />
     </div>
   );
 };
