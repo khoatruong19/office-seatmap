@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { APP_ROUTES } from "@config/routes";
 import useCheckAdmin from "@hooks/useCheckAdmin";
 import Button from "@components/Form/Button";
-import { Pencil, Trash } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { useModalContext } from "@providers/ModalProvider";
 import { MODALS } from "@providers/ModalProvider/constants";
 import { OfficeType } from "@schema/types";
@@ -47,7 +47,7 @@ const OfficeCard = ({ office }: Props) => {
             </Button>
           </Link>
           <Button onClick={handleDeleteOffice} className="p-0 text-secondary">
-            <Trash strokeWidth={3} fill="#FA7070" />
+            <Trash2 strokeWidth={3} fill="#FA7070" />
           </Button>
         </div>
       )}

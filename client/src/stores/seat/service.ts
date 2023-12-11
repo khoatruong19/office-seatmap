@@ -7,6 +7,8 @@ import {
   RemoveUserResponse,
   SetUserRequest,
   SetUserResponse,
+  SwapUsersRequest,
+  SwapUsersResponse,
 } from "./types";
 import { officeApi } from "../office/service";
 
@@ -56,7 +58,25 @@ export const seatApi = createApi({
           .catch(() => null);
       },
     }),
+    swapUsers: builder.mutation<SwapUsersResponse, SwapUsersRequest>({
+      query: (data) => ({
+        url: `/swap-users`,
+        method: "PATCH",
+        body: data,
+      }),
+      onQueryStarted(_, { queryFulfilled, dispatch }) {
+        queryFulfilled
+          .then(() => {
+            dispatch(officeApi.util.invalidateTags([TAGS.OFFICE]));
+          })
+          .catch(() => null);
+      },
+    }),
   }),
 });
 
-export const { useSetUserMutation, useRemoveUserMutation } = seatApi;
+export const {
+  useSetUserMutation,
+  useRemoveUserMutation,
+  useSwapUsersMutation,
+} = seatApi;

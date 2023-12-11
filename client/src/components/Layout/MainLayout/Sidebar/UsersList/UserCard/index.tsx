@@ -3,6 +3,7 @@ import { useModalContext } from "../../../../../../providers/ModalProvider";
 import { MODALS } from "../../../../../../providers/ModalProvider/constants";
 import { UserRole, UserType } from "../../../../../../schema/types";
 import DefaultAvatar from "../../../../../../assets/default-avatar.png";
+import { DRAG_EVENTS } from "@/config/events";
 
 type Props = {
   user: UserType;
@@ -19,17 +20,17 @@ const UserCard = ({ user }: Props) => {
     }
 
     if (user.role === UserRole.ADMIN) {
-      showModal(MODALS.USER_INFORMATION, { user });
+      showModal(MODALS.ADMIN_INFORMATION, { user });
       return;
     }
 
     showModal(MODALS.UPDATE_USER, { type: "update", user });
   };
 
-  const handleOnDrag = (e: React.DragEvent, user?: UserType) => {
+  const handleOnDrag = (e: React.DragEvent, userId: number) => {
     if (!user) return;
 
-    e.dataTransfer.setData("userId", JSON.stringify(user.id));
+    e.dataTransfer.setData(DRAG_EVENTS.USER_ID, JSON.stringify(userId));
   };
 
   return (
@@ -42,7 +43,7 @@ const UserCard = ({ user }: Props) => {
         src={user?.avatar ?? DefaultAvatar}
         className="w-12 h-12 rounded-full object-cover shadow-sm"
         alt=""
-        onDragStart={(e) => handleOnDrag(e, user)}
+        onDragStart={(e) => handleOnDrag(e, user.id)}
       />
       <div>
         <h3 className="font-semibold truncate max-w-[260px] text-secondary">

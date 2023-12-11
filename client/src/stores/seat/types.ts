@@ -17,3 +17,12 @@ export type RemoveUserRequest = {
 export type RemoveUserResponse = BaseResponse & {
   data: number;
 };
+
+export type SwapUsersRequest = {
+  firstSeatId: number;
+  firstUserId: number;
+  secondSeatId: number;
+  secondUserId: number;
+};
+
+export type SwapUsersResponse = BaseResponse;

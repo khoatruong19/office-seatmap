@@ -5,6 +5,7 @@ namespace modules\seat;
 
 use modules\seat\dto\CreateSeatDto;
 use modules\seat\dto\SetUserToSeatDto;
+use modules\seat\dto\SwapUsersFromTwoSeatsDto;
 
 class SeatService
 {
@@ -37,6 +38,10 @@ class SeatService
 
     }
 
+    /**
+     * @param SetUserToSeatDto $set_user_to_seat_dto
+     * @return bool
+     */
     public function setUserToSeat(SetUserToSeatDto $set_user_to_seat_dto){
         $seatUsedByUserId = $this->seatRepository->findByUserId($set_user_to_seat_dto->getUserId(), $set_user_to_seat_dto->getOfficeId());
         if($seatUsedByUserId){
@@ -51,5 +56,10 @@ class SeatService
      */
     public function removeUserFromSeat(int $seat_id){
         return $this->seatRepository->updateOne(strval($seat_id), ["user_id" => null, "available" => 1]);
+    }
+
+    public function swapUsersFromTwoSeats(SwapUsersFromTwoSeatsDto $swap_users_from_two_seat_dto){
+       $this->seatRepository->updateOne(strval($swap_users_from_two_seat_dto->getFirstSeatId()), ["user_id" => $swap_users_from_two_seat_dto->getSecondUserId()]);
+       $this->seatRepository->updateOne(strval($swap_users_from_two_seat_dto->getSecondSeatId()), ["user_id" => $swap_users_from_two_seat_dto->getFirstUserId()]);
     }
 }

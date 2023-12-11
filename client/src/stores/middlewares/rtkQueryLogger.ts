@@ -8,6 +8,7 @@ const blockToastFulfilledEndpoints = [
   "getAllOffices",
   "getOffice",
   "me",
+  "removeUser",
 ];
 
 const blockToastErrorEndpoints = ["getOffice"];

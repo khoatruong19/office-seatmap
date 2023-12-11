@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { KeyRound, Lock, Pencil, Trash, UserIcon } from "lucide-react";
+import { KeyRound, Lock, Pencil, Trash2, UserIcon } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import DefaultAvatar from "@assets/default-avatar.png";
@@ -143,7 +143,7 @@ const UserEditingModal = ({ type, user }: Props) => {
           onClick={handleDeleteUser}
           className="absolute right-0 top-5 text-white"
         >
-          <Trash strokeWidth={2.5} fill="#FF6969" />
+          <Trash2 strokeWidth={2.5} fill="#FF6969" />
         </Button>
       )}
 

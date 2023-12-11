@@ -11,13 +11,13 @@ type Props = {
   user?: UserType;
 };
 
-const UserInformationModal = ({ user }: Props) => {
+const AdminInformationModal = ({ user }: Props) => {
   const { closeModal } = useModalContext();
 
   return (
     <div className="w-[500px] py-8 font-mono">
       <h1 className="text-3xl font-semibold text-center text-white">
-        User Information
+        Admin Information
       </h1>
 
       <div className="relative w-40 h-40 rounded-full overflow-hidden mx-auto mt-8">
@@ -70,4 +70,4 @@ const UserInformationModal = ({ user }: Props) => {
   );
 };
 
-export default UserInformationModal;
+export default AdminInformationModal;

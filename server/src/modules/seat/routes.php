@@ -11,4 +11,5 @@ use shared\middlewares\JwtVerify;
 
 $app->router->addRoute(RequestMethod::PATCH, "/seats/:seatId/set-user", [JwtVerify::class, AdminGuard::class], [SeatController::class, 'setUser']);
 $app->router->addRoute(RequestMethod::PATCH, "/seats/:seatId/remove-user", [JwtVerify::class, AdminGuard::class], [SeatController::class, 'removeUser']);
+$app->router->addRoute(RequestMethod::PATCH, "/seats/swap-users", [JwtVerify::class, AdminGuard::class], [SeatController::class, 'swapUsers']);
 

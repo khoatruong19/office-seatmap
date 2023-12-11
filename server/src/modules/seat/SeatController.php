@@ -8,6 +8,7 @@ use core\Request;
 use core\Response;
 use core\Controller;
 use modules\seat\dto\SetUserToSeatDto;
+use modules\seat\dto\SwapUsersFromTwoSeatsDto;
 use shared\enums\OfficeResponse;
 use shared\enums\ParamKeys;
 use shared\enums\SeatResponse;
@@ -22,6 +23,10 @@ class SeatController extends Controller
     {
     }
 
+    /**
+     * @return void
+     * @throws ResponseException
+     */
     public function setUser(): void
     {
         $this->requestBodyValidation([
@@ -36,11 +41,29 @@ class SeatController extends Controller
         $this->response->response(HttpStatus::$OK, SeatResponse::SET_USER_SUCCESS->value , null, $seat_id);
     }
 
+    /**
+     * @return void
+     */
     public function removeUser(): void
     {
         $seat_id = $this->request->getIntParam(ParamKeys::SEAT_ID->value);
 
         $this->seatService->removeUserFromSeat($seat_id);
         $this->response->response(HttpStatus::$OK, SeatResponse::REMOVE_USER_SUCCESS->value , null, $seat_id);
+    }
+
+    public function swapUsers(): void
+    {
+        $this->requestBodyValidation([
+            'firstSeatId' => 'required',
+            'firstUserId' => 'required',
+            'secondSeatId' => 'required',
+            'secondUserId' => 'required',
+        ]);
+
+        $raw_data = $this->request->getBody();
+        $swap_users_from_two_seat_dto = SwapUsersFromTwoSeatsDto::fromArray($raw_data);
+        $this->seatService->swapUsersFromTwoSeats($swap_users_from_two_seat_dto);
+        $this->response->response(HttpStatus::$OK, SeatResponse::SWAP_USERS_SUCCESS->value);
     }
 }
