@@ -14,6 +14,7 @@ import { useNavigate } from "react-router";
 import { APP_ROUTES } from "@config/routes";
 import OfficeTitleInput from "@components/OfficeEditing/OfficeTitleInput";
 import { toast } from "react-toastify";
+import BackToHomeButton from "@/components/Layout/BackToHomeButton";
 
 type Props = {
   officeName: string;
@@ -257,6 +258,7 @@ const Seatmap = ({
   return (
     <div className="relative z-1 max-w-7xl w-full mx-auto lg:px-32 py-10 rounded-2xl ">
       <OfficeTitleInput title={name} onChange={handleChangeName} />
+      <BackToHomeButton className="top-[-10px] left-[-100px]" />
       <div className="absolute right-32 top-52">
         <Toolbar
           handleDeleteOffice={handleDeleteOffice}
