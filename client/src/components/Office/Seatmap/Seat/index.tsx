@@ -1,15 +1,18 @@
+import { DRAG_EVENTS } from "@/config/events";
 import { SeatType } from "@/schema/types";
 import {
   useRemoveUserMutation,
   useSetUserMutation,
   useSwapUsersMutation,
 } from "@/stores/seat/service";
+import DefaultAvatar from "@assets/default-avatar.png";
 import { ROW_LABEL, SEATMAP_COLUMNS_PER_ROW } from "@config/seatmapSize";
 import { cn } from "@lib/clsx";
-import DefaultAvatar from "@assets/default-avatar.png";
-import { DRAG_EVENTS } from "@/config/events";
-import { animated, useSpring } from "@react-spring/web";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import ContextMenu from "./ContextMenu";
+import { useModalContext } from "@/providers/ModalProvider";
+import { MODALS } from "@/providers/ModalProvider/constants";
+import useCheckAdmin from "@/hooks/useCheckAdmin";
 
 type Props = {
   seat: SeatType;
@@ -22,19 +25,18 @@ const Seat = ({ seat, officeId }: Props) => {
   const rowIndex = position % SEATMAP_COLUMNS_PER_ROW;
   const rowLabel = ROW_LABEL[rowLabelIndex];
 
+  const [showContextMenu, setShowContextMenu] = useState(false);
+
+  const { showModal } = useModalContext();
+  const isAdmin = useCheckAdmin();
   const [setUser] = useSetUserMutation();
   const [removeUser] = useRemoveUserMutation();
   const [swapUsers] = useSwapUsersMutation();
-  const seatRef = useRef<HTMLDivElement | null>(null);
 
-  const [{ x, y }, api] = useSpring(() => ({
-    x: 0,
-    y: 0,
-  }));
+  const seatRef = useRef<HTMLDivElement | null>(null);
 
   const handleOnDrop = async (e: React.DragEvent) => {
     const userId = e.dataTransfer.getData(DRAG_EVENTS.USER_ID);
-
     if (userId) {
       try {
         await setUser({
@@ -50,13 +52,9 @@ const Seat = ({ seat, officeId }: Props) => {
 
     const seatInfoInString = e.dataTransfer.getData(DRAG_EVENTS.SEAT_INFO);
     try {
-      const { firstSeatId, firstUserId, firstX, firstY } = JSON.parse(
-        seatInfoInString
-      ) as {
+      const { firstSeatId, firstUserId } = JSON.parse(seatInfoInString) as {
         firstSeatId: number;
         firstUserId: number;
-        firstX: number;
-        firstY: number;
       };
       if (firstSeatId === seat.id) return;
 
@@ -69,92 +67,77 @@ const Seat = ({ seat, officeId }: Props) => {
         await removeUser({ id: firstSeatId });
         return;
       }
-      console.log(
-        firstX,
-        firstY,
-        seatRef?.current?.offsetLeft,
-        seatRef?.current?.offsetTop
-      );
+
       if (!seatRef?.current) return;
+
       await swapUsers({
         firstSeatId,
         firstUserId,
         secondSeatId: seat.id,
         secondUserId: seat.userId,
       });
-
-      // api({
-      //   x: firstX - seatRef?.current?.offsetLeft,
-      //   y: firstY - seatRef?.current?.offsetTop,
-      // });
     } catch (error) {
       return;
     }
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.dataTransfer.setData(
-      DRAG_EVENTS.NEW_SEAT_INFO,
-      JSON.stringify({
-        secondX: seatRef?.current?.offsetTop,
-        secondY: seatRef?.current?.offsetLeft,
-      })
-    );
-    console.log(seatRef?.current?.offsetTop, seatRef?.current?.offsetLeft);
-  };
-
   const handleOnDrag = (e: React.DragEvent, userId?: number) => {
     if (!userId) return;
-    console.log(seatRef?.current?.offsetTop);
 
     e.dataTransfer.setData(
       DRAG_EVENTS.SEAT_INFO,
       JSON.stringify({
         firstSeatId: seat.id,
         firstUserId: userId,
-        firstX: seatRef?.current?.offsetLeft,
-        firstY: seatRef?.current?.offsetTop,
       })
     );
   };
 
-  const handleDragEnd = (e: React.DragEvent) => {
+  const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
-    console.log(e.dataTransfer.getData(DRAG_EVENTS.NEW_SEAT_INFO));
-    // api({
-    //   x: 0,
-    //   y: -60,
-    // });
   };
+
+  const handleContextMenu = (
+    e: React.MouseEvent<HTMLImageElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    if (!isAdmin) return;
+    setShowContextMenu(true);
+  };
+
+  const handleOpenUserInformationModal = () =>
+    showModal(MODALS.USER_INFORMATION, {
+      avatar: seat?.avatar,
+      full_name: seat?.full_name,
+      role: seat?.role,
+    });
 
   return (
     <div
       ref={seatRef}
       onDrop={handleOnDrop}
-      onDragEnd={handleDragEnd}
       onDragOver={handleDragOver}
       className={cn(
         "relative h-12 w-12 bg-tertiary font-semibold text-white rounded-md flex items-center justify-center shadow-md"
       )}
+      id={officeId + seat.label}
     >
       {userId ? (
-        <animated.div
-          draggable
+        <img
+          draggable={isAdmin}
           onDragStart={(e) => handleOnDrag(e, seat.userId)}
-          style={{ x, y, zIndex: 9999 }}
-          className={cn(
-            "relative h-full w-full  z-20 rounded-md overflow-hidden"
-          )}
-        >
-          <img
-            alt=""
-            className="absolute top-0 left-0 w-full h-full object-cover cursor-pointer"
-            src={avatar ?? DefaultAvatar}
-          />
-        </animated.div>
+          onContextMenu={handleContextMenu}
+          onClick={handleOpenUserInformationModal}
+          alt=""
+          className="absolute top-0 left-0 w-full h-full rounded-md object-cover cursor-pointer"
+          src={avatar ?? DefaultAvatar}
+        />
       ) : (
         rowLabel + rowIndex
+      )}
+
+      {showContextMenu && (
+        <ContextMenu seatId={seat.id} setShowContext={setShowContextMenu} />
       )}
     </div>
   );
