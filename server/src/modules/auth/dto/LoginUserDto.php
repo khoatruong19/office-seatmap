@@ -11,7 +11,7 @@ class LoginUserDto implements IDto
 
     public function __construct(string $email, string $password)
     {
-        $this->email = $email;
+        $this->email = filter_var($email, FILTER_SANITIZE_EMAIL);
         $this->password = $password;
     }
 

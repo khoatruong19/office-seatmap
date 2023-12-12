@@ -30,6 +30,7 @@ export type CellType = {
 };
 
 export type BlockType = {
+  id: string;
   name: string;
   cells: CellType[];
 };

@@ -15,6 +15,7 @@ export type UpdateOfficeRequest = {
   visible: boolean;
   seats: CellType[];
   blocks: string;
+  delete_seats: CellType[];
 };
 
 export type UpdateOfficeResponse = BaseResponse & {

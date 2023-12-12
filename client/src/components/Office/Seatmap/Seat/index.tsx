@@ -130,7 +130,7 @@ const Seat = ({ seat, officeId }: Props) => {
           onContextMenu={handleContextMenu}
           onClick={handleOpenUserInformationModal}
           alt=""
-          className="absolute top-0 left-0 w-full h-full rounded-md object-cover cursor-pointer z-50"
+          className="absolute top-0 left-0 w-full h-full rounded-md object-cover cursor-pointer z-40"
           src={avatar ?? DefaultAvatar}
         />
       ) : (

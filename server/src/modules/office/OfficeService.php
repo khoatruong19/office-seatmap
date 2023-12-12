@@ -52,6 +52,10 @@ class OfficeService
             $create_seat_dto = CreateSeatDto::fromArray($seat);
             $this->seatService->create($create_seat_dto);
         }
+        $delete_seats = $update_office_dto->getDeleteSeats();
+        foreach ($delete_seats as $seat){
+            $this->seatService->deleteSeatByLabel($seat['label'], $office_id);
+        }
         return true;
     }
 

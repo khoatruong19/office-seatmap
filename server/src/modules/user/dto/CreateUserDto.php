@@ -13,7 +13,7 @@ class CreateUserDto implements IDto
 
     public function __construct(string $email, string $full_name, string $password, string $role)
     {
-        $this->email = $email;
+        $this->email = filter_var($email, FILTER_SANITIZE_EMAIL);
         $this->full_name = $full_name;
         $this->password = $password;
         $this->role = $role;

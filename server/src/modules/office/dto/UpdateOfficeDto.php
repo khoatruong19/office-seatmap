@@ -11,15 +11,17 @@ class UpdateOfficeDto implements IDto
     private bool $visible;
     private array $seats;
     private string $blocks;
+    private array $delete_seats;
 
-    public function __construct(int $id, string $name, bool $visible, array $seats, string $blocks)
+
+    public function __construct(int $id, string $name, bool $visible, array $seats, string $blocks, array $delete_seats)
     {
         $this->id = $id;
         $this->name = $name;
         $this->visible = $visible;
         $this->seats = $seats;
         $this->blocks = $blocks;
-
+        $this->delete_seats = $delete_seats;
     }
     public static function fromArray(array $raw_data): UpdateOfficeDto
     {
@@ -29,6 +31,7 @@ class UpdateOfficeDto implements IDto
             $raw_data['visible'],
             $raw_data['seats'],
             $raw_data['blocks'],
+            $raw_data['delete_seats'],
         );
     }
 
@@ -70,5 +73,13 @@ class UpdateOfficeDto implements IDto
     public function getVisible(): bool
     {
         return $this->visible;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDeleteSeats(): array
+    {
+        return $this->delete_seats;
     }
 }

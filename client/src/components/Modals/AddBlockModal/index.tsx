@@ -21,7 +21,7 @@ const AddBlockModal = ({ confirmHandler, cancelHandler = () => {} }: Props) => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm<AddBlockSchemaType>({
     resolver: zodResolver(AddBlockSchema),
   });
@@ -69,7 +69,6 @@ const AddBlockModal = ({ confirmHandler, cancelHandler = () => {} }: Props) => {
         </Button>
         <Button
           type="submit"
-          disabled={!isValid}
           className="mx-auto block rounded-lg disabled:bg-primary bg-tertiary text-white disabled:cursor-default disabled:hover:opacity-100"
         >
           Create

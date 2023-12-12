@@ -16,7 +16,7 @@ const AddOfficeModal = ({ confirmHandler }: Props) => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm<AddOfficeSchemaType>({
     resolver: zodResolver(AddOfficeSchema),
   });
@@ -54,7 +54,6 @@ const AddOfficeModal = ({ confirmHandler }: Props) => {
           Cancel
         </Button>
         <Button
-          disabled={!isValid}
           type="submit"
           className="mx-auto block rounded-lg disabled:bg-primary bg-secondary text-white disabled:cursor-default disabled:hover:opacity-100"
         >

@@ -4,7 +4,7 @@ import { cn } from "@lib/clsx";
 import { BlockType, CellType, SeatType } from "@schema/types";
 import OfficeTitle from "@components/Office/OfficeTitle";
 import Seat from "./Seat";
-import BackToHomeButton from "@/components/Layout/BackToHomeButton";
+import BackToHomeButton from "@/components/Layout/BackButton";
 
 type Props = {
   officeName: string;
@@ -106,7 +106,7 @@ const Seatmap = ({ officeName, officeId, blocks, seats }: Props) => {
 
   return (
     <div className="z-1 max-w-7xl w-full mx-auto lg:px-32 py-10 rounded-2xl ">
-      <BackToHomeButton className="top-7 left-32" />
+      <BackToHomeButton className="top-7 left-52" />
       <OfficeTitle title={officeName} />
       <div className="relative max-w-4xl w-full mx-auto flex flex-col gap-4 items-start scale-50 lg:scale-[0.8] 2xl:scale-100">
         <div className="relative flex items-center gap-3 flex-wrap">

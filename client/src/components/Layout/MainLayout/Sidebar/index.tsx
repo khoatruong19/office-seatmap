@@ -39,24 +39,35 @@ const Sidebar = () => {
         >
           <UserPlus />
         </Button>
-      </div>
-      <Button
-        onClick={handleToggleOpen}
-        className={cn(
-          `absolute top-1 w-fit px-3 py-1 transition-all
+        <Button
+          onClick={handleToggleOpen}
+          className={cn(
+            `absolute top-1 w-fit px-3 py-1 transition-all
          duration-200 text-black`,
-          {
-            "right-0": !open,
-            "left-[-18px]": open,
-          }
-        )}
-      >
-        {open ? (
+            {
+              "right-0": !open,
+              "left-[-18px]": open,
+            }
+          )}
+        >
           <X size={30} className="mt-[-5px] ml-1.5" />
-        ) : (
+        </Button>
+      </div>
+      {!open && (
+        <Button
+          onClick={handleToggleOpen}
+          className={cn(
+            `absolute top-1 w-fit px-3 py-1 transition-all
+         duration-200 text-black`,
+            {
+              "right-0": !open,
+              "left-[-18px]": open,
+            }
+          )}
+        >
           <Contact2 size={30} />
-        )}
-      </Button>
+        </Button>
+      )}
     </aside>
   );
 };

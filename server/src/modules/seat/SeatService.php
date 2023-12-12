@@ -34,10 +34,6 @@ class SeatService
         return $this->seatRepository->findAllByOfficeId($office_id);
     }
 
-    public function findByUserId(int $user_id){
-
-    }
-
     /**
      * @param SetUserToSeatDto $set_user_to_seat_dto
      * @return bool
@@ -58,6 +54,14 @@ class SeatService
         return $this->seatRepository->updateOne(strval($seat_id), ["user_id" => null, "available" => 1]);
     }
 
+    public function deleteSeatByLabel(string $label, string $office_id){
+        return $this->seatRepository->deleteByLabel($label, $office_id);
+    }
+
+    /**
+     * @param SwapUsersFromTwoSeatsDto $swap_users_from_two_seat_dto
+     * @return void
+     */
     public function swapUsersFromTwoSeats(SwapUsersFromTwoSeatsDto $swap_users_from_two_seat_dto){
        $this->seatRepository->updateOne(strval($swap_users_from_two_seat_dto->getFirstSeatId()), ["user_id" => $swap_users_from_two_seat_dto->getSecondUserId()]);
        $this->seatRepository->updateOne(strval($swap_users_from_two_seat_dto->getSecondSeatId()), ["user_id" => $swap_users_from_two_seat_dto->getFirstUserId()]);

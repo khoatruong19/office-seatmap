@@ -123,4 +123,13 @@ class SeatRepository extends Repository implements IRepository{
         $stmt->bindParam(':id', $seat_id);
         return $stmt->execute();
     }
+
+    public function deleteByLabel(string $label, string $office_id): bool
+    {
+        $sql = "DELETE FROM seats WHERE label = :label AND office_id = :office_id";
+        $stmt = $this->database->getConnection()->prepare($sql);
+        $stmt->bindParam(':label', $label);
+        $stmt->bindParam(':office_id', $office_id);
+        return $stmt->execute();
+    }
 }

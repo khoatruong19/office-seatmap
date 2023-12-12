@@ -14,7 +14,8 @@ import { useNavigate } from "react-router";
 import { APP_ROUTES } from "@config/routes";
 import OfficeTitleInput from "@components/OfficeEditing/OfficeTitleInput";
 import { toast } from "react-toastify";
-import BackToHomeButton from "@/components/Layout/BackToHomeButton";
+import BackToHomeButton from "@/components/Layout/BackButton";
+import { v4 as uuid } from "uuid";
 
 type Props = {
   officeName: string;
@@ -40,6 +41,7 @@ const Seatmap = ({
   );
   const [visible, setVisible] = useState(isVisible);
   const [name, setName] = useState(officeName);
+  const [deletedCells, setDeletedCells] = useState<CellType[]>([]);
 
   const navigate = useNavigate();
 
@@ -112,6 +114,40 @@ const Seatmap = ({
     });
   };
 
+  const handleDeleteBlock = (blockId: string) => {
+    const confirmHandler = () => {
+      const tempBlocks = [...blocks].filter((block) => block.id !== blockId);
+      setBlocks(tempBlocks);
+      closeModal();
+    };
+    showModal(MODALS.CONFIRM, {
+      text: "Are you sure you want to delete this block?",
+      confirmHandler,
+    });
+  };
+
+  const handleDeleteCell = (cell: CellType) => {
+    console.log(cell.label);
+    const tempCells = [...seats].filter((item) => item.label !== cell.label);
+    if (
+      !deletedCells.find((item) => item.label === cell.label) &&
+      cells.find((item) => item.label === cell.label)
+    ) {
+      setDeletedCells((prev) => [...prev, cell]);
+    }
+
+    setSeats(tempCells);
+  };
+
+  const handleCheckUnDeleteCell = (cell: CellType) => {
+    if (deletedCells.find((item) => item.label === cell.label)) {
+      const tempCells = deletedCells.filter(
+        (item) => item.label !== cell.label
+      );
+      setDeletedCells(tempCells);
+    }
+  };
+
   const handleSaveSeatmap = () => {
     if (name.length > 100) {
       toast.error(`Office's name must be no more than 100 characters`, {
@@ -130,6 +166,7 @@ const Seatmap = ({
       visible,
       seats,
       blocks: JSON.stringify(blocks),
+      delete_seats: deletedCells,
     })
       .then(() => {})
       .catch(() => {});
@@ -164,7 +201,11 @@ const Seatmap = ({
     );
     if (foundBelowBlock && foundNextToBlock && !foundRightBelowBlock)
       return (
-        <div key={Math.random() * 1} className="relative h-12 w-12 z-40">
+        <div
+          onClick={() => handleDeleteBlock(block.id)}
+          key={Math.random() * 1}
+          className="relative h-12 w-12 z-40"
+        >
           <div
             className={cn("absolute top-0 left-0 w-[100%] h-[100%] bg-primary")}
           >
@@ -184,7 +225,11 @@ const Seatmap = ({
       );
     if (foundNextToBlock) {
       return (
-        <div key={Math.random() * 1} className="relative h-12 w-12 z-40">
+        <div
+          onClick={() => handleDeleteBlock(block.id)}
+          key={Math.random() * 1}
+          className="relative h-12 w-12 z-40"
+        >
           <div
             className={cn(
               "absolute top-0 left-0 w-[125%] h-[100%] bg-primary",
@@ -201,7 +246,11 @@ const Seatmap = ({
 
     if (foundBelowBlock)
       return (
-        <div key={Math.random() * 2} className="relative h-12 w-12 z-40">
+        <div
+          onClick={() => handleDeleteBlock(block.id)}
+          key={Math.random() * 2}
+          className="relative h-12 w-12 z-40"
+        >
           <div className="absolute top-0 left-0 w-[100%] h-[125%] bg-primary">
             {seatIndex == 0 && renderBlockName(block.name)}
           </div>
@@ -209,7 +258,11 @@ const Seatmap = ({
       );
 
     return (
-      <div key={Math.random() * 3} className="relative h-12 w-12 z-40">
+      <div
+        onClick={() => handleDeleteBlock(block.id)}
+        key={Math.random() * 3}
+        className="relative h-12 w-12 z-40"
+      >
         <div className="absolute top-0 left-0 w-[100%] h-[100%] bg-primary">
           {seatIndex == 0 && renderBlockName(block.name)}
         </div>
@@ -229,7 +282,10 @@ const Seatmap = ({
     if (done) {
       showModal(MODALS.ADD_BLOCK, {
         confirmHandler: (name: string) => {
-          setBlocks((prev) => [...prev, { name, cells: selectedCells }]);
+          setBlocks((prev) => [
+            ...prev,
+            { name, cells: selectedCells, id: uuid() },
+          ]);
           setSelectedCells([]);
           closeModal();
         },
@@ -268,6 +324,8 @@ const Seatmap = ({
               else
                 return (
                   <Cell
+                    deleteCell={handleDeleteCell}
+                    checkUnDeleteCell={handleCheckUnDeleteCell}
                     key={Math.random() * 4}
                     done={done}
                     position={idx}

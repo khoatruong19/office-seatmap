@@ -50,6 +50,7 @@ class OfficeController extends Controller
             'seats' => '',
             'blocks' => '',
             'visible' => 'is_bool',
+            'delete_seats' => ''
         ]);
         $office_id = $this->request->getIntParam(ParamKeys::OFFICE_ID->value);
         $raw_data = $this->request->getBody();
@@ -65,8 +66,11 @@ class OfficeController extends Controller
      */
     public function findOne(): void
     {
+        $user_role = $this->request->getValue(StoreKeys::USER_ROLE->value);
         $office_id = $this->request->getParam(ParamKeys::OFFICE_ID->value);
         $office = $this->officeService->findOne("id", $office_id);
+        if($user_role == UserRole::USER->value && $office['visible'] == 0) throw new ResponseException(HttpStatus::$BAD_REQUEST, OfficeResponse::NOT_FOUND->value);
+
         $this->response->response(HttpStatus::$OK, OfficeResponse::GET_ONE_OFFICE_SUCCESS->value, null, $office);
     }
 

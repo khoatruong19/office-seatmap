@@ -9,7 +9,7 @@ class UpdateProfileDto implements IDto
     private string $full_name;
     public function __construct(string $full_name)
     {
-        $this->full_name = $full_name;
+        $this->full_name = filter_var($full_name, FILTER_SANITIZE_STRING);
     }
 
     /**

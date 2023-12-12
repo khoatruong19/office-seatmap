@@ -32,10 +32,10 @@ const OfficeCard = ({ office }: Props) => {
   };
 
   return (
-    <div className="flex items-center justify-between w-full  bg-primary px-5 py-4 rounded-lg">
+    <div className="flex items-center justify-between w-full bg-primary px-5 py-4 rounded-lg">
       <Link
         to={APP_ROUTES.OFFICE.replace(":id", `${office.id}`)}
-        className="text-2xl text-secondary font-semibold underline hover-opacity"
+        className="text-2xl text-secondary font-semibold underline hover-opacity truncate max-w-[90%]"
       >
         {office.name}
       </Link>

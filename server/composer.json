@@ -6,7 +6,7 @@
     "fix": "php-cs-fixer fix",
     "start": [
       "Composer\\Config::disableProcessTimeout",
-      "php -S localhost:8080 -t public/"
+      "php -S 10.192.30.147:8080 -t public/"
     ],
     "install": "composer dump-autoload"
   },
@@ -19,7 +19,7 @@
   },
   "authors": [
     {
-      "name": "miraijr"
+      "name": "khoa"
     }
   ],
   "require-dev": {
