@@ -4,10 +4,11 @@ declare( strict_types=1 );
 namespace shared\middlewares;
 
 use core\HttpStatus;
+use core\Request;
 use core\SessionManager;
 use modules\user\UserService;
 use shared\enums\AuthResponse;
-use shared\enums\SessionKeys;
+use shared\enums\StoreKeys;
 use shared\enums\UserRole;
 use shared\exceptions\ResponseException;
 use shared\interfaces\IMiddleware;
@@ -15,7 +16,7 @@ use shared\interfaces\IMiddleware;
 class AdminGuard implements IMiddleware
 {
 
-    public function __construct(private readonly UserService $userService)
+    public function __construct(public Request $request, private readonly UserService $userService)
     {
 
     }
@@ -26,7 +27,7 @@ class AdminGuard implements IMiddleware
      */
     public function execute(): bool
     {
-        $role = SessionManager::get(SessionKeys::USER_ROLE->value);
+        $role = $this->request->getValue(StoreKeys::USER_ROLE->value);
         if($role != UserRole::ADMIN->value) throw new ResponseException(HttpStatus::$UNAUTHORIZED, AuthResponse::UNAUTHORIZED->value);
 
         return true;

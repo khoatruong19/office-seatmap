@@ -4,6 +4,7 @@ import { userApi } from "./user/service";
 import { officeApi } from "./office/service";
 import authReducer from "./auth/slice";
 import userReducer from "./user/slice";
+import seatReducer from "./seat/slice";
 import { rtkQueryLogger } from "./middlewares/rtkQueryLogger";
 import { seatApi } from "./seat/service";
 
@@ -15,6 +16,7 @@ export const store = configureStore({
     [seatApi.reducerPath]: seatApi.reducer,
     auth: authReducer,
     user: userReducer,
+    seat: seatReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()

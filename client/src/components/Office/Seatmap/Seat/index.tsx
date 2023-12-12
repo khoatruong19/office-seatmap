@@ -28,15 +28,16 @@ const Seat = ({ seat, officeId }: Props) => {
   const [showContextMenu, setShowContextMenu] = useState(false);
 
   const { showModal } = useModalContext();
-  const isAdmin = useCheckAdmin();
   const [setUser] = useSetUserMutation();
   const [removeUser] = useRemoveUserMutation();
   const [swapUsers] = useSwapUsersMutation();
 
   const seatRef = useRef<HTMLDivElement | null>(null);
+  const isAdmin = useCheckAdmin();
 
   const handleOnDrop = async (e: React.DragEvent) => {
     const userId = e.dataTransfer.getData(DRAG_EVENTS.USER_ID);
+
     if (userId) {
       try {
         await setUser({
@@ -79,6 +80,7 @@ const Seat = ({ seat, officeId }: Props) => {
     } catch (error) {
       return;
     }
+    e.dataTransfer.clearData();
   };
 
   const handleOnDrag = (e: React.DragEvent, userId?: number) => {
@@ -120,7 +122,6 @@ const Seat = ({ seat, officeId }: Props) => {
       className={cn(
         "relative h-12 w-12 bg-tertiary font-semibold text-white rounded-md flex items-center justify-center shadow-md"
       )}
-      id={officeId + seat.label}
     >
       {userId ? (
         <img
@@ -129,7 +130,7 @@ const Seat = ({ seat, officeId }: Props) => {
           onContextMenu={handleContextMenu}
           onClick={handleOpenUserInformationModal}
           alt=""
-          className="absolute top-0 left-0 w-full h-full rounded-md object-cover cursor-pointer"
+          className="absolute top-0 left-0 w-full h-full rounded-md object-cover cursor-pointer z-50"
           src={avatar ?? DefaultAvatar}
         />
       ) : (

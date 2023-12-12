@@ -1,6 +1,5 @@
 import { LogOut, User } from "lucide-react";
 import { useLogoutMutation } from "@stores/auth/service";
-import { useNavigate } from "react-router";
 import { useModalContext } from "@providers/ModalProvider";
 import { APP_ROUTES } from "@config/routes";
 import { MODALS } from "@providers/ModalProvider/constants";
@@ -10,14 +9,12 @@ type Props = {
 };
 
 const UserDropdown = ({ close }: Props) => {
-  const navigate = useNavigate();
-
   const [logout] = useLogoutMutation();
   const { showModal } = useModalContext();
 
   const handleLogout = () => {
     logout(null)
-      .then(() => navigate(APP_ROUTES.LOGIN))
+      .then(() => (window.location.pathname = APP_ROUTES.LOGIN))
       .catch(() => {});
   };
 

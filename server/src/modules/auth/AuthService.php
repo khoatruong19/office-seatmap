@@ -11,7 +11,7 @@ use modules\user\dto\CreateUserDto;
 use modules\user\UserService;
 use shared\enums\AuthResponse;
 use shared\enums\EnumTypeJwt;
-use shared\enums\SessionKeys;
+use shared\enums\StoreKeys;
 use shared\exceptions\ResponseException;
 
 class AuthService
@@ -54,17 +54,5 @@ class AuthService
             "user" => $existing_user,
             "accessToken" => $access_token,
         );
-    }
-
-    /**
-     * @return bool
-     */
-    public function logout(): bool
-    {
-        $user_id = SessionManager::get(SessionKeys::USER_ID->value);
-        if(!$user_id) return false;
-
-        SessionManager::set(SessionKeys::USER_ID->value, null);
-        return true;
     }
 }

@@ -10,6 +10,7 @@ class Request
 {
     protected array $params = [];
     protected array $queries = [];
+    protected array $stores = [];
 
     public function __construct(public Validation $validation)
     {
@@ -28,7 +29,7 @@ class Request
         $queries_parts = explode("&", $queries_string);
         foreach ($queries_parts as $value) {
             $pair = explode("=", $value);
-            $this->queries[$pair[0]] = $pair[1];
+            $this->queries[$pair[0]] = urldecode($pair[1]);
         }
     }
 
@@ -162,5 +163,34 @@ class Request
     public function getParams(): array
     {
         return $this->params;
+    }
+
+    /**
+     * @param string $key
+     * @param mixed $value
+     * @return void
+     */
+    public function storeValue(string $key, mixed $value): void{
+        $this->stores[$key] = $value;
+    }
+
+    /**
+     * @param $key
+     * @return mixed
+     */
+    public function getValue($key): mixed{
+        if(!isset($this->stores[$key])) return null;
+
+        return $this->stores[$key];
+    }
+
+    /**
+     * @param $key
+     * @return mixed
+     */
+    public function deleteValue($key): void{
+        if(isset($this->stores[$key])) {
+            unset($this->stores[$key]);
+        }
     }
 }

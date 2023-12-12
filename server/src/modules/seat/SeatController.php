@@ -47,7 +47,6 @@ class SeatController extends Controller
     public function removeUser(): void
     {
         $seat_id = $this->request->getIntParam(ParamKeys::SEAT_ID->value);
-
         $this->seatService->removeUserFromSeat($seat_id);
         $this->response->response(HttpStatus::$OK, SeatResponse::REMOVE_USER_SUCCESS->value , null, $seat_id);
     }

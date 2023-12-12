@@ -92,8 +92,6 @@ const Seatmap = ({
     };
   }, [selectedCells, done, lastSelectingCell]);
 
-  const handleOpenBlockModal = () => showModal(MODALS.CONFIRM, {});
-
   const handleToggleVisible = () => setVisible((prev) => !prev);
 
   const handleChangeName = (value: string) => setName(value);
@@ -186,11 +184,7 @@ const Seatmap = ({
       );
     if (foundNextToBlock) {
       return (
-        <div
-          onClick={handleOpenBlockModal}
-          key={Math.random() * 1}
-          className="relative h-12 w-12 z-40"
-        >
+        <div key={Math.random() * 1} className="relative h-12 w-12 z-40">
           <div
             className={cn(
               "absolute top-0 left-0 w-[125%] h-[100%] bg-primary",
@@ -207,11 +201,7 @@ const Seatmap = ({
 
     if (foundBelowBlock)
       return (
-        <div
-          onClick={handleOpenBlockModal}
-          key={Math.random() * 2}
-          className="relative h-12 w-12 z-40"
-        >
+        <div key={Math.random() * 2} className="relative h-12 w-12 z-40">
           <div className="absolute top-0 left-0 w-[100%] h-[125%] bg-primary">
             {seatIndex == 0 && renderBlockName(block.name)}
           </div>
@@ -219,11 +209,7 @@ const Seatmap = ({
       );
 
     return (
-      <div
-        onClick={handleOpenBlockModal}
-        key={Math.random() * 3}
-        className="relative h-12 w-12 z-40"
-      >
+      <div key={Math.random() * 3} className="relative h-12 w-12 z-40">
         <div className="absolute top-0 left-0 w-[100%] h-[100%] bg-primary">
           {seatIndex == 0 && renderBlockName(block.name)}
         </div>

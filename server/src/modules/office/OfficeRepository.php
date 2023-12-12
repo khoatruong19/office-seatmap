@@ -56,6 +56,17 @@ class OfficeRepository extends Repository implements IRepository{
     }
 
     /**
+     * @return array|false
+     */
+    public function findAllVisibleOffices(): bool|array
+    {
+        $sql = "SELECT * FROM offices WHERE visible=1 ORDER BY created_at DESC";
+        $stmt = $this->database->getConnection()->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
      * @param string $office_id
      * @param array $data
      * @return bool

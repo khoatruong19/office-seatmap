@@ -11,6 +11,8 @@ use modules\office\dto\CreateOfficeDto;
 use modules\office\dto\UpdateOfficeDto;
 use shared\enums\OfficeResponse;
 use shared\enums\ParamKeys;
+use shared\enums\StoreKeys;
+use shared\enums\UserRole;
 use shared\exceptions\ResponseException;
 
 class OfficeController extends Controller
@@ -73,7 +75,12 @@ class OfficeController extends Controller
      */
     public function findAll(): void
     {
-        $offices = $this->officeService->findAll();
+        $role = $this->request->getValue(StoreKeys::USER_ROLE->value);
+        if($role == UserRole::ADMIN->value){
+            $offices = $this->officeService->findAll();
+        }else{
+            $offices = $this->officeService->findAllVisibleOffices();
+        }
         $this->response->response(HttpStatus::$OK, OfficeResponse::GET_ALL_OFFICES_SUCCESS->value, null, $offices);
     }
 

@@ -9,7 +9,6 @@ use core\Response;
 use modules\user\dto\CreateUserDto;
 use modules\user\dto\UpdateProfileDto;
 use modules\user\dto\UpdateUserDto;
-use shared\enums\AuthResponse;
 use shared\enums\ParamKeys;
 use shared\enums\UserResponse;
 use shared\exceptions\ResponseException;

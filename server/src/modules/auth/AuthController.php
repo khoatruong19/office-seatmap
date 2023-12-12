@@ -12,7 +12,7 @@ use modules\auth\dto\LoginUserDto;
 use modules\auth\dto\RegisterUserDto;
 use modules\user\UserService;
 use shared\enums\AuthResponse;
-use shared\enums\SessionKeys;
+use shared\enums\StoreKeys;
 use shared\exceptions\ResponseException;
 
 class AuthController extends Controller
@@ -64,7 +64,7 @@ class AuthController extends Controller
      */
     public function getCurrentUser(): void
     {
-        $user_id = SessionManager::get(SessionKeys::USER_ID->value);
+        $user_id = $this->request->getValue(StoreKeys::USER_ID->value);
         $user = $this->userService->getCurrentUser(strval($user_id));
         $this->response->response(HttpStatus::$OK, AuthResponse::ME_SUCCESS->value, null, $user);
     }
@@ -75,9 +75,8 @@ class AuthController extends Controller
      */
     public function logout(): void
     {
-        $is_logout = $this->authService->logout();
-        if(!$is_logout) throw new ResponseException(HttpStatus::$UNAUTHORIZED,AuthResponse::UNAUTHORIZED->value);
-
+        $this->request->deleteValue(StoreKeys::USER_ID->value);
+        $this->request->deleteValue(StoreKeys::USER_ROLE->value);
         $this->response->response(HttpStatus::$OK, AuthResponse::LOGOUT_SUCCESS->value, null, true);
     }
 }

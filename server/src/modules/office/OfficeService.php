@@ -80,6 +80,14 @@ class OfficeService
     }
 
     /**
+     * @return array|bool
+     */
+    public function findAllVisibleOffices(): bool|array
+    {
+        return $this->officeRepository->findAllVisibleOffices();
+    }
+
+    /**
      * @throws ResponseException
      */
     public function delete(string $office_id): void

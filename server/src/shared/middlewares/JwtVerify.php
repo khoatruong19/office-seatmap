@@ -4,10 +4,11 @@ declare( strict_types=1 );
 namespace shared\middlewares;
 
 use core\HttpStatus;
+use core\Request;
 use modules\auth\JwtService;
 use shared\enums\AuthResponse;
 use shared\enums\EnumTypeJwt;
-use shared\enums\SessionKeys;
+use shared\enums\StoreKeys;
 use shared\exceptions\ResponseException;
 use shared\interfaces\IMiddleware;
 use core\SessionManager;
@@ -15,7 +16,7 @@ use core\SessionManager;
 class JwtVerify implements IMiddleware
 {
 
-    public function __construct(private readonly JwtService $jwtService)
+    public function __construct(public Request $request,private readonly JwtService $jwtService)
     {
     }
 
@@ -36,8 +37,8 @@ class JwtVerify implements IMiddleware
 
         $user_id = $payload->userId;
         $role = $payload->role;
-        SessionManager::set(SessionKeys::USER_ID->value,$user_id);
-        SessionManager::set(SessionKeys::USER_ROLE->value, $role);
+        $this->request->storeValue(StoreKeys::USER_ID->value, $user_id);
+        $this->request->storeValue(StoreKeys::USER_ROLE->value, $role);
         return true;
     }
 }

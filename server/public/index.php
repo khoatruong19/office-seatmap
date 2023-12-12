@@ -12,12 +12,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use core\Application;
-use core\SessionManager;
 
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
-
-SessionManager::startSession();
 
 $container = require __DIR__.'/../app/bootstrap.php';
 $app = $container->get(Application::class);
