@@ -13,6 +13,7 @@ const BackButton = ({ className = "" }: Props) => {
   const handleNavigateBack = () => {
     navigate(-1);
   };
+
   return (
     <Button
       onClick={handleNavigateBack}

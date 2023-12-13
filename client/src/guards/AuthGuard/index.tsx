@@ -11,7 +11,10 @@ const AuthGuard = () => {
 
   useEffect(() => {
     const accessToken = cookieManagement.getAccessToken();
-    if (!accessToken) return navigate(APP_ROUTES.LOGIN);
+    if (!accessToken) {
+      navigate(APP_ROUTES.LOGIN);
+      return;
+    }
 
     me(null)
       .then((data) => {
