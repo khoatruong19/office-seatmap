@@ -53,30 +53,31 @@ const Seatmap = ({
     const selectingCells = (e: MouseEvent) => {
       if (!e.target) return;
 
-      if (e.shiftKey) {
-        const cellId = (e.target as HTMLDivElement).id;
-        if (!!!cellId.length) return;
+      if (!e.shiftKey) return;
 
-        const newCellPosition = Number(cellId.split("seat")[1]);
-        if (lastSelectingCell) {
-          const lastCellPosition = lastSelectingCell.position;
-          if (
-            Math.abs(newCellPosition - lastCellPosition) !== 1 &&
-            Math.abs(newCellPosition - lastCellPosition) !==
-              SEATMAP_COLUMNS_PER_ROW
-          )
-            return;
-        }
-        setLastSelectingCell({ position: newCellPosition, label: cellId });
-        const tempCells = [...selectedCells];
-        const existingCellIndex = selectedCells.findIndex(
-          (item) => item.label === cellId
-        );
-        if (existingCellIndex >= 0) return;
+      const cellId = (e.target as HTMLDivElement).id;
+      if (!!!cellId.length) return;
 
-        tempCells.push({ label: cellId, position: newCellPosition });
-        setSelectedCells(tempCells);
+      const newCellPosition = Number(cellId.split("seat")[1]);
+      if (lastSelectingCell) {
+        const lastCellPosition = lastSelectingCell.position;
+        if (
+          Math.abs(newCellPosition - lastCellPosition) !== 1 &&
+          Math.abs(newCellPosition - lastCellPosition) !==
+            SEATMAP_COLUMNS_PER_ROW
+        )
+          return;
       }
+
+      setLastSelectingCell({ position: newCellPosition, label: cellId });
+      const tempCells = [...selectedCells];
+      const existingCellIndex = [...seats, ...selectedCells].findIndex(
+        (item) => item.position === newCellPosition
+      );
+      if (existingCellIndex >= 0) return;
+
+      tempCells.push({ label: cellId, position: newCellPosition });
+      setSelectedCells(tempCells);
     };
 
     const doneSelectingCells = (event: KeyboardEvent) => {
@@ -127,7 +128,6 @@ const Seatmap = ({
   };
 
   const handleDeleteCell = (cell: CellType) => {
-    console.log(cell.label);
     const tempCells = [...seats].filter((item) => item.label !== cell.label);
     if (
       !deletedCells.find((item) => item.label === cell.label) &&

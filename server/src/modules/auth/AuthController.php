@@ -31,11 +31,7 @@ class AuthController extends Controller
      */
     public function register(): void
     {
-        $this->requestBodyValidation([
-            'email' => 'required|min:8|max:100|pattern:email',
-            'full_name' => 'required|min:8|max:100',
-            'password' => 'required|min:8|max:100'
-        ]);
+        $this->requestBodyValidation(require_once "validation/register.php");
         $raw_data = $this->request->getBody();
         $register_user_dto = RegisterUserDto::fromArray($raw_data);
         $id = $this->authService->register($register_user_dto);
@@ -48,10 +44,7 @@ class AuthController extends Controller
      */
     public function login(): void
     {
-        $this->requestBodyValidation([
-            'email' => 'required|min:8|max:100|pattern:email',
-            'password' => 'required|min:8|max:100'
-        ]);
+        $this->requestBodyValidation(require_once "validation/login.php");
         $raw_data = $this->request->getBody();
         $login_user_dto = LoginUserDto::fromArray($raw_data);
         $user_credentials = $this->authService->login($login_user_dto);

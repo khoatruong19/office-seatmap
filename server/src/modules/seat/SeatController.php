@@ -29,10 +29,7 @@ class SeatController extends Controller
      */
     public function setUser(): void
     {
-        $this->requestBodyValidation([
-            'user_id' => 'required',
-            'office_id' => 'required',
-        ]);
+        $this->requestBodyValidation(require_once "validation/setUser.php");
         $seat_id = $this->request->getIntParam(ParamKeys::SEAT_ID->value);
         $raw_data = $this->request->getBody();
         $raw_data['id'] = $seat_id;
@@ -53,12 +50,7 @@ class SeatController extends Controller
 
     public function swapUsers(): void
     {
-        $this->requestBodyValidation([
-            'firstSeatId' => 'required',
-            'firstUserId' => 'required',
-            'secondSeatId' => 'required',
-            'secondUserId' => 'required',
-        ]);
+        $this->requestBodyValidation(require_once "validation/swapUsers.php");
 
         $raw_data = $this->request->getBody();
         $swap_users_from_two_seat_dto = SwapUsersFromTwoSeatsDto::fromArray($raw_data);

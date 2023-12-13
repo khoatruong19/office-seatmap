@@ -1,4 +1,3 @@
-import { useAuth } from "@/hooks/useAuth";
 import AddOfficeButton from "@components/Home/AddOfficeButton";
 import OfficeCard from "@components/Home/OfficeCard";
 import MainLayout from "@components/Layout/MainLayout";
@@ -6,9 +5,6 @@ import OfficeTitle from "@components/Office/OfficeTitle";
 import { useGetAllOfficesQuery } from "@stores/office/service";
 
 const Home = () => {
-  const { user } = useAuth();
-  if (!user) return null;
-
   const { data, isLoading } = useGetAllOfficesQuery();
   const offices = (data && data?.data) ?? [];
 

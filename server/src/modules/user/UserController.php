@@ -38,12 +38,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        $this->requestBodyValidation([
-            'email' => 'required|min:8|max:100|pattern:email',
-            'full_name' => 'required|min:8|max:100',
-            'password' => 'required|min:8|max:100',
-            'role' => 'required'
-        ]);
+        $this->requestBodyValidation(require_once "validation/create.php");
         $raw_data = $this->request->getBody();
         $create_user_dto = CreateUserDto::fromArray($raw_data);
         $id = $this->userService->create($create_user_dto);
@@ -56,11 +51,7 @@ class UserController extends Controller
      */
     public function update()
     {
-        $this->requestBodyValidation([
-            'email' => 'required|min:8|max:100|pattern:email',
-            'full_name' => 'required|min:8|max:100',
-            'role' => 'required'
-        ]);
+        $this->requestBodyValidation(require_once "validation/update.php");
         $user_id = $this->request->getParam(ParamKeys::USER_ID->value);
         $raw_data = $this->request->getBody();
         $update_user_dto = UpdateUserDto::fromArray($raw_data);
@@ -74,9 +65,7 @@ class UserController extends Controller
      */
     public function updateProfile()
     {
-        $this->requestBodyValidation([
-            'full_name' => 'min:8|max:100',
-        ]);
+        $this->requestBodyValidation(require_once "validation/updateProfile.php");
         $user_id = $this->request->getParam(ParamKeys::USER_ID->value);
         $raw_data = $this->request->getBody();
         $update_profile_dto = UpdateProfileDto::fromArray($raw_data);

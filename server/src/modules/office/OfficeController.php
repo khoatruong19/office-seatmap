@@ -30,9 +30,7 @@ class OfficeController extends Controller
      */
     public function create(): void
     {
-        $this->requestBodyValidation([
-            'name' => 'required|min:4|max:100',
-        ]);
+        $this->requestBodyValidation(require_once "validation/create.php");
         $raw_data = $this->request->getBody();
         $create_office_dto = CreateOfficeDto::fromArray($raw_data);
         $id = $this->officeService->create($create_office_dto);
@@ -45,13 +43,7 @@ class OfficeController extends Controller
      */
     public function update(): void
     {
-        $this->requestBodyValidation([
-            'name' => 'required|min:4|max:100',
-            'seats' => '',
-            'blocks' => '',
-            'visible' => 'is_bool',
-            'delete_seats' => ''
-        ]);
+        $this->requestBodyValidation(require_once "validation/update.php");
         $office_id = $this->request->getIntParam(ParamKeys::OFFICE_ID->value);
         $raw_data = $this->request->getBody();
         $raw_data['id'] = $office_id;
