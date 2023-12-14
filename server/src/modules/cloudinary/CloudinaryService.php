@@ -16,6 +16,9 @@
         {
         }
 
+        const MAX_FILE_SIZE = 800000;
+        const ALLOW_TYPES = ['jpg', 'png', 'jpeg', 'gif'];
+
         /**
          * @param mixed $file
          * @param array $options
@@ -24,14 +27,12 @@
          */
         public function uploadFile(mixed $file, array $options = []): ApiResponse
         {
-            $max_file_size = 800000;
-            $allow_types = array('jpg', 'png', 'jpeg', 'gif');
             $file_name_array = explode(".", $file["name"]);
             $ext = $file_name_array[count($file_name_array) - 1];
 
-            if ($file["size"] > $max_file_size) throw new ResponseException(HttpStatus::$BAD_REQUEST, CloudinaryResponse::FILE_TOO_LARGE->value);
+            if ($file["size"] > self::MAX_FILE_SIZE) throw new ResponseException(HttpStatus::$BAD_REQUEST, CloudinaryResponse::FILE_TOO_LARGE->value);
 
-            if (!in_array($ext, $allow_types)) throw new ResponseException(HttpStatus::$BAD_REQUEST, CloudinaryResponse::FILE_WRONG_FORMAT->value);
+            if (!in_array($ext, self::ALLOW_TYPES)) throw new ResponseException(HttpStatus::$BAD_REQUEST, CloudinaryResponse::FILE_WRONG_FORMAT->value);
 
             try {
                 return (new UploadApi())->upload($_FILES["file"]['tmp_name'], $options);

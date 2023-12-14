@@ -55,7 +55,9 @@ const UserEditingModal = ({ type, user }: Props) => {
     return update({ id: user!.id, data: formData });
   };
 
-  const onSubmit: SubmitHandler<UserSchemaType> = (values: UserSchemaType) => {
+  const onSubmit: SubmitHandler<UserSchemaType> = async (
+    values: UserSchemaType
+  ) => {
     const submitHandler =
       type === "create" ? createSubmitHandler : updateSubmitHandler;
     const formData = new FormData();
@@ -65,24 +67,26 @@ const UserEditingModal = ({ type, user }: Props) => {
     if (file) {
       resizeImage({ file }, async (resultBlob) => {
         formData.append("file", resultBlob);
-        submitHandler(formData)
-          .then((data) => {
-            if ("error" in data) return;
-            reset();
-            closeModal();
-          })
-          .catch(() => {});
+        try {
+          const data = await submitHandler(formData);
+          if ("error" in data) return;
+          reset();
+          closeModal();
+        } catch (error) {
+          return;
+        }
       });
       return;
     }
 
-    submitHandler(formData)
-      .then((data) => {
-        if ("error" in data) return;
-        reset();
-        closeModal();
-      })
-      .catch(() => {});
+    try {
+      const data = await submitHandler(formData);
+      if ("error" in data) return;
+      reset();
+      closeModal();
+    } catch (error) {
+      return;
+    }
   };
 
   const handleOpenChooseFile = () => {
@@ -99,14 +103,14 @@ const UserEditingModal = ({ type, user }: Props) => {
   };
 
   const handleDeleteUser = () => {
-    const deleteHandler = () =>
-      deleteUser({ userId: user?.id! })
-        .then(() => {
-          closeModal();
-        })
-        .catch(() => {
-          return;
-        });
+    const deleteHandler = async () => {
+      try {
+        await deleteUser({ userId: user?.id! });
+        closeModal();
+      } catch (error) {
+        return;
+      }
+    };
     showModal(MODALS.CONFIRM, {
       confirmHandler: deleteHandler,
       isLoading: deleteLoading,

@@ -72,6 +72,7 @@ const Seat = ({ seat, officeId }: Props) => {
       if (!seatRef?.current) return;
 
       await swapUsers({
+        officeId,
         firstSeatId,
         firstUserId,
         secondSeatId: seat.id,

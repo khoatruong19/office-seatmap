@@ -19,6 +19,7 @@ export type RemoveUserResponse = BaseResponse & {
 };
 
 export type SwapUsersRequest = {
+  officeId: number;
   firstSeatId: number;
   firstUserId: number;
   secondSeatId: number;

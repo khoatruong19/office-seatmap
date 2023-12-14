@@ -14,12 +14,13 @@ const ContextMenu = ({ seatId, setShowContext }: Props) => {
 
   useClickOutside(ref, () => setShowContext(false));
 
-  const handleRemoveUser = () => {
-    removeUser({ id: seatId })
-      .then(() => {
-        setShowContext(false);
-      })
-      .catch(() => {});
+  const handleRemoveUser = async () => {
+    try {
+      await removeUser({ id: seatId });
+      setShowContext(false);
+    } catch (error) {
+      return;
+    }
   };
 
   return (

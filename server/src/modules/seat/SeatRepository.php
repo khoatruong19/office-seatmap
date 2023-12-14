@@ -2,9 +2,9 @@
 declare( strict_types=1 );
 
 namespace modules\seat;
-use core\HttpStatus;
 use core\Repository;
 use shared\exceptions\ResponseException;
+use shared\helpers\FieldNotAllow;
 use shared\interfaces\IRepository;
 use PDO;
 
@@ -29,11 +29,7 @@ class SeatRepository extends Repository implements IRepository{
      */
     public function findOne(string $field, string $value): mixed
     {
-        $allowed_fields = ['label', 'id'];
-        if(!in_array($field, $allowed_fields)) {
-            throw new ResponseException(HttpStatus::$BAD_REQUEST,"Field is not allowed!");
-        }
-
+        FieldNotAllow::execute(['label', 'id'], $field);
         $sql = "SELECT * FROM seats WHERE ".$field." = :value limit 1";
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute([
@@ -52,11 +48,7 @@ class SeatRepository extends Repository implements IRepository{
      */
     public function findByOfficeId(string $field, string $value, int $office_id): mixed
     {
-        $allowed_fields = ['label', 'id'];
-        if(!in_array($field, $allowed_fields)) {
-            throw new ResponseException(HttpStatus::$BAD_REQUEST,"Field is not allowed!");
-        }
-
+        FieldNotAllow::execute(['label', 'id'], $field);
         $sql = "SELECT * FROM seats WHERE ".$field." = :value AND office_id = :office_id limit 1";
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute([
@@ -141,4 +133,5 @@ class SeatRepository extends Repository implements IRepository{
         $stmt->bindParam(':office_id', $office_id);
         return $stmt->execute();
     }
+
 }

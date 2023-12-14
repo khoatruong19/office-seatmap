@@ -58,13 +58,14 @@ const useEditingOfficeSeatmap = (props: Props) => {
   };
 
   const handleDeleteOffice = () => {
-    const confirmHandler = () => {
-      deleteOffice({ id: officeId })
-        .then(() => {
-          closeModal();
-          navigate(APP_ROUTES.HOME);
-        })
-        .catch(() => {});
+    const confirmHandler = async () => {
+      try {
+        await deleteOffice({ id: officeId });
+        closeModal();
+        navigate(APP_ROUTES.HOME);
+      } catch (error) {
+        return;
+      }
     };
 
     showModal(MODALS.CONFIRM, {
@@ -106,7 +107,7 @@ const useEditingOfficeSeatmap = (props: Props) => {
     }
   };
 
-  const handleSaveSeatmap = () => {
+  const handleSaveSeatmap = async () => {
     if (name.length > MAX_OFFICE_NAME_LENGTH) {
       toast.error(`Office's name must be no more than 100 characters`, {
         theme: "colored",
@@ -118,16 +119,19 @@ const useEditingOfficeSeatmap = (props: Props) => {
       });
       return;
     }
-    updateOffice({
-      id: officeId,
-      name,
-      visible,
-      seats,
-      blocks: JSON.stringify(blocks),
-      delete_seats: deletedCells,
-    })
-      .then(() => {})
-      .catch(() => {});
+
+    try {
+      await updateOffice({
+        id: officeId,
+        name,
+        visible,
+        seats,
+        blocks: JSON.stringify(blocks),
+        delete_seats: deletedCells,
+      });
+    } catch (error) {
+      return;
+    }
   };
 
   const handleSelectingCells = (e: MouseEvent) => {

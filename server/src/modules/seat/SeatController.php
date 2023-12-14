@@ -55,7 +55,6 @@ class SeatController extends Controller
     public function swapUsers(): void
     {
         $this->requestBodyValidation(require_once "validation/swapUsers.php");
-
         $raw_data = $this->request->getBody();
         $swap_users_from_two_seat_dto = SwapUsersFromTwoSeatsDto::fromArray($raw_data);
         $this->seatService->swapUsersFromTwoSeats($swap_users_from_two_seat_dto);

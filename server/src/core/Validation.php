@@ -3,9 +3,11 @@ declare( strict_types=1 );
 
 namespace core;
 
+use shared\helpers\ValidationErrorMessage;
+
 #[\AllowDynamicProperties]
 class Validation {
-    public array $patterns = array(
+    public array $patterns = [
         'uri'           => '[A-Za-z0-9-\/_?&=]+',
         'url'           => '[A-Za-z0-9-:.\/_?&=#]+',
         'alpha'         => '[\p{L}]+',
@@ -22,22 +24,22 @@ class Validation {
         'date_ymd'      => '[0-9]{4}\-[0-9]{1,2}\-[0-9]{1,2}',
         'email'         => '[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$',
         'bool'          => '/^(?:true|false)$/igm'
-    );
+    ];
 
     public array $errors = [];
 
     /**
-     * @param $name
+     * @param string $name
      * @return $this
      */
-    public function name($name): static
+    public function name(string $name): static
     {
         $this->name = $name;
         return $this;
     }
 
     /**
-     * @param $value
+     * @param mixed $value
      * @return $this
      */
     public function value(mixed $value): static
@@ -47,14 +49,14 @@ class Validation {
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @return $this
      */
-    public function pattern($name): static
+    public function pattern(string $name): static
     {
         $regex = '/^('.$this->patterns[$name].')$/u';
         if($this->value != '' && !preg_match($regex, $this->value)){
-            $this->errors[] = 'Field '.$this->name.' is not valid.';
+            $this->errors[] = ValidationErrorMessage::fieldIsNotValid($this->name);
         }
         return $this;
     }
@@ -67,7 +69,7 @@ class Validation {
     {
         $regex = '/^('.$pattern.')$/u';
         if($this->value != '' && !preg_match($regex, $this->value)){
-            $this->errors[] = 'Field %'.$this->name.'% is not valid.';
+            $this->errors[] = ValidationErrorMessage::fieldIsNotValid($this->name);
         }
         return $this;
     }
@@ -78,31 +80,31 @@ class Validation {
     public function required(): static
     {
         if(($this->value == '' || $this->value == null)){
-            $this->errors[] = 'Field %'.$this->name.'% is required.';
+            $this->errors[] = ValidationErrorMessage::fieldIsRequired($this->name);
         }
         return $this;
     }
 
     /**
-     * @param $length
+     * @param mixed $length
      * @return $this
      */
-    public function min($length): static
+    public function min(mixed $length): static
     {
-        if(strlen($this->value) > 0 && strlen($this->value) < $length){
-            $this->errors[] = 'Field %'.$this->name.'% has to be at least '.$length.' characters';
+        if(strlen($this->value) > 0 && strlen($this->value) < (int)$length){
+            $this->errors[] = ValidationErrorMessage::minLengthCharacters($this->name, (int)$length);
         }
         return $this;
     }
 
     /**
-     * @param $length
+     * @param mixed $length
      * @return $this
      */
-    public function max($length): static
+    public function max(mixed $length): static
     {
         if(strlen($this->value) > (int)$length){
-            $this->errors[] = 'Field %'.$this->name.'% has to be less than '.$length.' characters';
+            $this->errors[] = ValidationErrorMessage::maxLengthCharacters($this->name, (int)$length);
         }
         return $this;
     }
@@ -126,7 +128,7 @@ class Validation {
      */
     public function redundantFieldErrors(): array
     {
-        $this->errors[] = 'There are some redundant fields in the body!';
+        $this->errors[] = ValidationErrorMessage::redundantFields();
         return $this->errors;
     }
 
@@ -146,74 +148,66 @@ class Validation {
     }
 
     /**
-     * @param $value
+     * @param mixed $value
      * @return true|void
      */
-    public static function is_int($value){
+    public static function is_int(mixed $value){
         if(filter_var($value, FILTER_VALIDATE_INT)) return true;
     }
 
     /**
-     * @param $value
+     * @param mixed $value
      * @return true|void
      */
-    public static function is_float($value){
+    public static function is_float(mixed $value){
         if(filter_var($value, FILTER_VALIDATE_FLOAT)) return true;
     }
 
     /**
-     * @param $value
+     * @param mixed $value
      * @return true|void
      */
-    public static function is_alpha($value){
-        if(filter_var($value, FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => "/^[a-zA-Z]+$/")))) return true;
+    public static function is_alpha(mixed $value){
+        if(filter_var($value, FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => "/^[a-zA-Z]+$/"]])) return true;
     }
 
     /**
-     * @param $value
+     * @param mixed $value
      * @return true|void
      */
-    public static function is_alphanum($value){
-        if(filter_var($value, FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => "/^[a-zA-Z0-9]+$/")))) return true;
+    public static function is_alphanum(mixed $value){
+        if(filter_var($value, FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => "/^[a-zA-Z0-9]+$/"]])) return true;
     }
 
     /**
-     * @param $value
+     * @param mixed $value
      * @return true|void
      */
-    public static function is_url($value){
+    public static function is_url(mixed $value){
         if(filter_var($value, FILTER_VALIDATE_URL)) return true;
     }
 
     /**
-     * @param $value
+     * @param mixed $value
      * @return true|void
      */
-    public static function is_uri($value){
-        if(filter_var($value, FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => "/^[A-Za-z0-9-\/_]+$/")))) return true;
+    public static function is_uri(mixed $value){
+        if(filter_var($value, FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => "/^[A-Za-z0-9-\/_]+$/"]])) return true;
     }
 
     /**
-     * @param $value
+     * @param mixed $value
      * @return true|void
      */
-    public static function is_bool($value){
+    public static function is_bool(mixed $value){
         if(is_bool(filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE))) return true;
     }
 
     /**
-     * @param $value
+     * @param mixed $value
      * @return true|void
      */
-    public static function is_email($value){
+    public static function is_email(mixed $value){
         if(filter_var($value, FILTER_VALIDATE_EMAIL)) return true;
-    }
-
-    /**
-     * @return void
-     */
-    public function resetErrors()
-    {
-        $this->error = [];
     }
 }

@@ -21,13 +21,15 @@ const LoginForm = () => {
   });
   const [login, { isLoading }] = useLoginMutation();
 
-  const onSubmit: SubmitHandler<LoginSchemaType> = (value: LoginSchemaType) => {
-    login(value)
-      .unwrap()
-      .then(() => {
-        navigate(APP_ROUTES.HOME);
-      })
-      .catch(() => {});
+  const onSubmit: SubmitHandler<LoginSchemaType> = async (
+    value: LoginSchemaType
+  ) => {
+    try {
+      await login(value).unwrap();
+      navigate(APP_ROUTES.HOME);
+    } catch (error) {
+      return;
+    }
   };
 
   return (

@@ -38,7 +38,7 @@ const ProfileModal = () => {
     resolver: zodResolver(ProfileSchema),
   });
 
-  const onSubmit: SubmitHandler<ProfileSchemaType> = (
+  const onSubmit: SubmitHandler<ProfileSchemaType> = async (
     values: ProfileSchemaType
   ) => {
     if (!user) return;
@@ -48,9 +48,12 @@ const ProfileModal = () => {
     if (file) {
       resizeImage({ file }, async (resultBlob) => {
         formData.append("file", resultBlob);
-        upload({ userId: user.id, formData })
-          .then(() => setFile(null))
-          .catch(() => {});
+        try {
+          await upload({ userId: user.id, formData });
+          setFile(null);
+        } catch (error) {
+          return;
+        }
       });
     }
 
@@ -58,10 +61,14 @@ const ProfileModal = () => {
     for (const [key, value] of Object.entries(values)) {
       if (user[key as keyof UserType] != value) informationChanged = true;
     }
-    if (informationChanged)
-      update({ userId: user.id, ...values })
-        .then(() => !file && closeModal())
-        .catch(() => {});
+    if (informationChanged) {
+      try {
+        await update({ userId: user.id, ...values });
+        !file && closeModal();
+      } catch (error) {
+        return;
+      }
+    }
   };
 
   const handleOpenChooseFile = () => {

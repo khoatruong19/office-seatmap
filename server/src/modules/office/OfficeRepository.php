@@ -4,7 +4,9 @@ declare( strict_types=1 );
 namespace modules\office;
 use core\HttpStatus;
 use core\Repository;
+use shared\enums\RepositoryResponse;
 use shared\exceptions\ResponseException;
+use shared\helpers\FieldNotAllow;
 use shared\interfaces\IRepository;
 use PDO;
 
@@ -29,11 +31,7 @@ class OfficeRepository extends Repository implements IRepository{
      */
     public function findOne(string $field, string $value): mixed
     {
-        $allowed_fields = ['name', 'id'];
-        if(!in_array($field, $allowed_fields)) {
-            throw new ResponseException(HttpStatus::$BAD_REQUEST,"Field is not allowed!");
-        }
-
+//        FieldNotAllow::execute(['name', 'id'], $field);
         $sql = "SELECT * from offices WHERE ".$field." = :value ";
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute([

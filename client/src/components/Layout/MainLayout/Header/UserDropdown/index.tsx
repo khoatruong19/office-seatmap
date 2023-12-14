@@ -12,10 +12,13 @@ const UserDropdown = ({ close }: Props) => {
   const [logout] = useLogoutMutation();
   const { showModal } = useModalContext();
 
-  const handleLogout = () => {
-    logout(null)
-      .then(() => (window.location.pathname = APP_ROUTES.LOGIN))
-      .catch(() => {});
+  const handleLogout = async () => {
+    try {
+      await logout(null);
+      window.location.pathname = APP_ROUTES.LOGIN;
+    } catch (error) {
+      return;
+    }
   };
 
   const handleOpenProfileModal = () => {

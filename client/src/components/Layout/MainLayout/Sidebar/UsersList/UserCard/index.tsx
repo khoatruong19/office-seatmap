@@ -36,14 +36,14 @@ const UserCard = ({ user }: Props) => {
   return (
     <div
       onClick={handleOpenUpdateModal}
+      draggable
+      onDragStart={(e) => handleOnDrag(e, user.id)}
       className="w-full h-[70px] px-2 flex items-center gap-2 hover-opacity bg-white rounded-2xl mb-1"
     >
       <img
-        draggable
         src={user?.avatar ?? DefaultAvatar}
         className="w-12 h-12 rounded-full object-cover shadow-sm"
         alt=""
-        onDragStart={(e) => handleOnDrag(e, user.id)}
       />
       <div>
         <h3 className="font-semibold truncate max-w-[260px] text-secondary">

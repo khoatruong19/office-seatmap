@@ -19,10 +19,13 @@ const OfficeCard = ({ office }: Props) => {
   const [deleteOffice] = useDeleteOfficeMutation();
 
   const handleDeleteOffice = () => {
-    const confirmHandler = () => {
-      deleteOffice({ id: office.id })
-        .then(() => closeModal())
-        .catch(() => {});
+    const confirmHandler = async () => {
+      try {
+        await deleteOffice({ id: office.id });
+        closeModal();
+      } catch (error) {
+        return;
+      }
     };
 
     showModal(MODALS.CONFIRM, {

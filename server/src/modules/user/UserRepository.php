@@ -5,6 +5,7 @@ namespace modules\user;
 use core\HttpStatus;
 use core\Repository;
 use shared\exceptions\ResponseException;
+use shared\helpers\FieldNotAllow;
 use shared\interfaces\IRepository;
 use PDO;
 
@@ -29,12 +30,8 @@ class UserRepository extends Repository implements IRepository{
      */
     public function findOne(string $field, string $value): mixed
     {
-        $allowed_fields = ['username', 'email', 'id'];
-        if(!in_array($field, $allowed_fields)) {
-            throw new ResponseException(HttpStatus::$BAD_REQUEST,"Field is not allowed!");
-        }
-
-        $sql = "SELECT * FROM users WHERE ".$field." = :value limit 1";
+        FieldNotAllow::execute(['username', 'email', 'id'], $field);
+        $sql =  "SELECT * FROM users WHERE ".$field." = :value limit 1";
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute([
             "value" => $value,
