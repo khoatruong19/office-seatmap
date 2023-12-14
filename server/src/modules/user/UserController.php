@@ -23,20 +23,19 @@ class UserController extends Controller
     }
 
     /**
-     * @return null
-     * @throws ResponseException
+     * @return void
      */
-    public function findAll()
+    public function findAll(): void
     {
         $users = $this->userService->findAll();
         $this->response->response(HttpStatus::$OK, UserResponse::GET_ALL_SUCCESS->value, null, $users);
     }
 
     /**
-     * @return null
+     * @return void
      * @throws ResponseException
      */
-    public function create()
+    public function create(): void
     {
         $this->requestBodyValidation(require_once "validation/create.php");
         $raw_data = $this->request->getBody();
@@ -46,10 +45,10 @@ class UserController extends Controller
     }
 
     /**
-     * @return null
+     * @return void
      * @throws ResponseException
      */
-    public function update()
+    public function update(): void
     {
         $this->requestBodyValidation(require_once "validation/update.php");
         $user_id = $this->request->getParam(ParamKeys::USER_ID->value);
@@ -60,10 +59,10 @@ class UserController extends Controller
     }
 
     /**
-     * @return null
+     * @return void
      * @throws ResponseException
      */
-    public function updateProfile()
+    public function updateProfile(): void
     {
         $this->requestBodyValidation(require_once "validation/updateProfile.php");
         $user_id = $this->request->getParam(ParamKeys::USER_ID->value);
@@ -74,10 +73,10 @@ class UserController extends Controller
     }
 
     /**
-     * @return null
+     * @return void
      * @throws ResponseException
      */
-    public function delete()
+    public function delete(): void
     {
         $user_id = $this->request->getParam(ParamKeys::USER_ID->value);
         $this->userService->delete($user_id);
@@ -85,10 +84,10 @@ class UserController extends Controller
     }
 
     /**
-     * @return null
+     * @return void
      * @throws ResponseException
      */
-    public function uploadAvatar()
+    public function uploadAvatar(): void
     {
         if (!isset($_FILES["file"]))
         {

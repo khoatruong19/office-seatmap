@@ -81,10 +81,10 @@ class OfficeController extends Controller
     }
 
     /**
-     * @return null
+     * @return void
      * @throws ResponseException
      */
-    public function delete()
+    public function delete(): void
     {
         $user_id = $this->request->getParam(ParamKeys::OFFICE_ID->value);
         $this->officeService->delete($user_id);

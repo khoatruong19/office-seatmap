@@ -83,6 +83,10 @@ class SeatRepository extends Repository implements IRepository{
         return $result ?? null;
     }
 
+    /**
+     * @param string $office_id
+     * @return bool|array
+     */
     public function findAllByOfficeId(string $office_id): bool|array
     {
         $sql = "SELECT seats.label, seats.position, seats.id, users.id as userId, users.avatar, users.role, users.full_name FROM 
@@ -124,6 +128,11 @@ class SeatRepository extends Repository implements IRepository{
         return $stmt->execute();
     }
 
+    /**
+     * @param string $label
+     * @param string $office_id
+     * @return bool
+     */
     public function deleteByLabel(string $label, string $office_id): bool
     {
         $sql = "DELETE FROM seats WHERE label = :label AND office_id = :office_id";

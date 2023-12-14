@@ -116,6 +116,12 @@ class UserService
         return $data;
     }
 
+    /**
+     * @param string $user_id
+     * @param UpdateProfileDto $update_profile_dto
+     * @return array
+     * @throws ResponseException
+     */
     public function updateProfile(string $user_id, UpdateProfileDto $update_profile_dto): array
     {
         $user = $this->userRepository->findOne("id", $user_id);
@@ -166,7 +172,13 @@ class UserService
         return $upload_avatar_url;
     }
 
-    public function uploadAndGetFileUrl(string $public_id){
+    /**
+     * @param string $public_id
+     * @return false|mixed|null
+     * @throws ResponseException
+     */
+    public function uploadAndGetFileUrl(string $public_id): mixed
+    {
         $file = $_FILES['file'] ?? null;
         if(!$file) return null;
 

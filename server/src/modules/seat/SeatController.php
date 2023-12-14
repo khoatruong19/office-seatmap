@@ -48,6 +48,10 @@ class SeatController extends Controller
         $this->response->response(HttpStatus::$OK, SeatResponse::REMOVE_USER_SUCCESS->value , null, $seat_id);
     }
 
+    /**
+     * @return void
+     * @throws ResponseException
+     */
     public function swapUsers(): void
     {
         $this->requestBodyValidation(require_once "validation/swapUsers.php");

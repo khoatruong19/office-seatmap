@@ -65,7 +65,6 @@ class AuthController extends Controller
 
     /**
      * @return void
-     * @throws ResponseException
      */
     public function logout(): void
     {

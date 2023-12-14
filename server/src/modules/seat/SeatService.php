@@ -38,7 +38,8 @@ class SeatService
      * @param SetUserToSeatDto $set_user_to_seat_dto
      * @return bool
      */
-    public function setUserToSeat(SetUserToSeatDto $set_user_to_seat_dto){
+    public function setUserToSeat(SetUserToSeatDto $set_user_to_seat_dto): bool
+    {
         $seatUsedByUserId = $this->seatRepository->findByUserId($set_user_to_seat_dto->getUserId(), $set_user_to_seat_dto->getOfficeId());
         if($seatUsedByUserId){
             $this->removeUserFromSeat($seatUsedByUserId['id']);
@@ -50,11 +51,18 @@ class SeatService
      * @param int $seat_id
      * @return bool
      */
-    public function removeUserFromSeat(int $seat_id){
+    public function removeUserFromSeat(int $seat_id): bool
+    {
         return $this->seatRepository->updateOne(strval($seat_id), ["user_id" => null, "available" => 1]);
     }
 
-    public function deleteSeatByLabel(string $label, string $office_id){
+    /**
+     * @param string $label
+     * @param string $office_id
+     * @return bool
+     */
+    public function deleteSeatByLabel(string $label, string $office_id): bool
+    {
         return $this->seatRepository->deleteByLabel($label, $office_id);
     }
 
@@ -62,7 +70,8 @@ class SeatService
      * @param SwapUsersFromTwoSeatsDto $swap_users_from_two_seat_dto
      * @return void
      */
-    public function swapUsersFromTwoSeats(SwapUsersFromTwoSeatsDto $swap_users_from_two_seat_dto){
+    public function swapUsersFromTwoSeats(SwapUsersFromTwoSeatsDto $swap_users_from_two_seat_dto): void
+    {
        $this->seatRepository->updateOne(strval($swap_users_from_two_seat_dto->getFirstSeatId()), ["user_id" => $swap_users_from_two_seat_dto->getSecondUserId()]);
        $this->seatRepository->updateOne(strval($swap_users_from_two_seat_dto->getSecondSeatId()), ["user_id" => $swap_users_from_two_seat_dto->getFirstUserId()]);
     }
