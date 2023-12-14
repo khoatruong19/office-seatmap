@@ -37,22 +37,17 @@ const Seat = ({ seat, officeId }: Props) => {
 
   const handleOnDrop = async (e: React.DragEvent) => {
     const userId = e.dataTransfer.getData(DRAG_EVENTS.USER_ID);
-
-    if (userId) {
-      try {
+    const seatInfoInString = e.dataTransfer.getData(DRAG_EVENTS.SEAT_INFO);
+    try {
+      if (userId) {
         await setUser({
           id: seat.id,
           user_id: Number(userId),
           office_id: officeId,
         });
-      } catch (error) {
         return;
       }
-      return;
-    }
 
-    const seatInfoInString = e.dataTransfer.getData(DRAG_EVENTS.SEAT_INFO);
-    try {
       const { firstSeatId, firstUserId } = JSON.parse(seatInfoInString) as {
         firstSeatId: number;
         firstUserId: number;
