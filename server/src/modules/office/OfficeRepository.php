@@ -49,7 +49,7 @@ class OfficeRepository extends Repository implements IRepository{
      */
     public function findAll(): bool|array
     {
-        $sql = "SELECT * FROM offices ORDER BY created_at DESC";
+        $sql = "SELECT id, name, visible, created_at, updated_at FROM offices  ORDER BY created_at DESC";
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -60,7 +60,7 @@ class OfficeRepository extends Repository implements IRepository{
      */
     public function findAllVisibleOffices(): bool|array
     {
-        $sql = "SELECT * FROM offices WHERE visible=1 ORDER BY created_at DESC";
+        $sql = "SELECT id, name, visible, created_at, updated_at FROM offices WHERE visible=1 ORDER BY created_at DESC";
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

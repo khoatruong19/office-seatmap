@@ -1,0 +1,1 @@
+{"version":1,"defects":{"__test__\\AuthServiceTest::testLogin":8,"__test__\\AuthServiceTest::testRegister":5,"__test__\\AuthServiceTest::testLogin_success":7},"times":{"__test__\\AuthServiceTest::testLogin":0.314,"__test__\\AuthServiceTest::testRegister":0,"__test__\\AuthServiceTest::testLogin_success":0.244}}

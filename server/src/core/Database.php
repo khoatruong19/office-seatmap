@@ -29,6 +29,18 @@ class Database
         $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
+    /**
+     * @param $nameFile
+     * @return void
+     */
+    public function runMigration($nameFile) {
+        $sql = file_get_contents( dirname(__DIR__)."/../shared/schemas/".$nameFile);
+        $this->connection->exec($sql);
+    }
+
+    /**
+     * @return PDO
+     */
     public function getConnection(): PDO
     {
         return $this->connection;

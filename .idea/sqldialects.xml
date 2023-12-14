@@ -3,5 +3,8 @@
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/server/src/modules/office/OfficeRepository.php" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/server/src/modules/seat/SeatRepository.php" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/server/src/shared/schemas/offices_create_table.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/server/src/shared/schemas/seats_create_table.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/server/src/shared/schemas/users_create_table.sql" dialect="MySQL" />
   </component>
 </project>

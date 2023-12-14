@@ -85,6 +85,7 @@ class UserService
         $user = $this->userRepository->findOne("id", $user_id);
         if(!$user) throw new ResponseException(HttpStatus::$UNAUTHORIZED, AuthResponse::UNAUTHORIZED->value);
 
+        unset($user['password']);
         return array(
             "user" => $user,
         );

@@ -1,21 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import BackToHomeButton from "@/components/Layout/BackButton";
+import useEditingOfficeSeatmap from "@/hooks/useEditingOfficeSeatmap";
+import OfficeTitleInput from "@components/OfficeEditing/OfficeTitleInput";
 import { SEATMAP_COLUMNS_PER_ROW, SEATMAP_ROWS } from "@config/seatmapSize";
 import { cn } from "@lib/clsx";
-import { useModalContext } from "@providers/ModalProvider";
-import { MODALS } from "@providers/ModalProvider/constants";
 import { BlockType, CellType } from "@schema/types";
 import Cell from "./Cell";
-import {
-  useDeleteOfficeMutation,
-  useUpdateOfficeMutation,
-} from "@stores/office/service";
 import Toolbar from "./Toolbar";
-import { useNavigate } from "react-router";
-import { APP_ROUTES } from "@config/routes";
-import OfficeTitleInput from "@components/OfficeEditing/OfficeTitleInput";
-import { toast } from "react-toastify";
-import BackToHomeButton from "@/components/Layout/BackButton";
-import { v4 as uuid } from "uuid";
 
 type Props = {
   officeName: string;
@@ -32,145 +22,29 @@ const Seatmap = ({
   cells,
   isVisible,
 }: Props) => {
-  const [done, setDone] = useState(false);
-  const [selectedCells, setSelectedCells] = useState<CellType[]>([]);
-  const [blocks, setBlocks] = useState<BlockType[]>(initBlocks);
-  const [seats, setSeats] = useState<CellType[]>(cells);
-  const [lastSelectingCell, setLastSelectingCell] = useState<CellType | null>(
-    null
-  );
-  const [visible, setVisible] = useState(isVisible);
-  const [name, setName] = useState(officeName);
-  const [deletedCells, setDeletedCells] = useState<CellType[]>([]);
-
-  const navigate = useNavigate();
-
-  const { showModal, closeModal } = useModalContext();
-  const [updateOffice] = useUpdateOfficeMutation();
-  const [deleteOffice] = useDeleteOfficeMutation();
-
-  useEffect(() => {
-    const selectingCells = (e: MouseEvent) => {
-      if (!e.target) return;
-
-      if (!e.shiftKey) return;
-
-      const cellId = (e.target as HTMLDivElement).id;
-      if (!!!cellId.length) return;
-
-      const newCellPosition = Number(cellId.split("seat")[1]);
-      if (lastSelectingCell) {
-        const lastCellPosition = lastSelectingCell.position;
-        if (
-          Math.abs(newCellPosition - lastCellPosition) !== 1 &&
-          Math.abs(newCellPosition - lastCellPosition) !==
-            SEATMAP_COLUMNS_PER_ROW
-        )
-          return;
-      }
-
-      setLastSelectingCell({ position: newCellPosition, label: cellId });
-      const tempCells = [...selectedCells];
-      const existingCellIndex = [...seats, ...selectedCells].findIndex(
-        (item) => item.position === newCellPosition
-      );
-      if (existingCellIndex >= 0) return;
-
-      tempCells.push({ label: cellId, position: newCellPosition });
-      setSelectedCells(tempCells);
-    };
-
-    const doneSelectingCells = (event: KeyboardEvent) => {
-      if (event.keyCode === 16 && selectedCells.length > 0) {
-        setDone(true);
-        setLastSelectingCell(null);
-      }
-    };
-    window.addEventListener("mouseover", selectingCells);
-    window.addEventListener("keyup", doneSelectingCells);
-
-    return () => {
-      window.removeEventListener("mouseover", selectingCells);
-      window.removeEventListener("keyup", doneSelectingCells);
-    };
-  }, [selectedCells, done, lastSelectingCell]);
-
-  const handleToggleVisible = () => setVisible((prev) => !prev);
-
-  const handleChangeName = (value: string) => setName(value);
-
-  const handleDeleteOffice = () => {
-    const confirmHandler = () => {
-      deleteOffice({ id: officeId })
-        .then(() => {
-          closeModal();
-          navigate(APP_ROUTES.HOME);
-        })
-        .catch(() => {});
-    };
-
-    showModal(MODALS.CONFIRM, {
-      text: "Are you sure you want to delete this office?",
-      confirmHandler,
-    });
-  };
-
-  const handleDeleteBlock = (blockId: string) => {
-    const confirmHandler = () => {
-      const tempBlocks = [...blocks].filter((block) => block.id !== blockId);
-      setBlocks(tempBlocks);
-      closeModal();
-    };
-    showModal(MODALS.CONFIRM, {
-      text: "Are you sure you want to delete this block?",
-      confirmHandler,
-    });
-  };
-
-  const handleDeleteCell = (cell: CellType) => {
-    const tempCells = [...seats].filter((item) => item.label !== cell.label);
-    if (
-      !deletedCells.find((item) => item.label === cell.label) &&
-      cells.find((item) => item.label === cell.label)
-    ) {
-      setDeletedCells((prev) => [...prev, cell]);
-    }
-
-    setSeats(tempCells);
-  };
-
-  const handleCheckUnDeleteCell = (cell: CellType) => {
-    if (deletedCells.find((item) => item.label === cell.label)) {
-      const tempCells = deletedCells.filter(
-        (item) => item.label !== cell.label
-      );
-      setDeletedCells(tempCells);
-    }
-  };
-
-  const handleSaveSeatmap = () => {
-    if (name.length > 100) {
-      toast.error(`Office's name must be no more than 100 characters`, {
-        theme: "colored",
-        style: {
-          fontWeight: 600,
-          backgroundColor: "#FF8080",
-          color: "#fff",
-        },
-      });
-      return;
-    }
-    updateOffice({
-      id: officeId,
-      name,
-      visible,
-      seats,
-      blocks: JSON.stringify(blocks),
-      delete_seats: deletedCells,
-    })
-      .then(() => {})
-      .catch(() => {});
-  };
+  const {
+    name,
+    blockCells,
+    blocks,
+    done,
+    seats,
+    selectedCells,
+    visible,
+    handleAddSeat,
+    handleDeleteCell,
+    handleToggleVisible,
+    handleCheckUnDeleteCell,
+    handleChangeName,
+    handleDeleteOffice,
+    handleDeleteBlock,
+    handleSaveSeatmap,
+  } = useEditingOfficeSeatmap({
+    cells,
+    initBlocks,
+    isVisible,
+    officeId,
+    officeName,
+  });
 
   const renderBlockName = (name: string) => (
     <span
@@ -270,33 +144,6 @@ const Seatmap = ({
     );
   };
 
-  const blockCells: CellType[] = useMemo(() => {
-    const cells = ([] as CellType[]).concat(
-      ...blocks.map((block) => [...block.cells])
-    );
-
-    return cells;
-  }, [blocks]);
-
-  useEffect(() => {
-    if (done) {
-      showModal(MODALS.ADD_BLOCK, {
-        confirmHandler: (name: string) => {
-          setBlocks((prev) => [
-            ...prev,
-            { name, cells: selectedCells, id: uuid() },
-          ]);
-          setSelectedCells([]);
-          closeModal();
-        },
-        cancelHandler: () => {
-          setSelectedCells([]);
-        },
-      });
-      setDone(false);
-    }
-  }, [done]);
-
   return (
     <div className="relative z-1 max-w-7xl w-full mx-auto lg:px-32 py-10 rounded-2xl ">
       <OfficeTitleInput title={name} onChange={handleChangeName} />
@@ -321,19 +168,18 @@ const Seatmap = ({
                     {blocks.map((block) => renderBlocks(block, idx))}
                   </div>
                 );
-              else
-                return (
-                  <Cell
-                    deleteCell={handleDeleteCell}
-                    checkUnDeleteCell={handleCheckUnDeleteCell}
-                    key={Math.random() * 4}
-                    done={done}
-                    position={idx}
-                    seats={seats}
-                    selectedCells={selectedCells}
-                    setSeats={setSeats}
-                  />
-                );
+              return (
+                <Cell
+                  deleteCell={handleDeleteCell}
+                  checkUnDeleteCell={handleCheckUnDeleteCell}
+                  key={Math.random() * 4}
+                  done={done}
+                  position={idx}
+                  seats={seats}
+                  selectedCells={selectedCells}
+                  addSeat={handleAddSeat}
+                />
+              );
             })}
         </div>
       </div>

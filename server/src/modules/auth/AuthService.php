@@ -16,7 +16,7 @@ use shared\exceptions\ResponseException;
 
 class AuthService
 {
-    public function __construct(private readonly UserService $userService, private readonly JwtService $jwtService)
+    public function __construct(private UserService $userService, private JwtService $jwtService)
     {
     }
 

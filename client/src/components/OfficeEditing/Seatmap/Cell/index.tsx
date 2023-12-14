@@ -8,7 +8,7 @@ type Props = {
   done: boolean;
   seats: CellType[];
   selectedCells: CellType[];
-  setSeats: (seats: CellType[]) => void;
+  addSeat: (seats: CellType) => void;
   deleteCell: (seat: CellType) => void;
   checkUnDeleteCell: (seat: CellType) => void;
 };
@@ -18,7 +18,7 @@ const Cell = ({
   done,
   seats,
   selectedCells,
-  setSeats,
+  addSeat,
   deleteCell,
   checkUnDeleteCell,
 }: Props) => {
@@ -38,13 +38,14 @@ const Cell = ({
     }
 
     if (!isFound && !selectedCells.length) {
-      setSeats([...seats, { label: rowLabel + rowIndex, position }]);
+      addSeat({ label: rowLabel + rowIndex, position });
       checkUnDeleteCell({ label, position });
     }
   };
 
   return (
     <div
+      data-testid={"office-cell"}
       id={"seat" + position}
       className={cn(
         "h-12 w-12 border border-secondary z-20 rounded-md flex items-center justify-center",

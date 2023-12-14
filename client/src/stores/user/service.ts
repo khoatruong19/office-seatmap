@@ -17,9 +17,11 @@ import {
   DeleteUserRequest,
 } from "./types";
 import { setUsers } from "./slice";
+import { officeApi } from "../office/service";
 
 const TAGS = {
   USERS: "users",
+  OFFICE: "office",
 };
 
 export const userApi = createApi({
@@ -126,9 +128,13 @@ export const userApi = createApi({
         url: `/${userId}`,
         method: "DELETE",
       }),
-      invalidatesTags: [TAGS.USERS],
-      onQueryStarted(_, { queryFulfilled }) {
-        queryFulfilled.then(() => {}).catch(() => {});
+      invalidatesTags: [TAGS.USERS, TAGS.OFFICE],
+      onQueryStarted(_, { queryFulfilled, dispatch }) {
+        queryFulfilled
+          .then(() => {
+            dispatch(officeApi.util.invalidateTags([TAGS.OFFICE]));
+          })
+          .catch(() => {});
       },
     }),
   }),
