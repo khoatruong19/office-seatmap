@@ -59,7 +59,6 @@ class AuthController extends Controller
     {
         $user_id = $this->request->getValue(StoreKeys::USER_ID->value);
         $user = $this->userService->getCurrentUser(strval($user_id));
-
         $this->response->response(HttpStatus::$OK, AuthResponse::ME_SUCCESS->value, null, $user);
     }
 

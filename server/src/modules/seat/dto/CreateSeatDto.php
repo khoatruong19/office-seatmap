@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace modules\seat\dto;
 use shared\interfaces\IDto;
 
-class CreateSeatDto implements IDto
+class   CreateSeatDto implements IDto
 {
     private string $label;
     private int $position;

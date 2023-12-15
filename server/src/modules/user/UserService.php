@@ -4,20 +4,16 @@ declare(strict_types=1);
 namespace modules\user;
 
 use core\HttpStatus;
-use modules\auth\JwtService;
 use modules\cloudinary\CloudinaryService;
 use modules\user\dto\CreateUserDto;
 use modules\user\dto\UpdateProfileDto;
 use modules\user\dto\UpdateUserDto;
-use shared\enums\AuthResponse;
-use shared\enums\CloudinaryResponse;
 use shared\enums\UserResponse;
-use shared\enums\UserRole;
 use shared\exceptions\ResponseException;
 
 class UserService
 {
-    public function __construct(private readonly UserRepository    $userRepository, private readonly JwtService $jwtService,
+    public function __construct(private readonly UserRepository $userRepository,
                                 private readonly CloudinaryService $cloudinaryService)
     {
     }
@@ -27,7 +23,7 @@ class UserService
      * @return mixed
      * @throws ResponseException
      */
-    private function checkUserExists(string $user_id): mixed{
+    public function checkUserExists(string $user_id): mixed{
         $user = $this->userRepository->findOne("id", $user_id);
         if(!$user) throw new ResponseException(HttpStatus::$BAD_REQUEST, UserResponse::NOT_FOUND->value);
 
@@ -39,7 +35,7 @@ class UserService
      * @return void
      * @throws ResponseException
      */
-    private function checkEmailExists(string $email): void{
+    public function checkEmailExists(string $email): void{
         $existing_email = $this->userRepository->findOne("email", $email);
         if($existing_email) {
             throw new ResponseException(HttpStatus::$BAD_REQUEST, UserResponse::EMAIL_EXISTS->value);
@@ -49,11 +45,11 @@ class UserService
     /**
      * @param string $public_id
      * @param UserEntity $user_entity
-     * @return void
+     * @return bool
      * @throws ResponseException
      */
-    private function uploadAndSetAvatarUrl(string $public_id, UserEntity &$user_entity): void{
-        $upload_avatar_url = $this->uploadAndGetFileUrl( $public_id);
+    public function uploadAndSetAvatarUrl(string $public_id, UserEntity &$user_entity): bool{
+        $upload_avatar_url = $this->uploadAndGetFileUrl($public_id);
         if($upload_avatar_url){
             $user_entity->setAvatar($upload_avatar_url);
         }
@@ -104,9 +100,9 @@ class UserService
     {
         $user = $this->checkUserExists($user_id);
         unset($user['password']);
-        return array(
-            "user" => $user,
-        );
+        return [
+            "user" => $user
+        ];
     }
 
     /**
@@ -140,7 +136,7 @@ class UserService
         $user_entity = new UserEntity($user['email'], $update_profile_dto->getFullName(), $user['password'], $user['role'], $user['avatar']);
         $data = $user_entity->toArray();
         $is_user_updated = $this->userRepository->updateOne($user_id, $user_entity->toArray());
-        if(!$is_user_updated) throw new ResponseException(HttpStatus::$INTERNAL_SERVER_ERROR, UserResponse::UPDATE_USER_FAIL->value);
+        if(!$is_user_updated) throw new ResponseException(HttpStatus::$INTERNAL_SERVER_ERROR, UserResponse::UPDATE_PROFILE_FAIL->value);
 
         unset($data['password']);
         return $data;
