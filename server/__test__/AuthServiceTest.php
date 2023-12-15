@@ -19,11 +19,12 @@ class AuthServiceTest extends TestCase
     private AuthService $authService;
     private MockObject $userServiceMock;
     private MockObject $jwtServiceMock;
+
     public function setUp(): void
     {
         parent::setUp();
-        $this->userServiceMock= $this->createMock(UserService::class);
-        $this->jwtServiceMock= $this->createMock(JwtService::class);
+        $this->userServiceMock = $this->createMock(UserService::class);
+        $this->jwtServiceMock = $this->createMock(JwtService::class);
         $this->authService = new AuthService($this->userServiceMock, $this->jwtServiceMock);
     }
 
@@ -49,15 +50,15 @@ class AuthServiceTest extends TestCase
                 "avatar" => "sdjkfgsjdkf",
                 "created_at" => "sdfjlsdf",
                 "updated_at" => "ksdklfhds"
-             ],
+            ],
             "accessToken" => $access_token
         ];
         $this->userServiceMock->expects($this->once())
-                            ->method("findOne")
-                            ->willReturn($user_data);
+            ->method("findOne")
+            ->willReturn($user_data);
         $this->jwtServiceMock->expects($this->once())
-                            ->method("generateToken")
-                            ->willReturn($access_token);
+            ->method("generateToken")
+            ->willReturn($access_token);
         $login_user_dto = LoginUserDto::fromArray([
             "email" => "test@gmail.com",
             "password" => "123456tuna"
@@ -65,14 +66,14 @@ class AuthServiceTest extends TestCase
 
         $result = $this->authService->login($login_user_dto);
 
-        $this->assertEquals($expected_result, $result );
+        $this->assertEquals($expected_result, $result);
     }
 
     public function testLoginWithInvalidEmail()
     {
         $this->userServiceMock->expects($this->once())
-                            ->method("findOne")
-                            ->willReturn(null);
+            ->method("findOne")
+            ->willReturn(null);
         $login_user_dto = LoginUserDto::fromArray([
             "email" => "test@gmail.com",
             "password" => "123456tuna"
@@ -89,8 +90,8 @@ class AuthServiceTest extends TestCase
         $password = "123456tuna";
         $hashed_password = password_hash($password, PASSWORD_BCRYPT);
         $this->userServiceMock->expects($this->once())
-                            ->method("findOne")
-                            ->willReturn(["email" => "email", "password" => $hashed_password]);
+            ->method("findOne")
+            ->willReturn(["email" => "email", "password" => $hashed_password]);
         $login_user_dto = LoginUserDto::fromArray([
             "email" => "test@gmail.com",
             "password" => "1234565tuna"
@@ -107,11 +108,11 @@ class AuthServiceTest extends TestCase
         $password = "123456tuna";
         $hashed_password = password_hash($password, PASSWORD_BCRYPT);
         $this->userServiceMock->expects($this->once())
-                            ->method("findOne")
-                            ->willReturn(["id" => 1, "role" => "admin", "password" => $hashed_password]);
+            ->method("findOne")
+            ->willReturn(["id" => 1, "role" => "admin", "password" => $hashed_password]);
         $login_user_dto = LoginUserDto::fromArray([
-        "email" => "test@gmail.com",
-        "password" => "123456tuna"
+            "email" => "test@gmail.com",
+            "password" => "123456tuna"
         ]);
 
         $result = $this->authService->login($login_user_dto);
@@ -122,8 +123,8 @@ class AuthServiceTest extends TestCase
     public function testRegisterFailWithExistingEmail()
     {
         $this->userServiceMock->expects($this->once())
-                            ->method("create")
-                            ->willThrowException(new ResponseException(HttpStatus::$BAD_REQUEST, UserResponse::EMAIL_EXISTS->value));
+            ->method("create")
+            ->willThrowException(new ResponseException(HttpStatus::$BAD_REQUEST, UserResponse::EMAIL_EXISTS->value));
         $register_user_dto = RegisterUserDto::fromArray([
             "email" => "test@gmail.com",
             "full_name" => "afdkf",
@@ -134,14 +135,13 @@ class AuthServiceTest extends TestCase
         $this->expectExceptionMessage(UserResponse::EMAIL_EXISTS->value);
 
         $this->authService->register($register_user_dto);
-
     }
 
     public function testRegisterSuccessWithValidEmail()
     {
         $this->userServiceMock->expects($this->once())
-                            ->method("create")
-                            ->willReturn(["id" => 2]);
+            ->method("create")
+            ->willReturn(["id" => 2]);
         $register_user_dto = RegisterUserDto::fromArray([
             "email" => "test@gmail.com",
             "full_name" => "afdkf",
@@ -149,6 +149,7 @@ class AuthServiceTest extends TestCase
         ]);
 
         $result = $this->authService->register($register_user_dto);
+        
         $this->assertEquals($result, ["id" => 2]);
     }
 }

@@ -39,7 +39,7 @@ class SeatService
      * @return mixed
      * @throws ResponseException
      */
-    private function checkUserExists(string $user_id): mixed{
+    public function checkUserExists(string $user_id): mixed{
         $user = $this->userRepository->findOne("id", $user_id);
         if(!$user) throw new ResponseException(HttpStatus::$BAD_REQUEST, UserResponse::NOT_FOUND->value);
 

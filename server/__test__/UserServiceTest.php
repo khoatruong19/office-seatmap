@@ -3,7 +3,6 @@
 namespace __test__;
 
 use core\HttpStatus;
-use GuzzleHttp\Psr7\UploadedFile;
 use modules\cloudinary\CloudinaryService;
 use modules\user\dto\CreateUserDto;
 use modules\user\dto\UpdateProfileDto;
@@ -24,27 +23,29 @@ class UserServiceTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->cloudinaryServiceMock= $this->createMock(CloudinaryService::class);
-        $this->userRepositoryMock= $this->createMock(UserRepository::class);
+        $this->cloudinaryServiceMock = $this->createMock(CloudinaryService::class);
+        $this->userRepositoryMock = $this->createMock(UserRepository::class);
         $this->userService = new UserService($this->userRepositoryMock, $this->cloudinaryServiceMock);
     }
 
-    public function testCheckUserExistsReturnValue(){
+    public function testCheckUserExistsReturnValue()
+    {
         $user_id = 2;
         $this->userRepositoryMock->expects($this->once())
-                                ->method("findOne")
-                                ->willReturn(["id" => 2]);
+            ->method("findOne")
+            ->willReturn(["id" => 2]);
 
         $result = $this->userService->checkUserExists(strval($user_id));
 
         $this->assertEquals($result['id'], $user_id);
     }
 
-    public function testCheckUserExistsThrowError(){
+    public function testCheckUserExistsThrowError()
+    {
         $user_id = 2;
         $this->userRepositoryMock->expects($this->once())
-                                ->method("findOne")
-                                ->willReturn(null);
+            ->method("findOne")
+            ->willReturn(null);
 
         $this->expectException(ResponseException::class);
         $this->expectExceptionMessage(UserResponse::NOT_FOUND->value);
@@ -52,22 +53,24 @@ class UserServiceTest extends TestCase
         $this->userService->checkUserExists(strval($user_id));
     }
 
-    public function testCheckEmailExistsNotReturnValue(){
+    public function testCheckEmailExistsNotReturnValue()
+    {
         $email = "sdjksdh@gmail.com";
         $this->userRepositoryMock->expects($this->once())
-                                ->method("findOne")
-                                ->willReturn(null);
+            ->method("findOne")
+            ->willReturn(null);
 
         $result = $this->userService->checkEmailExists($email);
 
         $this->assertEmpty($result);
     }
 
-    public function testCheckEmailExistsThrowError(){
+    public function testCheckEmailExistsThrowError()
+    {
         $email = "sdjksdh@gmail.com";
         $this->userRepositoryMock->expects($this->once())
-                                ->method("findOne")
-                                ->willReturn(["email" => $email]);
+            ->method("findOne")
+            ->willReturn(["email" => $email]);
 
         $this->expectException(ResponseException::class);
         $this->expectExceptionMessage(UserResponse::EMAIL_EXISTS->value);
@@ -75,7 +78,8 @@ class UserServiceTest extends TestCase
         $this->userService->checkEmailExists($email);
     }
 
-    public function testCreateSuccess(){
+    public function testCreateSuccess()
+    {
         $this->userRepositoryMock->expects($this->once())
             ->method("create")
             ->willReturn("2");
@@ -86,14 +90,17 @@ class UserServiceTest extends TestCase
         $this->userService->__construct($this->userRepositoryMock, $this->cloudinaryServiceMock);
         $this->userService->expects($this->once())->method("checkEmailExists");
         $this->userService->expects($this->once())->method("uploadAndSetAvatarUrl");
-        $create_user_dto = CreateUserDto::fromArray(["email" => "email", "full_name" => "full_name", "password" => "password", "role" => "admin"]);
+        $create_user_dto = CreateUserDto::fromArray(
+            ["email" => "email", "full_name" => "full_name", "password" => "password", "role" => "admin"]
+        );
 
         $result = $this->userService->create($create_user_dto);
 
         $this->assertEquals(["id" => 2], $result);
     }
 
-    public function testFindOneSuccess(){
+    public function testFindOneSuccess()
+    {
         $this->userRepositoryMock->expects($this->once())
             ->method("findOne")
             ->willReturn([
@@ -109,38 +116,43 @@ class UserServiceTest extends TestCase
 
         $result = $this->userService->findOne("id", "2");
 
-        $this->assertCount( 8,$result);
+        $this->assertCount(8, $result);
     }
 
-    public function testFindAllSuccess(){
+    public function testFindAllSuccess()
+    {
         $this->userRepositoryMock->expects($this->once())
             ->method("findAll")
-            ->willReturn([[
-                "id" => 34,
-                "email" => "test@gmail.com",
-                "password" => "\$2y\$10\$nZ72rPoi8f0Jrj.uPTfxMOVydjwJ9XjaFrJugFOTp85MN.3VFceOu",
-                "full_name" => "jdshfjk",
-                "role" => "dsfjksdjf",
-                "avatar" => "sdjkfgsjdkf",
-                "created_at" => "sdfjlsdf",
-                "updated_at" => "ksdklfhds"
-            ], [
-                "id" => 35,
-                "email" => "test@gmail.com",
-                "password" => "\$2y\$10\$nZ72rPoi8f0Jrj.uPTfxMOVydjwJ9XjaFrJugFOTp85MN.3VFceOu",
-                "full_name" => "jdshfjk",
-                "role" => "dsfjksdjf",
-                "avatar" => "sdjkfgsjdkf",
-                "created_at" => "sdfjlsdf",
-                "updated_at" => "ksdklfhds"
-            ]]);
+            ->willReturn([
+                [
+                    "id" => 34,
+                    "email" => "test@gmail.com",
+                    "password" => "\$2y\$10\$nZ72rPoi8f0Jrj.uPTfxMOVydjwJ9XjaFrJugFOTp85MN.3VFceOu",
+                    "full_name" => "jdshfjk",
+                    "role" => "dsfjksdjf",
+                    "avatar" => "sdjkfgsjdkf",
+                    "created_at" => "sdfjlsdf",
+                    "updated_at" => "ksdklfhds"
+                ],
+                [
+                    "id" => 35,
+                    "email" => "test@gmail.com",
+                    "password" => "\$2y\$10\$nZ72rPoi8f0Jrj.uPTfxMOVydjwJ9XjaFrJugFOTp85MN.3VFceOu",
+                    "full_name" => "jdshfjk",
+                    "role" => "dsfjksdjf",
+                    "avatar" => "sdjkfgsjdkf",
+                    "created_at" => "sdfjlsdf",
+                    "updated_at" => "ksdklfhds"
+                ]
+            ]);
 
         $result = $this->userService->findAll();
 
-        $this->assertCount(2 ,$result);
+        $this->assertCount(2, $result);
     }
 
-    public function testGetCurrentUserSuccess(){
+    public function testGetCurrentUserSuccess()
+    {
         $user_id = 2;
         $this->userService = $this->createPartialMock(UserService::class, [
             'checkUserExists',
@@ -159,12 +171,13 @@ class UserServiceTest extends TestCase
 
         $result = $this->userService->getCurrentUser(strval($user_id));
 
-        $this->assertCount(1,$result);
+        $this->assertCount(1, $result);
         $this->assertArrayHasKey("user", $result);
-        $this->assertEquals(2,$result['user']['id']);
+        $this->assertEquals(2, $result['user']['id']);
     }
 
-    public function testGetCurrentUserFail(){
+    public function testGetCurrentUserFail()
+    {
         $user_id = 2;
         $this->userService = $this->createPartialMock(UserService::class, [
             'checkUserExists',
@@ -179,16 +192,27 @@ class UserServiceTest extends TestCase
         $this->userService->getCurrentUser(strval($user_id));
     }
 
-    public function testUpdateOneSuccess(){
+    public function testUpdateOneSuccess()
+    {
         $user_id = "2";
-        $update_user_dto = UpdateUserDto::fromArray(["email" => "test@gmail.com", "full_name" => "fullname", "role" =>"user"]);
+        $update_user_dto = UpdateUserDto::fromArray(
+            ["email" => "test@gmail.com", "full_name" => "fullname", "role" => "user"]
+        );
         $this->userService = $this->createPartialMock(UserService::class, [
             'checkUserExists',
             'uploadAndSetAvatarUrl'
         ]);
         $this->userService->__construct($this->userRepositoryMock, $this->cloudinaryServiceMock);
         $this->userService->expects($this->once())->method("checkUserExists")
-            ->willReturn(["id" => 2, "email" => "test2@gmail.com", "full_name" => "fullname", "password" => "passwordsd", "role" =>"user"]);
+            ->willReturn(
+                [
+                    "id" => 2,
+                    "email" => "test2@gmail.com",
+                    "full_name" => "fullname",
+                    "password" => "passwordsd",
+                    "role" => "user"
+                ]
+            );
         $this->userRepositoryMock->expects($this->once())
             ->method("updateOne")
             ->willReturn(true);
@@ -202,16 +226,27 @@ class UserServiceTest extends TestCase
         $this->assertArrayNotHasKey("password", $result);
     }
 
-    public function testUpdateOneFail(){
+    public function testUpdateOneFail()
+    {
         $user_id = "2";
-        $update_user_dto = UpdateUserDto::fromArray(["email" => "test@gmail.com", "full_name" => "fullname", "role" =>"user"]);
+        $update_user_dto = UpdateUserDto::fromArray(
+            ["email" => "test@gmail.com", "full_name" => "fullname", "role" => "user"]
+        );
         $this->userService = $this->createPartialMock(UserService::class, [
             'checkUserExists',
             'uploadAndSetAvatarUrl'
         ]);
         $this->userService->__construct($this->userRepositoryMock, $this->cloudinaryServiceMock);
         $this->userService->expects($this->once())->method("checkUserExists")
-            ->willReturn(["id" => 2, "email" => "test2@gmail.com", "full_name" => "fullname", "password" => "passwordsd", "role" =>"user"]);
+            ->willReturn(
+                [
+                    "id" => 2,
+                    "email" => "test2@gmail.com",
+                    "full_name" => "fullname",
+                    "password" => "passwordsd",
+                    "role" => "user"
+                ]
+            );
         $this->userRepositoryMock->expects($this->once())
             ->method("updateOne")
             ->willReturn(false);
@@ -222,7 +257,8 @@ class UserServiceTest extends TestCase
         $this->userService->updateOne($user_id, $update_user_dto);
     }
 
-    public function testUpdateProfileSuccess(){
+    public function testUpdateProfileSuccess()
+    {
         $user_id = "2";
         $update_profile_dto = UpdateProfileDto::fromArray(["full_name" => "fullname"]);
         $this->userService = $this->createPartialMock(UserService::class, [
@@ -230,7 +266,15 @@ class UserServiceTest extends TestCase
         ]);
         $this->userService->__construct($this->userRepositoryMock, $this->cloudinaryServiceMock);
         $this->userService->expects($this->once())->method("checkUserExists")
-            ->willReturn(["id" => 2, "email" => "test2@gmail.com", "full_name" => "fullname", "password" => "passwordsd", "role" =>"user"]);
+            ->willReturn(
+                [
+                    "id" => 2,
+                    "email" => "test2@gmail.com",
+                    "full_name" => "fullname",
+                    "password" => "passwordsd",
+                    "role" => "user"
+                ]
+            );
         $this->userRepositoryMock->expects($this->once())
             ->method("updateOne")
             ->willReturn(true);
@@ -244,7 +288,8 @@ class UserServiceTest extends TestCase
         $this->assertArrayNotHasKey("password", $result);
     }
 
-    public function testUpdateProfileFail(){
+    public function testUpdateProfileFail()
+    {
         $user_id = "2";
         $update_profile_dto = UpdateProfileDto::fromArray(["full_name" => "fullname"]);
         $this->userService = $this->createPartialMock(UserService::class, [
@@ -252,7 +297,15 @@ class UserServiceTest extends TestCase
         ]);
         $this->userService->__construct($this->userRepositoryMock, $this->cloudinaryServiceMock);
         $this->userService->expects($this->once())->method("checkUserExists")
-            ->willReturn(["id" => 2, "email" => "test2@gmail.com", "full_name" => "fullname", "password" => "passwordsd", "role" =>"user"]);
+            ->willReturn(
+                [
+                    "id" => 2,
+                    "email" => "test2@gmail.com",
+                    "full_name" => "fullname",
+                    "password" => "passwordsd",
+                    "role" => "user"
+                ]
+            );
         $this->userRepositoryMock->expects($this->once())
             ->method("updateOne")
             ->willReturn(false);
@@ -263,14 +316,24 @@ class UserServiceTest extends TestCase
         $this->userService->updateProfile($user_id, $update_profile_dto);
     }
 
-    public function testDeleteWithAvatarSuccess(){
+    public function testDeleteWithAvatarSuccess()
+    {
         $user_id = "2";
         $this->userService = $this->createPartialMock(UserService::class, [
             'checkUserExists',
         ]);
         $this->userService->__construct($this->userRepositoryMock, $this->cloudinaryServiceMock);
         $this->userService->expects($this->once())->method("checkUserExists")
-            ->willReturn(["id" => 2, "email" => "test2@gmail.com", "full_name" => "fullname", "password" => "passwordsd", "role" =>"user", "avatar" => "sdsdj"]);
+            ->willReturn(
+                [
+                    "id" => 2,
+                    "email" => "test2@gmail.com",
+                    "full_name" => "fullname",
+                    "password" => "passwordsd",
+                    "role" => "user",
+                    "avatar" => "sdsdj"
+                ]
+            );
         $this->userRepositoryMock->expects($this->once())
             ->method("delete")
             ->willReturn(true);
@@ -280,14 +343,24 @@ class UserServiceTest extends TestCase
         $this->userService->delete($user_id);
     }
 
-    public function testDeleteWithNoAvatarSuccess(){
+    public function testDeleteWithNoAvatarSuccess()
+    {
         $user_id = "2";
         $this->userService = $this->createPartialMock(UserService::class, [
             'checkUserExists',
         ]);
         $this->userService->__construct($this->userRepositoryMock, $this->cloudinaryServiceMock);
         $this->userService->expects($this->once())->method("checkUserExists")
-            ->willReturn(["id" => 2, "email" => "test2@gmail.com", "full_name" => "fullname", "password" => "passwordsd", "role" =>"user", "avatar" => null]);
+            ->willReturn(
+                [
+                    "id" => 2,
+                    "email" => "test2@gmail.com",
+                    "full_name" => "fullname",
+                    "password" => "passwordsd",
+                    "role" => "user",
+                    "avatar" => null
+                ]
+            );
         $this->userRepositoryMock->expects($this->once())
             ->method("delete")
             ->willReturn(true);
@@ -297,14 +370,24 @@ class UserServiceTest extends TestCase
         $this->userService->delete($user_id);
     }
 
-    public function testDeleteFail(){
+    public function testDeleteFail()
+    {
         $user_id = "2";
         $this->userService = $this->createPartialMock(UserService::class, [
             'checkUserExists',
         ]);
         $this->userService->__construct($this->userRepositoryMock, $this->cloudinaryServiceMock);
         $this->userService->expects($this->once())->method("checkUserExists")
-            ->willReturn(["id" => 2, "email" => "test2@gmail.com", "full_name" => "fullname", "password" => "passwordsd", "role" =>"user", "avatar" => null]);
+            ->willReturn(
+                [
+                    "id" => 2,
+                    "email" => "test2@gmail.com",
+                    "full_name" => "fullname",
+                    "password" => "passwordsd",
+                    "role" => "user",
+                    "avatar" => null
+                ]
+            );
         $this->userRepositoryMock->expects($this->once())
             ->method("delete")
             ->willReturn(false);
@@ -317,7 +400,8 @@ class UserServiceTest extends TestCase
         $this->userService->delete($user_id);
     }
 
-    public function testUploadAvatarSuccess(){
+    public function testUploadAvatarSuccess()
+    {
         $user_id = "2";
         $this->userService = $this->createPartialMock(UserService::class, [
             'checkUserExists',
@@ -337,7 +421,8 @@ class UserServiceTest extends TestCase
         $this->assertEquals($url, "avatar-url");
     }
 
-    public function testUploadAvatarFail(){
+    public function testUploadAvatarFail()
+    {
         $user_id = "2";
         $this->userService = $this->createPartialMock(UserService::class, [
             'checkUserExists',
