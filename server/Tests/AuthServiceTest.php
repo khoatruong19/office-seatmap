@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 use shared\enums\AuthResponse;
 use shared\enums\UserResponse;
 use shared\exceptions\ResponseException;
-
+ini_set('memory_limit', '256M');
 class AuthServiceTest extends TestCase
 {
     private AuthService $authService;
@@ -149,7 +149,7 @@ class AuthServiceTest extends TestCase
         ]);
 
         $result = $this->authService->register($register_user_dto);
-        
+
         $this->assertEquals($result, ["id" => 2]);
     }
 }
