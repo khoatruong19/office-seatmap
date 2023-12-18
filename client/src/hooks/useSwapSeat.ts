@@ -41,12 +41,6 @@ const useSwapSeat = () => {
     const targetSeatColumnNumber = Math.floor(
       targetSeat.position % SEATMAP_COLUMNS_PER_ROW
     );
-    console.log({
-      dragSeatRowNumber,
-      dragSeatColumnNumber,
-      targetSeatRowNumber,
-      targetSeatColumnNumber,
-    });
     const newDragSeatX =
       -(dragSeatColumnNumber - targetSeatColumnNumber) *
       (SEAT_WIDTH + SEAT_GAP);
@@ -54,6 +48,7 @@ const useSwapSeat = () => {
       -(dragSeatRowNumber - targetSeatRowNumber) * (SEAT_WIDTH + SEAT_GAP);
     const newTargetSeatX = -newDragSeatX;
     const newTargetSeatY = -newDragSeatY;
+
     return {
       newDragSeatPostion: {
         label: dragSeat.label,

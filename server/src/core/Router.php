@@ -6,6 +6,7 @@ namespace core;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use shared\enums\GeneralResponse;
 use shared\exceptions\ResponseException;
 use shared\enums\RequestMethod;
 
@@ -43,7 +44,7 @@ class Router
                     $this->routes[strtolower($method->name)][$route["path"]]["middlewares"][] = $this->container->get($middleware);
                 }
                 else{
-                    throw new ResponseException(HttpStatus::$INTERNAL_SERVER_ERROR,"Middleware not found!");
+                    throw new ResponseException(HttpStatus::$INTERNAL_SERVER_ERROR, GeneralResponse::MIDDLEWARE_NOT_FOUND->value);
                 }
             }
         }
@@ -70,7 +71,7 @@ class Router
         $result_matched_route = $this->matchRoute($method, $path) ?? false;
 
         if ($result_matched_route === false) {
-            throw new ResponseException(HttpStatus::$NOT_FOUND, "Not found");
+            throw new ResponseException(HttpStatus::$NOT_FOUND, GeneralResponse::ROUTE_NOT_FOUND->value);
         }
 
         $callback = $result_matched_route["call_back"];

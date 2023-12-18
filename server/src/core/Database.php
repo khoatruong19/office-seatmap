@@ -4,6 +4,7 @@ declare( strict_types=1 );
 namespace core;
 
 use PDO;
+use shared\enums\GeneralResponse;
 
 class Database
 {
@@ -22,7 +23,7 @@ class Database
         $port = $_ENV['DB_PORT'] ?? "";
 
         if ($db_type == "" || $host == "" || $username == "" || $password == "" || $db_name == "") {
-            throw new \Exception("Database cannot be connected due to wrong configuration!");
+            throw new \Exception(GeneralResponse::DATABASE_CONNECTION_FAIL->value);
         }
 
         $this->connection = new PDO("$db_type:host=$host;port=$port;dbname=$db_name", $username, $password);
