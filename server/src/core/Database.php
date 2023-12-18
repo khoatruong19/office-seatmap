@@ -30,11 +30,12 @@ class Database
     }
 
     /**
-     * @param $nameFile
+     * @param string $schema
+     * @param string $name_file
      * @return void
      */
-    public function runMigration($nameFile) {
-        $sql = file_get_contents( dirname(__DIR__)."/../shared/schemas/".$nameFile);
+    public function runMigration(string $schema, string $name_file) {
+        $sql = file_get_contents( dirname(__DIR__)."/../shared/schemas/".$schema."/".$name_file);
         $this->connection->exec($sql);
     }
 
