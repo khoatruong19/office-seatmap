@@ -87,6 +87,8 @@ const useEditingOfficeSeatmap = (props: Props) => {
   };
 
   const handleDeleteCell = (cell: CellType) => {
+    if (!seats.find((item) => item.label == cell.label)) return;
+
     const tempCells = [...seats].filter((item) => item.label !== cell.label);
     if (
       !deletedCells.find((item) => item.label === cell.label) &&
@@ -136,10 +138,11 @@ const useEditingOfficeSeatmap = (props: Props) => {
 
   const handleSelectingCells = (e: MouseEvent) => {
     if (!e.target) return;
-
     if (!e.shiftKey) return;
 
     const cellId = (e.target as HTMLDivElement).id;
+    if (!cellId) return;
+
     if (!!!cellId.length) return;
 
     const newCellPosition = Number(cellId.split("seat")[1]);
@@ -207,14 +210,18 @@ const useEditingOfficeSeatmap = (props: Props) => {
     done,
     seats,
     selectedCells,
+    deletedCells,
+    lastSelectingCell,
     handleAddSeat,
     handleChangeName,
     handleDeleteOffice,
     handleDeleteBlock,
     handleDeleteCell,
     handleCheckUnDeleteCell,
+    handleDoneSelectingCells,
     handleSaveSeatmap,
     handleToggleVisible,
+    handleSelectingCells,
   };
 };
 

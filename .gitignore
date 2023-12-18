@@ -1,4 +1,5 @@
 client/node_modules
+client/coverage
 client/*.env
 server/*.env
 server/vendor
