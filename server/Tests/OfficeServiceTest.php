@@ -51,6 +51,18 @@ class OfficeServiceTest extends TestCase
         $this->officeService->checkOfficeExists("id", $office_id);
     }
 
+    public function testCheckOfficeNotExistsReturnValue()
+    {
+        $office_name = "Office 101";
+        $this->officeRepositoryMock->expects($this->once())
+            ->method("findOne")
+            ->willReturn(null);
+
+        $result = $this->officeService->checkOfficeNotExists($office_name);
+
+        $this->assertTrue($result);
+    }
+
     public function testCheckOfficeNotExistsThrowError()
     {
         $office_name = "Office 101";
@@ -92,7 +104,7 @@ class OfficeServiceTest extends TestCase
                 "visible" => true,
                 "blocks" => "[]",
                 "seats" => [["label" => "AO", "position" => 10, "office_id" => 1]],
-                "delete_seats" => []
+                "delete_seats" => [["label" => "A3", "position" => 14, "office_id" => 1]]
             ]
         );
         $this->officeService = $this->createPartialMock(OfficeService::class, [
@@ -113,7 +125,7 @@ class OfficeServiceTest extends TestCase
             ->method("updateOne")
             ->willReturn(true);
         $this->seatServiceMock->expects($this->once())->method("create")->willReturn(true);
-        $this->seatServiceMock->expects($this->never())->method("deleteSeatByLabel");
+        $this->seatServiceMock->expects($this->once())->method("deleteSeatByLabel")->willReturn(true);
 
         $result = $this->officeService->update($update_office_dto);
 
@@ -152,6 +164,57 @@ class OfficeServiceTest extends TestCase
         $this->assertArrayHasKey("blocks", $result);
         $this->assertArrayHasKey("seats", $result);
         $this->assertCount(2, $result['seats']);
+    }
+
+    public function testFindAll()
+    {
+        $this->officeRepositoryMock->expects($this->once())->method("findAll")->willReturn(
+            [
+                [
+                    "id" => 1,
+                    "name" => "Office 101",
+                    "visible" => true,
+                    "blocks" => "[]",
+                ],
+                [
+                    "id" => 2,
+                    "name" => "Office 102",
+                    "visible" => false,
+                    "blocks" => "[]",
+                ],
+            ]
+        );
+
+        $result = $this->officeService->findAll();
+
+        $this->assertCount(2, $result);
+        $this->assertArrayHasKey("id", $result[0]);
+    }
+
+    public function testFindAllVisible()
+    {
+        $this->officeRepositoryMock->expects($this->once())->method("findAllVisibleOffices")->willReturn(
+            [
+                [
+                    "id" => 1,
+                    "name" => "Office 101",
+                    "visible" => true,
+                    "blocks" => "[]",
+                ],
+                [
+                    "id" => 2,
+                    "name" => "Office 102",
+                    "visible" => true,
+                    "blocks" => "[]",
+                ],
+            ]
+        );
+
+        $result = $this->officeService->findAllVisibleOffices();
+
+        $this->assertCount(2, $result);
+        $this->assertTrue($result[0]['visible']);
+        $this->assertTrue($result[1]['visible']);
     }
 
     public function testDeleteSuccess()
@@ -206,5 +269,4 @@ class OfficeServiceTest extends TestCase
 
         $this->officeService->delete($office_id);
     }
-
 }

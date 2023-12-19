@@ -4,6 +4,8 @@ namespace __test__;
 
 use modules\office\OfficeRepository;
 use modules\seat\dto\CreateSeatDto;
+use modules\seat\dto\SetUserToSeatDto;
+use modules\seat\dto\SwapUsersFromTwoSeatsDto;
 use modules\seat\SeatService;
 use modules\seat\SeatRepository;
 use modules\user\UserRepository;
@@ -108,5 +110,96 @@ class SeatServiceTest extends TestCase
         $result = $this->seatService->create($create_seat_dto);
 
         $this->assertTrue($result);
+    }
+
+    public function testFindAllByOfficeId()
+    {
+        $office_id = "2";
+        $this->seatService = $this->createPartialMock(SeatService::class, [
+            'checkOfficeExists',
+        ]);
+        $this->seatService->__construct(
+            $this->seatRepositoryMock,
+            $this->officeRepositoryMock,
+            $this->userRepositoryMock
+        );
+        $this->seatService->expects($this->once())
+            ->method("checkOfficeExists")
+            ->willReturn(["id" => 2]);
+        $this->seatRepositoryMock->expects($this->once())
+            ->method("findAllByOfficeId")
+            ->willReturn([["id" => 1, "label" => "sjdls"], ["id" => 2, "label" => "sjsddls"]]);
+
+        $result = $this->seatService->findAllByOfficeId($office_id);
+
+        $this->assertCount(2, $result);
+    }
+
+    public function testSetUserWhenUsed()
+    {
+        $this->seatService = $this->createPartialMock(SeatService::class, [
+            'checkOfficeExists',
+            'checkUserExists'
+        ]);
+        $this->seatService->__construct(
+            $this->seatRepositoryMock,
+            $this->officeRepositoryMock,
+            $this->userRepositoryMock
+        );
+        $this->seatService->expects($this->once())
+            ->method("checkOfficeExists")
+            ->willReturn(["id" => 2]);
+        $this->seatService->expects($this->once())
+            ->method("checkUserExists")
+            ->willReturn(["id" => 2]);
+        $this->seatRepositoryMock->expects($this->once())
+            ->method("findByUserId")
+            ->willReturn(["id" => 1, "label" => "sjdls"]);
+        $this->seatRepositoryMock->expects($this->exactly(2))
+            ->method("updateOne")
+            ->willReturn(true);
+        $set_user_to_seat = SetUserToSeatDto::fromArray(["id" => 1, "user_id" => 2, "office_id" => 2]);
+
+        $result = $this->seatService->setUserToSeat($set_user_to_seat);
+
+        $this->assertTrue($result);
+    }
+
+    public function testDeleteSeatByLabel()
+    {
+        $this->seatRepositoryMock->expects($this->once())
+            ->method("deleteByLabel")
+            ->willReturn(true);
+
+        $result = $this->seatService->deleteSeatByLabel("A0", "1");
+
+        $this->assertTrue($result);
+    }
+
+    public function testSwapUsersFromTwoSeats()
+    {
+        $this->seatService = $this->createPartialMock(SeatService::class, [
+            'checkOfficeExists',
+            'checkUserExists'
+        ]);
+        $this->seatService->__construct(
+            $this->seatRepositoryMock,
+            $this->officeRepositoryMock,
+            $this->userRepositoryMock
+        );
+        $this->seatService->expects($this->once())
+            ->method("checkOfficeExists")
+            ->willReturn(["id" => 2]);
+        $this->seatService->expects($this->exactly(2))
+            ->method("checkUserExists")
+            ->willReturn(["id" => 2]);
+        $this->seatRepositoryMock->expects($this->exactly(2))
+            ->method("updateOne")
+            ->willReturn(true);
+        $swap_users_from_two_seat_dto = SwapUsersFromTwoSeatsDto::fromArray(
+            ["officeId" => 2, "firstSeatId" => 1, "firstUserId" => 1, "secondSeatId" => 2, "secondUserId" => 2]
+        );
+
+        $this->seatService->swapUsersFromTwoSeats($swap_users_from_two_seat_dto);
     }
 }
