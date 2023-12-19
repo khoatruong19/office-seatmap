@@ -1,15 +1,23 @@
 import useEditingOfficeSeatmap from "@/hooks/useEditingOfficeSeatmap";
 import { MODALS } from "@/providers/ModalProvider/constants";
 import { act, renderHook } from "@testing-library/react";
+import { toast } from "react-toastify";
 import { describe, expect, it, vi } from "vitest";
 
 const mockNavigate = vi.fn();
-
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
   return {
     ...actual,
     useNavigate: () => mockNavigate,
+  };
+});
+
+vi.mock("react-toastify", async () => {
+  const actual = await vi.importActual("react-toastify");
+  return {
+    ...actual,
+    toast: { error: vi.fn(), success: vi.fn() },
   };
 });
 
@@ -256,5 +264,33 @@ describe("Editing Office Seatmap hook test suites", () => {
     expect(result.current.blocks).toHaveLength(2);
     expect(result.current.selectedCells).toHaveLength(0);
     expect(mockCloseModal).toBeCalled();
+  });
+
+  it("should toast office's name length > 100 chars error when update office", async () => {
+    const { result } = renderHook(() => useEditingOfficeSeatmap(initialProps));
+    const errorToastSpy = vi.spyOn(toast, "error");
+
+    act(() => {
+      result.current.handleChangeName(
+        "sdasdasdjasdjadjasdajsdajsdasdjasdjasdasjdasdasdadsasdasddfjasdjasdajsdasdjasdajsdasdjasdjasdasjdasdja"
+      );
+    });
+
+    await act(async () => {
+      await result.current.handleSaveSeatmap();
+    });
+
+    expect(errorToastSpy).toHaveBeenCalled();
+    expect(mockUpdateOffice).not.toBeCalled();
+  });
+
+  it("should update office succesfully", async () => {
+    const { result } = renderHook(() => useEditingOfficeSeatmap(initialProps));
+
+    await act(async () => {
+      await result.current.handleSaveSeatmap();
+    });
+
+    expect(mockUpdateOffice).toBeCalled();
   });
 });

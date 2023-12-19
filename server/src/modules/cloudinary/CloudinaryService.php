@@ -12,8 +12,11 @@
 
     class CloudinaryService
     {
-        public function __construct()
+        private $uploadApi;
+
+        public function __construct(UploadApi $uploadApi)
         {
+            $this->uploadApi = $uploadApi;
         }
 
         const MAX_FILE_SIZE = 800000;
@@ -22,10 +25,10 @@
         /**
          * @param mixed $file
          * @param array $options
-         * @return ApiResponse
+         * @return mixed
          * @throws ResponseException
          */
-        public function uploadFile(mixed $file, array $options = []): ApiResponse
+        public function uploadFile(mixed $file, array $options = []): mixed
         {
             $file_name_array = explode(".", $file["name"]);
             $ext = $file_name_array[count($file_name_array) - 1];
@@ -35,7 +38,7 @@
             if (!in_array($ext, self::ALLOW_TYPES)) throw new ResponseException(HttpStatus::$BAD_REQUEST, CloudinaryResponse::FILE_WRONG_FORMAT->value);
 
             try {
-                return (new UploadApi())->upload($_FILES["file"]['tmp_name'], $options);
+                return $this->uploadApi->upload($_FILES["file"]['tmp_name'], $options);
             } catch (Exception $e) {
                 throw new ResponseException(HttpStatus::$INTERNAL_SERVER_ERROR, CloudinaryResponse::UPLOAD_FILE_FAIL->value);
             }
@@ -50,7 +53,7 @@
         public function deleteFile(string $public_id, array $options = []): void
         {
             try {
-                (new UploadApi())->destroy($public_id, $options);
+                $this->uploadApi->destroy($public_id, $options);
             } catch (Exception $e) {
                 throw new ResponseException(HttpStatus::$INTERNAL_SERVER_ERROR, CloudinaryResponse::DELETE_FILE_FAIL->value);
             }

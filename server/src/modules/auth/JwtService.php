@@ -15,14 +15,14 @@ use stdClass;
 
 class JwtService
 {
-    private array $key;
+    public array $key;
 
     public function __construct()
     {
-        $this->key = array(
+        $this->key = [
             EnumTypeJwt::ACCESS_TOKEN->name => $_ENV['JWT_ACCESS_KEY'],
             EnumTypeJwt::REFRESH_TOKEN->name => $_ENV['JWT_REFRESH_KEY'],
-        );
+        ];
     }
 
     /**

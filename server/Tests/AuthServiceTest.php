@@ -28,7 +28,7 @@ class AuthServiceTest extends TestCase
         $this->authService = new AuthService($this->userServiceMock, $this->jwtServiceMock);
     }
 
-    public function testLoginWithValidCredential()
+    public function testLoginSuccessWithValidCredential()
     {
         $user_data = [
             "id" => 34,
@@ -69,7 +69,7 @@ class AuthServiceTest extends TestCase
         $this->assertEquals($expected_result, $result);
     }
 
-    public function testLoginWithInvalidEmail()
+    public function testLoginFailWithInvalidEmail()
     {
         $this->userServiceMock->expects($this->once())
             ->method("findOne")
@@ -85,7 +85,7 @@ class AuthServiceTest extends TestCase
         $this->authService->login($login_user_dto);
     }
 
-    public function testLoginWithInvalidPassword()
+    public function testLoginFailWithInvalidPassword()
     {
         $password = "123456tuna";
         $hashed_password = password_hash($password, PASSWORD_BCRYPT);
@@ -94,7 +94,7 @@ class AuthServiceTest extends TestCase
             ->willReturn(["email" => "email", "password" => $hashed_password]);
         $login_user_dto = LoginUserDto::fromArray([
             "email" => "test@gmail.com",
-            "password" => "1234565tuna"
+            "password" => "wrongpassword"
         ]);
 
         $this->expectException(ResponseException::class);
@@ -103,7 +103,7 @@ class AuthServiceTest extends TestCase
         $this->authService->login($login_user_dto);
     }
 
-    public function testUserDataWithNoPasswordReturnWhenLoginSuccess()
+    public function testNoPasswordReturnWhenLoginSuccess()
     {
         $password = "123456tuna";
         $hashed_password = password_hash($password, PASSWORD_BCRYPT);
@@ -118,6 +118,25 @@ class AuthServiceTest extends TestCase
         $result = $this->authService->login($login_user_dto);
 
         $this->assertArrayNotHasKey("password", $result['user']);
+    }
+
+    public function testAccessTokenReturnWhenLoginSuccess()
+    {
+        $password = "123456tuna";
+        $accessToken = "asdasdasdsadsd";
+        $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+        $this->userServiceMock->expects($this->once())
+            ->method("findOne")
+            ->willReturn(["id" => 1, "role" => "admin", "password" => $hashed_password]);
+        $this->jwtServiceMock->expects($this->once())->method("generateToken")->willReturn($accessToken);
+        $login_user_dto = LoginUserDto::fromArray([
+            "email" => "test@gmail.com",
+            "password" => "123456tuna"
+        ]);
+
+        $result = $this->authService->login($login_user_dto);
+
+        $this->assertEquals($accessToken, $result['accessToken']);
     }
 
     public function testRegisterFailWithExistingEmail()

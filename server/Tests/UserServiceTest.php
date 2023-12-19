@@ -7,6 +7,7 @@ use modules\cloudinary\CloudinaryService;
 use modules\user\dto\CreateUserDto;
 use modules\user\dto\UpdateProfileDto;
 use modules\user\dto\UpdateUserDto;
+use modules\user\UserEntity;
 use modules\user\UserRepository;
 use modules\user\UserService;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -438,5 +439,55 @@ class UserServiceTest extends TestCase
         $this->expectExceptionMessage(UserResponse::NO_FILE_FOUND->value);
 
         $this->userService->uploadAvatar($user_id);
+    }
+
+    public function testuploadAndGetFileUrlWithNoFile()
+    {
+        $publicId = 'test_public_id';
+        $_FILES = [];
+        $result = $this->userService->uploadAndGetFileUrl($publicId);
+
+        $this->assertNull($result);
+    }
+
+    public function testUploadAndGetFileUrlSuccess()
+    {
+        $publicId = 'test_public_id';
+        $file = [
+            'name' => 'example.jpg',
+            'type' => 'image/jpeg',
+            'size' => 500000,
+            'tmp_name' => '/tmp/example.jpg',
+            'error' => 0,
+        ];
+        $_FILES = [
+            "file" => $file
+        ];
+
+        $this->cloudinaryServiceMock->expects($this->once())->method("uploadFile")->willReturn([
+            'url' => 'https://res.cloudinary.com/dt9pwfpi5/image/upload/q_auto,f_auto/v1629968239/avatars/1.jpg',
+            'publicId' => 'avatars/1.jpg',
+        ]);
+
+        $result = $this->userService->uploadAndGetFileUrl($publicId);
+
+        $this->assertIsString($result);
+    }
+
+    public function testUploadAndSetAvatarUrl()
+    {
+        $publicId = "2";
+        $this->userService = $this->createPartialMock(UserService::class, [
+            'uploadAndGetFileUrl',
+        ]);
+        $this->userService->__construct($this->userRepositoryMock, $this->cloudinaryServiceMock);
+        $this->userService->expects($this->once())->method("uploadAndGetFileUrl")
+            ->willReturn("dhfjdhfjdhf");
+
+        $user_entity = new UserEntity("test@gmail.com", "dfdfd", "dfdfdf", "user");
+
+        $this->userService->uploadAndSetAvatarUrl($publicId, $user_entity);
+
+        $this->assertIsString($user_entity->getAvatar());
     }
 }

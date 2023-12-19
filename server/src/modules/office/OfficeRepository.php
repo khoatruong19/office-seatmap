@@ -31,8 +31,8 @@ class OfficeRepository extends Repository implements IRepository{
      */
     public function findOne(string $field, string $value): mixed
     {
-//        FieldNotAllow::execute(['name', 'id'], $field);
-        $sql = "SELECT * from offices WHERE ".$field." = :value ";
+        FieldNotAllow::execute(['name', 'id'], $field);
+        $sql = sprintf('SELECT * from offices WHERE %s = :value', $field);
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute([
             "value" => $value,

@@ -2,7 +2,6 @@
 declare( strict_types=1 );
 
 namespace modules\user;
-use core\HttpStatus;
 use core\Repository;
 use shared\exceptions\ResponseException;
 use shared\helpers\FieldNotAllow;
@@ -31,7 +30,7 @@ class UserRepository extends Repository implements IRepository{
     public function findOne(string $field, string $value): mixed
     {
         FieldNotAllow::execute(['username', 'email', 'id'], $field);
-        $sql =  "SELECT * FROM users WHERE ".$field." = :value limit 1";
+        $sql =  sprintf('SELECT * FROM users WHERE %s = :value limit 1', $field);
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute([
             "value" => $value,

@@ -45,10 +45,10 @@ class UserService
     /**
      * @param string $public_id
      * @param UserEntity $user_entity
-     * @return bool
+     * @return void
      * @throws ResponseException
      */
-    public function uploadAndSetAvatarUrl(string $public_id, UserEntity &$user_entity): bool{
+    public function uploadAndSetAvatarUrl(string $public_id, UserEntity &$user_entity): void{
         $upload_avatar_url = $this->uploadAndGetFileUrl($public_id);
         if($upload_avatar_url){
             $user_entity->setAvatar($upload_avatar_url);

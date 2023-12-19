@@ -30,7 +30,7 @@ class SeatRepository extends Repository implements IRepository{
     public function findOne(string $field, string $value): mixed
     {
         FieldNotAllow::execute(['label', 'id'], $field);
-        $sql = "SELECT * FROM seats WHERE ".$field." = :value limit 1";
+        $sql = sprintf('SELECT * FROM seats WHERE %s = :value limit 1', $field);
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute([
             "value" => $value,
@@ -49,7 +49,7 @@ class SeatRepository extends Repository implements IRepository{
     public function findByOfficeId(string $field, string $value, int $office_id): mixed
     {
         FieldNotAllow::execute(['label', 'id'], $field);
-        $sql = "SELECT * FROM seats WHERE ".$field." = :value AND office_id = :office_id limit 1";
+        $sql = sprintf('SELECT * FROM seats WHERE %s = :value AND office_id = :office_id limit 1', $field);
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute([
             "value" => $value,
