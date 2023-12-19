@@ -1,17 +1,17 @@
 <?php
-declare( strict_types=1 );
+
+declare(strict_types=1);
 
 namespace shared\helpers;
-use core\HttpStatus;
-use shared\enums\RepositoryResponse;
-use shared\exceptions\ResponseException;
 
-class ValidationErrorMessage  {
+class ValidationErrorMessage
+{
     /**
      * @param string $field
      * @return string
      */
-    public static function fieldIsNotValid(string $field){
+    public static function fieldIsNotValid(string $field)
+    {
         return sprintf('Field "%s" is not valid!', $field);
     }
 
@@ -19,8 +19,9 @@ class ValidationErrorMessage  {
      * @param string $field
      * @return string
      */
-    public static function fieldIsRequired(string $field){
-        return sprintf('Field "%s" is required!', $field);
+    public static function fieldIsRequired(string $field)
+    {
+        return sprintf('Field %s is required!', $field);
     }
 
     /**
@@ -28,8 +29,9 @@ class ValidationErrorMessage  {
      * @param int $length
      * @return string
      */
-    public static function minLengthCharacters(string $field, int $length){
-        return sprintf('Field "%s" has to be at least "%d" characters!', $field, $length);
+    public static function minLengthCharacters(string $field, int $length)
+    {
+        return sprintf('Field %s has to be at least %d characters!', $field, $length);
     }
 
     /**
@@ -37,8 +39,9 @@ class ValidationErrorMessage  {
      * @param int $length
      * @return string
      */
-    public static function maxLengthCharacters(string $field, int $length){
-        return sprintf('Field "%s" has to be less than "%d" characters!', $field, $length);
+    public static function maxLengthCharacters(string $field, int $length)
+    {
+        return sprintf('Field %s has to be less than %d characters!', $field, $length);
     }
 
     /**
@@ -46,7 +49,8 @@ class ValidationErrorMessage  {
      * @param int $length
      * @return string
      */
-    public static function redundantFields(){
+    public static function redundantFields()
+    {
         return "There are some redundant fields in the body!";
     }
 }

@@ -1,14 +1,17 @@
 <?php
-declare( strict_types=1 );
+
+declare(strict_types=1);
 
 namespace modules\seat;
+
 use core\Repository;
 use shared\exceptions\ResponseException;
 use shared\helpers\FieldNotAllow;
 use shared\interfaces\IRepository;
 use PDO;
 
-class SeatRepository extends Repository implements IRepository{
+class SeatRepository extends Repository implements IRepository
+{
     /**
      * @param array $data
      * @return false|string
@@ -64,7 +67,8 @@ class SeatRepository extends Repository implements IRepository{
      * @param int $office_id
      * @return mixed|null
      */
-    public function findByUserId(int $user_id, int $office_id){
+    public function findByUserId(int $user_id, int $office_id)
+    {
         $sql = "SELECT * FROM seats WHERE user_id = :user_id AND office_id = :office_id limit 1";
         $stmt = $this->database->getConnection()->prepare($sql);
         $stmt->execute([
@@ -103,7 +107,7 @@ class SeatRepository extends Repository implements IRepository{
             $setValues .= "$column = :$column, ";
         }
         $setValues = rtrim($setValues, ', ') . " WHERE id = :id";
-        $stmt = $this->database->getConnection()->prepare($sql.$setValues);
+        $stmt = $this->database->getConnection()->prepare($sql . $setValues);
         $data['id'] = $seat_id;
         return $stmt->execute($data);
     }

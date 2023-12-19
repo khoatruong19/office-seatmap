@@ -1,5 +1,6 @@
 <?php
-declare( strict_types=1 );
+
+declare(strict_types=1);
 
 namespace modules\auth;
 
@@ -42,7 +43,7 @@ class JwtService
             "iat" => $iat->getTimestamp(),
             "exp" => $exp->getTimestamp(),
         );
-        return JWT::encode($payload, $this->key[$type->name],'HS256');
+        return JWT::encode($payload, $this->key[$type->name], 'HS256');
     }
 
     /**
@@ -53,9 +54,9 @@ class JwtService
      */
     public function verifyToken(EnumTypeJwt $type, string $token): stdClass
     {
-        try{
+        try {
             return JWT::decode($token, new Key($this->key[$type->name], 'HS256'));
-        }catch(Exception) {
+        } catch (Exception) {
             throw new ResponseException(HttpStatus::$UNAUTHORIZED, AuthResponse::UNAUTHORIZED->value);
         }
     }

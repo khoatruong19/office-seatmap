@@ -1,5 +1,6 @@
 <?php
-declare( strict_types=1 );
+
+declare(strict_types=1);
 
 namespace core;
 
@@ -39,12 +40,16 @@ class Router
         $this->routes[strtolower($method->name)][$route["path"]]["call_back"] = $callback;
 
         if (is_array($middlewares)) {
-            foreach ($middlewares as $middleware){
-                if(class_exists($middleware)){
-                    $this->routes[strtolower($method->name)][$route["path"]]["middlewares"][] = $this->container->get($middleware);
-                }
-                else{
-                    throw new ResponseException(HttpStatus::$INTERNAL_SERVER_ERROR, GeneralResponse::MIDDLEWARE_NOT_FOUND->value);
+            foreach ($middlewares as $middleware) {
+                if (class_exists($middleware)) {
+                    $this->routes[strtolower($method->name)][$route["path"]]["middlewares"][] = $this->container->get(
+                        $middleware
+                    );
+                } else {
+                    throw new ResponseException(
+                        HttpStatus::$INTERNAL_SERVER_ERROR,
+                        GeneralResponse::MIDDLEWARE_NOT_FOUND->value
+                    );
                 }
             }
         }
@@ -77,8 +82,10 @@ class Router
         $callback = $result_matched_route["call_back"];
         $middlewares = $result_matched_route["middlewares"];
 
-        if($middlewares && count($middlewares) > 0) {
-            foreach ($middlewares as $middleware) $middleware->execute();
+        if ($middlewares && count($middlewares) > 0) {
+            foreach ($middlewares as $middleware) {
+                $middleware->execute();
+            }
         }
 
         if (is_array($callback)) {
@@ -104,7 +111,10 @@ class Router
 
                 return [
                     "call_back" => $this->routes[$request_method][$path]["call_back"],
-                    "middlewares" => array_key_exists("middlewares", $this->routes[$request_method][$path]) ? $this->routes[$request_method][$path]["middlewares"] : null,
+                    "middlewares" => array_key_exists(
+                        "middlewares",
+                        $this->routes[$request_method][$path]
+                    ) ? $this->routes[$request_method][$path]["middlewares"] : null,
                 ];
             }
         }

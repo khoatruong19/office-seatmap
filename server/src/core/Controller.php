@@ -1,5 +1,6 @@
 <?php
-declare( strict_types=1 );
+
+declare(strict_types=1);
 
 namespace core;
 
@@ -10,6 +11,7 @@ class Controller
 {
     public Request $request;
     public Response $response;
+
     public function __construct()
     {
         $this->request = $GLOBALS['request'];
@@ -23,7 +25,7 @@ class Controller
     public function requestBodyValidation(array $body_schema)
     {
         $errors = $this->request->validateBody($body_schema);
-        if(is_array($errors) && count($errors) > 0) {
+        if (is_array($errors) && count($errors) > 0) {
             throw new ResponseException(HttpStatus::$BAD_REQUEST, ValidationResponse::INVALID_FIELDS->value, $errors);
         }
     }

@@ -1,7 +1,9 @@
 <?php
+
 declare(strict_types=1);
 
 namespace modules\user\dto;
+
 use shared\interfaces\IDto;
 
 class UpdateUserDto implements IDto

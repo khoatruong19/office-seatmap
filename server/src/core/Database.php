@@ -1,5 +1,6 @@
 <?php
-declare( strict_types=1 );
+
+declare(strict_types=1);
 
 namespace core;
 
@@ -35,8 +36,9 @@ class Database
      * @param string $name_file
      * @return void
      */
-    public function runMigration(string $schema, string $name_file) {
-        $sql = file_get_contents( dirname(__DIR__)."/../shared/schemas/".$schema."/".$name_file);
+    public function runMigration(string $schema, string $name_file)
+    {
+        $sql = file_get_contents(dirname(__DIR__) . "/../shared/schemas/" . $schema . "/" . $name_file);
         $this->connection->exec($sql);
     }
 

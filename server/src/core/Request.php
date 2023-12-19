@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace core;
@@ -14,7 +15,6 @@ class Request
 
     public function __construct(public Validation $validation)
     {
-
     }
 
     /**
@@ -83,17 +83,21 @@ class Request
      * @param array $field_rules
      * @return array|null
      */
-    public function validateBody(array $field_rules): array | null
+    public function validateBody(array $field_rules): array|null
     {
         $body = $this->getBody();
 
         //check redundant fields
         foreach ($body as $field => $value) {
-            if (!isset($field_rules[$field])) return $this->validation->redundantFieldErrors();
+            if (!isset($field_rules[$field])) {
+                return $this->validation->redundantFieldErrors();
+            }
         }
 
         foreach ($field_rules as $field => $value) {
-            if($value == "") continue;
+            if ($value == "") {
+                continue;
+            }
 
             $rules = explode('|', $value);
             foreach ($rules as $rule) {
@@ -110,7 +114,9 @@ class Request
                     call_user_func(array($this->validation, $rule_method));
                 }
 
-                if (!$this->validation->isSuccess()) break;
+                if (!$this->validation->isSuccess()) {
+                    break;
+                }
             }
         }
         return $this->validation->getErrors();
@@ -170,7 +176,8 @@ class Request
      * @param mixed $value
      * @return void
      */
-    public function storeValue(string $key, mixed $value): void{
+    public function storeValue(string $key, mixed $value): void
+    {
         $this->stores[$key] = $value;
     }
 
@@ -178,8 +185,11 @@ class Request
      * @param $key
      * @return mixed
      */
-    public function getValue($key): mixed{
-        if(!isset($this->stores[$key])) return null;
+    public function getValue($key): mixed
+    {
+        if (!isset($this->stores[$key])) {
+            return null;
+        }
 
         return $this->stores[$key];
     }
@@ -188,8 +198,9 @@ class Request
      * @param $key
      * @return mixed
      */
-    public function deleteValue($key): void{
-        if(isset($this->stores[$key])) {
+    public function deleteValue($key): void
+    {
+        if (isset($this->stores[$key])) {
             unset($this->stores[$key]);
         }
     }

@@ -1,5 +1,6 @@
 <?php
-declare( strict_types=1 );
+
+declare(strict_types=1);
 
 namespace modules\auth;
 
@@ -7,7 +8,6 @@ use core\HttpStatus;
 use core\Request;
 use core\Response;
 use core\Controller;
-use core\SessionManager;
 use modules\auth\dto\LoginUserDto;
 use modules\auth\dto\RegisterUserDto;
 use modules\user\UserService;
@@ -18,12 +18,12 @@ use shared\exceptions\ResponseException;
 class AuthController extends Controller
 {
     public function __construct(
-        public Request               $request,
-        public Response              $response,
+        public Request $request,
+        public Response $response,
         private readonly AuthService $authService,
         private readonly UserService $userService
-    )
-    {}
+    ) {
+    }
 
     /**
      * @return void

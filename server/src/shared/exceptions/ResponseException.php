@@ -1,5 +1,6 @@
 <?php
-declare( strict_types=1 );
+
+declare(strict_types=1);
 
 namespace shared\exceptions;
 
@@ -9,6 +10,7 @@ class ResponseException extends \Exception implements Throwable
 {
     private int $http_status;
     private mixed $errors;
+
     public function __construct(int $http_status, string $message, mixed $errors = null)
     {
         $this->http_status = $http_status;

@@ -1,9 +1,11 @@
 <?php
-declare( strict_types=1 );
+
+declare(strict_types=1);
 
 namespace shared\enums;
 
-enum UserResponse : string {
+enum UserResponse: string
+{
     case GET_ALL_SUCCESS = "Get all users successfuly!";
     case CREATE_USER_SUCCESS = "Create user successfully!";
     case UPDATE_USER_SUCCESS = "Update user successfully!";

@@ -1,5 +1,7 @@
 <?php
-declare( strict_types=1 );
+
+declare(strict_types=1);
+
 namespace modules\user;
 
 use core\Controller;
@@ -16,10 +18,10 @@ use shared\exceptions\ResponseException;
 class UserController extends Controller
 {
     public function __construct(
-        public Request               $request,
-        public Response              $response,
-        private readonly UserService $userService)
-    {
+        public Request $request,
+        public Response $response,
+        private readonly UserService $userService
+    ) {
     }
 
     /**
@@ -89,8 +91,7 @@ class UserController extends Controller
      */
     public function uploadAvatar(): void
     {
-        if (!isset($_FILES["file"]))
-        {
+        if (!isset($_FILES["file"])) {
             throw new ResponseException(HttpStatus::$BAD_REQUEST, UserResponse::NO_FILE_FOUND->value);
         }
 

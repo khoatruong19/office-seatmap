@@ -1,11 +1,16 @@
 <?php
-declare( strict_types=1 );
+
+declare(strict_types=1);
 
 namespace shared\interfaces;
 
-interface IRepository {
+interface IRepository
+{
     public function create(array $data);
+
     public function findOne(string $field, string $value);
+
     public function updateOne(string $field, array $data);
+
     public function delete(string $entity);
 }

@@ -1,9 +1,11 @@
 <?php
-declare( strict_types=1 );
+
+declare(strict_types=1);
 
 namespace shared\enums;
 
-enum AuthResponse : string {
+enum AuthResponse: string
+{
     case UNAUTHORIZED = "Not authorized!";
     case REGISTER_SUCCESS = "Register successfully!";
     case LOGIN_SUCCESS = "Login successfully!";

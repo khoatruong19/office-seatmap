@@ -1,16 +1,17 @@
 <?php
-declare( strict_types=1 );
+
+declare(strict_types=1);
 
 namespace modules\office;
-use core\HttpStatus;
+
 use core\Repository;
-use shared\enums\RepositoryResponse;
 use shared\exceptions\ResponseException;
 use shared\helpers\FieldNotAllow;
 use shared\interfaces\IRepository;
 use PDO;
 
-class OfficeRepository extends Repository implements IRepository{
+class OfficeRepository extends Repository implements IRepository
+{
     /**
      * @param array $data
      * @return false|string
@@ -77,7 +78,7 @@ class OfficeRepository extends Repository implements IRepository{
             $setValues .= "$column = :$column, ";
         }
         $setValues = rtrim($setValues, ', ') . " WHERE id = :id";
-        $stmt = $this->database->getConnection()->prepare($sql.$setValues);
+        $stmt = $this->database->getConnection()->prepare($sql . $setValues);
         $data['id'] = $office_id;
         return $stmt->execute($data);
     }

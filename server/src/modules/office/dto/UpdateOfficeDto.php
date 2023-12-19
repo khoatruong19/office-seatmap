@@ -1,7 +1,9 @@
 <?php
+
 declare(strict_types=1);
 
 namespace modules\office\dto;
+
 use shared\interfaces\IDto;
 
 class UpdateOfficeDto implements IDto
@@ -23,6 +25,7 @@ class UpdateOfficeDto implements IDto
         $this->blocks = $blocks;
         $this->delete_seats = $delete_seats;
     }
+
     public static function fromArray(array $raw_data): UpdateOfficeDto
     {
         return new UpdateOfficeDto(

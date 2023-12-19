@@ -1,9 +1,11 @@
 <?php
-declare( strict_types=1 );
+
+declare(strict_types=1);
 
 namespace shared\enums;
 
-enum CloudinaryResponse : string {
+enum CloudinaryResponse: string
+{
     case FILE_TOO_LARGE = "File too large!";
     case FILE_WRONG_FORMAT = "File wrong format!";
     case UPLOAD_FILE_FAIL = "Upload file failed!";

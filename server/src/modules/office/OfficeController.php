@@ -1,5 +1,6 @@
 <?php
-declare( strict_types=1 );
+
+declare(strict_types=1);
 
 namespace modules\office;
 
@@ -20,8 +21,8 @@ class OfficeController extends Controller
     public function __construct(
         public Request $request,
         public Response $response,
-        private readonly OfficeService $officeService)
-    {
+        private readonly OfficeService $officeService
+    ) {
     }
 
     /**
@@ -34,7 +35,7 @@ class OfficeController extends Controller
         $raw_data = $this->request->getBody();
         $create_office_dto = CreateOfficeDto::fromArray($raw_data);
         $id = $this->officeService->create($create_office_dto);
-        $this->response->response(HttpStatus::$OK, OfficeResponse::CREATE_OFFICE_SUCCESS->value , null, $id);
+        $this->response->response(HttpStatus::$OK, OfficeResponse::CREATE_OFFICE_SUCCESS->value, null, $id);
     }
 
     /**
@@ -49,7 +50,7 @@ class OfficeController extends Controller
         $raw_data['id'] = $office_id;
         $update_office_dto = UpdateOfficeDto::fromArray($raw_data);
         $this->officeService->update($update_office_dto);
-        $this->response->response(HttpStatus::$OK, OfficeResponse::UPDATE_OFFICE_SUCCESS->value , null, $office_id);
+        $this->response->response(HttpStatus::$OK, OfficeResponse::UPDATE_OFFICE_SUCCESS->value, null, $office_id);
     }
 
     /**
@@ -61,7 +62,9 @@ class OfficeController extends Controller
         $user_role = $this->request->getValue(StoreKeys::USER_ROLE->value);
         $office_id = $this->request->getParam(ParamKeys::OFFICE_ID->value);
         $office = $this->officeService->findOne("id", $office_id);
-        if($user_role == UserRole::USER->value && $office['visible'] == 0) throw new ResponseException(HttpStatus::$BAD_REQUEST, OfficeResponse::NOT_FOUND->value);
+        if ($user_role == UserRole::USER->value && $office['visible'] == 0) {
+            throw new ResponseException(HttpStatus::$BAD_REQUEST, OfficeResponse::NOT_FOUND->value);
+        }
 
         $this->response->response(HttpStatus::$OK, OfficeResponse::GET_ONE_OFFICE_SUCCESS->value, null, $office);
     }
@@ -72,9 +75,9 @@ class OfficeController extends Controller
     public function findAll(): void
     {
         $role = $this->request->getValue(StoreKeys::USER_ROLE->value);
-        if($role == UserRole::ADMIN->value){
+        if ($role == UserRole::ADMIN->value) {
             $offices = $this->officeService->findAll();
-        }else{
+        } else {
             $offices = $this->officeService->findAllVisibleOffices();
         }
         $this->response->response(HttpStatus::$OK, OfficeResponse::GET_ALL_OFFICES_SUCCESS->value, null, $offices);

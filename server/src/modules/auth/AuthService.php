@@ -1,5 +1,6 @@
 <?php
-declare( strict_types=1 );
+
+declare(strict_types=1);
 
 namespace modules\auth;
 
@@ -40,7 +41,7 @@ class AuthService
     {
         $existing_user = $this->userService->findOne("email", $login_user_dto->getEmail());
         if (!$existing_user) {
-            throw new ResponseException(HttpStatus::$BAD_REQUEST,  AuthResponse::INVALID_CREDENTIAL->value);
+            throw new ResponseException(HttpStatus::$BAD_REQUEST, AuthResponse::INVALID_CREDENTIAL->value);
         }
 
         $is_password_matched = password_verify($login_user_dto->getPassword(), $existing_user["password"]);
@@ -48,7 +49,11 @@ class AuthService
             throw new ResponseException(HttpStatus::$BAD_REQUEST, AuthResponse::INVALID_CREDENTIAL->value);
         }
 
-        $access_token = $this->jwtService->generateToken($existing_user["id"], $existing_user["role"], EnumTypeJwt::ACCESS_TOKEN);
+        $access_token = $this->jwtService->generateToken(
+            $existing_user["id"],
+            $existing_user["role"],
+            EnumTypeJwt::ACCESS_TOKEN
+        );
         unset($existing_user['password']);
         return array(
             "user" => $existing_user,

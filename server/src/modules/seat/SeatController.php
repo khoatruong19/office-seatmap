@@ -1,5 +1,6 @@
 <?php
-declare( strict_types=1 );
+
+declare(strict_types=1);
 
 namespace modules\seat;
 
@@ -9,7 +10,6 @@ use core\Response;
 use core\Controller;
 use modules\seat\dto\SetUserToSeatDto;
 use modules\seat\dto\SwapUsersFromTwoSeatsDto;
-use shared\enums\OfficeResponse;
 use shared\enums\ParamKeys;
 use shared\enums\SeatResponse;
 use shared\exceptions\ResponseException;
@@ -19,8 +19,8 @@ class SeatController extends Controller
     public function __construct(
         public Request $request,
         public Response $response,
-        private readonly SeatService $seatService)
-    {
+        private readonly SeatService $seatService
+    ) {
     }
 
     /**
@@ -35,7 +35,7 @@ class SeatController extends Controller
         $raw_data['id'] = $seat_id;
         $set_user_to_seat = SetUserToSeatDto::fromArray($raw_data);
         $this->seatService->setUserToSeat($set_user_to_seat);
-        $this->response->response(HttpStatus::$OK, SeatResponse::SET_USER_SUCCESS->value , null, $seat_id);
+        $this->response->response(HttpStatus::$OK, SeatResponse::SET_USER_SUCCESS->value, null, $seat_id);
     }
 
     /**
@@ -45,7 +45,7 @@ class SeatController extends Controller
     {
         $seat_id = $this->request->getIntParam(ParamKeys::SEAT_ID->value);
         $this->seatService->removeUserFromSeat($seat_id);
-        $this->response->response(HttpStatus::$OK, SeatResponse::REMOVE_USER_SUCCESS->value , null, $seat_id);
+        $this->response->response(HttpStatus::$OK, SeatResponse::REMOVE_USER_SUCCESS->value, null, $seat_id);
     }
 
     /**

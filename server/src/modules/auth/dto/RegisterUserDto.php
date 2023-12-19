@@ -1,7 +1,9 @@
 <?php
+
 declare(strict_types=1);
 
 namespace modules\auth\dto;
+
 use shared\interfaces\IDto;
 
 class RegisterUserDto implements IDto
@@ -51,7 +53,8 @@ class RegisterUserDto implements IDto
         return $this->full_name;
     }
 
-    public function toArray(): array{
+    public function toArray(): array
+    {
         return [
             "email" => $this->email,
             "full_name" => $this->full_name,

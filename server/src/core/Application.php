@@ -1,7 +1,9 @@
 <?php
-declare( strict_types=1 );
+
+declare(strict_types=1);
 
 namespace core;
+
 use shared\exceptions\ResponseException;
 
 class Application
@@ -10,9 +12,8 @@ class Application
         public Response $response,
         public Request $request,
         public Router $router,
-        public Database $database)
-    {
-
+        public Database $database
+    ) {
     }
 
     public function run(): void
@@ -20,7 +21,7 @@ class Application
         try {
             echo $this->router->resolve($this->request, $this->response);
         } catch (ResponseException $ex) {
-            echo $this->response->response($ex->getHttpStatus(), $ex->getMessage(), $ex->getErrors() );
+            echo $this->response->response($ex->getHttpStatus(), $ex->getMessage(), $ex->getErrors());
         }
     }
 }

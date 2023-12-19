@@ -1,12 +1,15 @@
 <?php
+
 declare(strict_types=1);
 
 namespace modules\user\dto;
+
 use shared\interfaces\IDto;
 
 class UpdateProfileDto implements IDto
 {
     private string $full_name;
+
     public function __construct(string $full_name)
     {
         $this->full_name = $full_name;

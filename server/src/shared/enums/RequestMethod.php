@@ -1,9 +1,11 @@
 <?php
-declare( strict_types=1 );
+
+declare(strict_types=1);
 
 namespace shared\enums;
 
-enum RequestMethod {
+enum RequestMethod
+{
     case POST;
     case GET;
     case PUT;

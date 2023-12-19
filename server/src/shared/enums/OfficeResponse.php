@@ -1,9 +1,11 @@
 <?php
-declare( strict_types=1 );
+
+declare(strict_types=1);
 
 namespace shared\enums;
 
-enum OfficeResponse : string {
+enum OfficeResponse: string
+{
     case CREATE_OFFICE_SUCCESS = "Create office successfully!";
     case UPDATE_OFFICE_SUCCESS = "Update office successfully!";
     case GET_ALL_OFFICES_SUCCESS = "Get all offices successfully!";

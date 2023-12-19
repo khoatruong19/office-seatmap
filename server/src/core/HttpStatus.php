@@ -1,9 +1,11 @@
 <?php
-declare( strict_types=1 );
+
+declare(strict_types=1);
 
 namespace core;
 
-class HttpStatus {
+class HttpStatus
+{
     public static int $OK = 200;
     public static int $CREATED = 201;
     public static int $BAD_REQUEST = 400;
