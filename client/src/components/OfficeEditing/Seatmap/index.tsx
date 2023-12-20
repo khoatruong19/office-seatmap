@@ -50,7 +50,7 @@ const Seatmap = ({
   return (
     <div className="relative z-1 max-w-7xl w-full mx-auto lg:px-32 py-10 rounded-2xl ">
       <OfficeTitleInput title={name} onChange={handleChangeName} />
-      <BackToHomeButton className="top-[-10px] left-[-100px]" />
+      <BackToHomeButton className="top-[-8px] left-[-96px]" />
       <div className="absolute right-32 top-52">
         <Toolbar
           handleDeleteOffice={handleDeleteOffice}

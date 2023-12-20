@@ -55,12 +55,12 @@ const Seat = ({ seat, officeId }: Props) => {
       if (firstSeatId === seat.id) return;
 
       if (!seat.userId) {
-        await setUser({
+        const data = await setUser({
           id: seat.id,
           user_id: Number(firstUserId),
           office_id: officeId,
         });
-        await removeUser({ id: firstSeatId });
+        if(!("error" in data)) await removeUser({ id: firstSeatId });
         return;
       }
 

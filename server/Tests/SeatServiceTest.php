@@ -12,6 +12,7 @@ use modules\user\UserRepository;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use shared\enums\OfficeResponse;
+use shared\enums\SeatResponse;
 use shared\enums\UserResponse;
 use shared\exceptions\ResponseException;
 
@@ -86,6 +87,31 @@ class SeatServiceTest extends TestCase
         $this->seatService->checkUserExists("id", $user_id);
     }
 
+    public function testCheckSeatExistsReturnValue()
+    {
+        $seat_id = 2;
+        $this->seatRepositoryMock->expects($this->once())
+            ->method("findOne")
+            ->willReturn(["id" => 2]);
+
+        $result = $this->seatService->checkSeatExists(strval($seat_id));
+
+        $this->assertEquals($result['id'], $seat_id);
+    }
+
+    public function testCheckSeatExistsThrowError()
+    {
+        $seat_id = 2;
+        $this->seatRepositoryMock->expects($this->once())
+            ->method("findOne")
+            ->willReturn(null);
+
+        $this->expectException(ResponseException::class);
+        $this->expectExceptionMessage(SeatResponse::NOT_FOUND->value);
+
+        $this->seatService->checkSeatExists(strval($seat_id));
+    }
+
     public function testCreateSeatSuccess()
     {
         $create_seat_dto = CreateSeatDto::fromArray(["label" => "A0", "position" => 10, "office_id" => 1]);
@@ -105,6 +131,29 @@ class SeatServiceTest extends TestCase
             ->willReturn(false);
         $this->seatRepositoryMock->expects($this->once())
             ->method("create")
+            ->willReturn(true);
+
+        $result = $this->seatService->create($create_seat_dto);
+
+        $this->assertTrue($result);
+    }
+
+    public function testCreateSeatAlreadyExistsSuccess()
+    {
+        $create_seat_dto = CreateSeatDto::fromArray(["label" => "A0", "position" => 10, "office_id" => 1]);
+        $this->seatService = $this->createPartialMock(SeatService::class, [
+            'checkOfficeExists',
+        ]);
+        $this->seatService->__construct(
+            $this->seatRepositoryMock,
+            $this->officeRepositoryMock,
+            $this->userRepositoryMock
+        );
+        $this->seatService->expects($this->once())
+            ->method("checkOfficeExists")
+            ->willReturn(["id" => 1]);
+        $this->seatRepositoryMock->expects($this->once())
+            ->method("findByOfficeId")
             ->willReturn(true);
 
         $result = $this->seatService->create($create_seat_dto);
@@ -139,7 +188,8 @@ class SeatServiceTest extends TestCase
     {
         $this->seatService = $this->createPartialMock(SeatService::class, [
             'checkOfficeExists',
-            'checkUserExists'
+            'checkUserExists',
+            'checkSeatExists'
         ]);
         $this->seatService->__construct(
             $this->seatRepositoryMock,
@@ -151,6 +201,9 @@ class SeatServiceTest extends TestCase
             ->willReturn(["id" => 2]);
         $this->seatService->expects($this->once())
             ->method("checkUserExists")
+            ->willReturn(["id" => 2]);
+        $this->seatService->expects($this->atLeastOnce())
+            ->method("checkSeatExists")
             ->willReturn(["id" => 2]);
         $this->seatRepositoryMock->expects($this->once())
             ->method("findByUserId")
@@ -167,6 +220,17 @@ class SeatServiceTest extends TestCase
 
     public function testDeleteSeatByLabel()
     {
+        $this->seatService = $this->createPartialMock(SeatService::class, [
+            'checkOfficeExists',
+        ]);
+        $this->seatService->__construct(
+            $this->seatRepositoryMock,
+            $this->officeRepositoryMock,
+            $this->userRepositoryMock
+        );
+        $this->seatService->expects($this->atLeastOnce())
+            ->method("checkOfficeExists")
+            ->willReturn(["id" => 2]);
         $this->seatRepositoryMock->expects($this->once())
             ->method("deleteByLabel")
             ->willReturn(true);
@@ -180,7 +244,8 @@ class SeatServiceTest extends TestCase
     {
         $this->seatService = $this->createPartialMock(SeatService::class, [
             'checkOfficeExists',
-            'checkUserExists'
+            'checkUserExists',
+            'checkSeatExists'
         ]);
         $this->seatService->__construct(
             $this->seatRepositoryMock,
@@ -192,6 +257,9 @@ class SeatServiceTest extends TestCase
             ->willReturn(["id" => 2]);
         $this->seatService->expects($this->exactly(2))
             ->method("checkUserExists")
+            ->willReturn(["id" => 2]);
+        $this->seatService->expects($this->exactly(2))
+            ->method("checkSeatExists")
             ->willReturn(["id" => 2]);
         $this->seatRepositoryMock->expects($this->exactly(2))
             ->method("updateOne")

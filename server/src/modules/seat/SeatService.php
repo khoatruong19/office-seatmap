@@ -11,6 +11,7 @@ use modules\seat\dto\SetUserToSeatDto;
 use modules\seat\dto\SwapUsersFromTwoSeatsDto;
 use modules\user\UserRepository;
 use shared\enums\OfficeResponse;
+use shared\enums\SeatResponse;
 use shared\enums\UserResponse;
 use shared\exceptions\ResponseException;
 
@@ -55,6 +56,21 @@ class SeatService
     }
 
     /**
+     * @param string $seat_id
+     * @return mixed
+     * @throws ResponseException
+     */
+    public function checkSeatExists(string $seat_id): mixed
+    {
+        $seat = $this->seatRepository->findOne("id", $seat_id);
+        if (!$seat) {
+            throw new ResponseException(HttpStatus::$BAD_REQUEST, SeatResponse::NOT_FOUND->value);
+        }
+
+        return $seat;
+    }
+
+    /**
      * @param CreateSeatDto $create_seat_dto
      * @return bool|string
      * @throws ResponseException
@@ -83,6 +99,7 @@ class SeatService
     /**
      * @param string $office_id
      * @return bool|array
+     * @throws ResponseException
      */
     public function findAllByOfficeId(string $office_id): bool|array
     {
@@ -99,6 +116,7 @@ class SeatService
     {
         $this->checkOfficeExists("id", strval($set_user_to_seat_dto->getOfficeId()));
         $this->checkUserExists(strval($set_user_to_seat_dto->getUserId()));
+        $this->checkSeatExists(strval($set_user_to_seat_dto->getId()));
         $seatUsedByUserId = $this->seatRepository->findByUserId(
             $set_user_to_seat_dto->getUserId(),
             $set_user_to_seat_dto->getOfficeId()
@@ -116,9 +134,11 @@ class SeatService
     /**
      * @param int $seat_id
      * @return bool
+     * @throws ResponseException
      */
     public function removeUserFromSeat(int $seat_id): bool
     {
+        $this->checkSeatExists(strval($seat_id));
         return $this->seatRepository->updateOne(strval($seat_id), ["user_id" => null, "available" => 1]);
     }
 
@@ -126,21 +146,26 @@ class SeatService
      * @param string $label
      * @param string $office_id
      * @return bool
+     * @throws ResponseException
      */
     public function deleteSeatByLabel(string $label, string $office_id): bool
     {
+        $this->checkOfficeExists("id", $office_id);
         return $this->seatRepository->deleteByLabel($label, $office_id);
     }
 
     /**
      * @param SwapUsersFromTwoSeatsDto $swap_users_from_two_seat_dto
      * @return void
+     * @throws ResponseException
      */
     public function swapUsersFromTwoSeats(SwapUsersFromTwoSeatsDto $swap_users_from_two_seat_dto): void
     {
         $this->checkUserExists(strval($swap_users_from_two_seat_dto->getFirstUserId()));
         $this->checkUserExists(strval($swap_users_from_two_seat_dto->getSecondUserId()));
         $this->checkOfficeExists("id", strval($swap_users_from_two_seat_dto->getOfficeId()));
+        $this->checkSeatExists(strval($swap_users_from_two_seat_dto->getFirstSeatId()));
+        $this->checkSeatExists(strval($swap_users_from_two_seat_dto->getSecondSeatId()));
         $this->seatRepository->updateOne(
             strval($swap_users_from_two_seat_dto->getFirstSeatId()),
             ["user_id" => $swap_users_from_two_seat_dto->getSecondUserId()]
