@@ -55,9 +55,9 @@ class AuthService
             EnumTypeJwt::ACCESS_TOKEN
         );
         unset($existing_user['password']);
-        return array(
+        return [
             "user" => $existing_user,
             "accessToken" => $access_token,
-        );
+        ];
     }
 }

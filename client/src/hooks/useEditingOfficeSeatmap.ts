@@ -24,7 +24,6 @@ type Props = {
 
 const useEditingOfficeSeatmap = (props: Props) => {
   const { initBlocks, cells, isVisible, officeName, officeId } = props;
-
   const [selectedCells, setSelectedCells] = useState<CellType[]>([]);
   const [blocks, setBlocks] = useState<BlockType[]>(initBlocks);
   const [seats, setSeats] = useState<CellType[]>(cells);

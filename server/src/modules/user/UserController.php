@@ -26,6 +26,17 @@ class UserController extends Controller
 
     /**
      * @return void
+     * @throws ResponseException
+     */
+    private function checkFileExists(): void
+    {
+        if (!isset($_FILES["file"])) {
+            throw new ResponseException(HttpStatus::$BAD_REQUEST, UserResponse::NO_FILE_FOUND->value);
+        }
+    }
+
+    /**
+     * @return void
      */
     public function findAll(): void
     {
@@ -91,10 +102,7 @@ class UserController extends Controller
      */
     public function uploadAvatar(): void
     {
-        if (!isset($_FILES["file"])) {
-            throw new ResponseException(HttpStatus::$BAD_REQUEST, UserResponse::NO_FILE_FOUND->value);
-        }
-
+        $this->checkFileExists();
         $user_id = $this->request->getParam(ParamKeys::USER_ID->value);
         $data = $this->userService->uploadAvatar($user_id);
         $this->response->response(HttpStatus::$OK, UserResponse::UPLOAD_SUCCESS->value, null, $data);

@@ -21,6 +21,16 @@ class UserService
     }
 
     /**
+     * @param mixed $user
+     * @return void
+     */
+    private function removeUserPasswordReturn(mixed &$user): void
+    {
+        if(!isset($user['password'])) return;
+        unset($user['password']);
+    }
+
+    /**
      * @param string $user_id
      * @return mixed
      * @throws ResponseException
@@ -79,9 +89,9 @@ class UserService
         );
         $this->uploadAndSetAvatarUrl('profile_user_' . $user_entity->getEmail(), $user_entity);
         $id = $this->userRepository->create($user_entity->toArray());
-        return array(
-            "id" => $id,
-        );
+        return [
+            "id" => $id
+        ];
     }
 
     /**
@@ -111,7 +121,7 @@ class UserService
     public function getCurrentUser(string $user_id): array
     {
         $user = $this->checkUserExists($user_id);
-        unset($user['password']);
+        $this->removeUserPasswordReturn($user);
         return [
             "user" => $user
         ];
@@ -140,7 +150,7 @@ class UserService
             throw new ResponseException(HttpStatus::$INTERNAL_SERVER_ERROR, UserResponse::UPDATE_USER_FAIL->value);
         }
 
-        unset($data['password']);
+        $this->removeUserPasswordReturn($data);
         return $data;
     }
 
@@ -166,7 +176,7 @@ class UserService
             throw new ResponseException(HttpStatus::$INTERNAL_SERVER_ERROR, UserResponse::UPDATE_PROFILE_FAIL->value);
         }
 
-        unset($data['password']);
+        $this->removeUserPasswordReturn($data);
         return $data;
     }
 

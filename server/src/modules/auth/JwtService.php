@@ -37,12 +37,12 @@ class JwtService
         $iat = new DateTime();
         $exp = clone $iat;
         $exp->modify('+1 day');
-        $payload = array(
+        $payload = [
             "userId" => $user_id,
             "role" => $role,
             "iat" => $iat->getTimestamp(),
             "exp" => $exp->getTimestamp(),
-        );
+        ];
         return JWT::encode($payload, $this->key[$type->name], 'HS256');
     }
 

@@ -74,8 +74,8 @@ class OfficeController extends Controller
      */
     public function findAll(): void
     {
-        $role = $this->request->getValue(StoreKeys::USER_ROLE->value);
-        if ($role == UserRole::ADMIN->value) {
+        $user_role = $this->request->getValue(StoreKeys::USER_ROLE->value);
+        if ($user_role == UserRole::ADMIN->value) {
             $offices = $this->officeService->findAll();
         } else {
             $offices = $this->officeService->findAllVisibleOffices();
