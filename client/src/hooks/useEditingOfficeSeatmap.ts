@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { v4 as uuid } from "uuid";
 
-const MAX_OFFICE_NAME_LENGTH = 100;
+const MAX_OFFICE_NAME_LENGTH = 60;
 
 type Props = {
   officeName: string;
@@ -110,7 +110,7 @@ const useEditingOfficeSeatmap = (props: Props) => {
 
   const handleSaveSeatmap = async () => {
     if (name.length > MAX_OFFICE_NAME_LENGTH) {
-      toast.error(`Office's name must be no more than 100 characters`, {
+      toast.error(`Office's name must be no more than 60 characters`, {
         theme: "colored",
         style: {
           fontWeight: 600,
