@@ -38,7 +38,7 @@ class Database
      */
     public function runMigration(string $schema, string $name_file)
     {
-        $sql = file_get_contents(dirname(__DIR__) . "/../shared/schemas/" . $schema . "/" . $name_file);
+        $sql = file_get_contents(sprintf('%s/../shared/schemas/%s/%s', dirname(__DIR__), $schema, $name_file));
         $this->connection->exec($sql);
     }
 
