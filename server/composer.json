@@ -6,7 +6,7 @@
     "fix": "php-cs-fixer fix",
     "start": [
       "Composer\\Config::disableProcessTimeout",
-      "php -S 10.192.30.126:8080 -t public/"
+      "php -S localhost:5000 -t public/"
     ],
     "install": "composer dump-autoload"
   },
@@ -30,6 +30,7 @@
     "vlucas/phpdotenv": "^5.5",
     "php-di/php-di": "^7.0",
     "firebase/php-jwt": "^6.9",
-    "cloudinary/cloudinary_php": "^2"
+    "cloudinary/cloudinary_php": "^2",
+    "ext-http": "*"
   }
 }
